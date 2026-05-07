@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EB1F9BFE2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */; };
+		EB1F9BFF2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EB40CE642F4E62EB00F8FF32 /* libSDL3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */; };
+		EB40CE652F4E62EB00F8FF32 /* libSDL3.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EB40CE562F4E624D00F8FF32 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		EB40CE662F4E62EB00F8FF32 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EB1F9BFF2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Embed Libraries */,
+				EB40CE652F4E62EB00F8FF32 /* libSDL3.0.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3_image.0.4.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3_image/3.4.0/lib/libSDL3_image.0.4.0.dylib; sourceTree = "<group>"; };
+		EB40CE582F4E624D00F8FF32 /* GameTestSDL3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GameTestSDL3; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3/3.4.2/lib/libSDL3.0.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EB1F9C002F5D07F30057CC3A /* Assets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		EB40CE5A2F4E624D00F8FF32 /* src */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EB40CE552F4E624D00F8FF32 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB1F9BFE2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Frameworks */,
+				EB40CE642F4E62EB00F8FF32 /* libSDL3.0.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EB40CE4F2F4E624D00F8FF32 = {
+			isa = PBXGroup;
+			children = (
+				EB1F9C002F5D07F30057CC3A /* Assets */,
+				EB40CE5A2F4E624D00F8FF32 /* src */,
+				EB40CE622F4E62EB00F8FF32 /* Frameworks */,
+				EB40CE592F4E624D00F8FF32 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EB40CE592F4E624D00F8FF32 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB40CE582F4E624D00F8FF32 /* GameTestSDL3 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EB40CE622F4E62EB00F8FF32 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */,
+				EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EB40CE572F4E624D00F8FF32 /* GameTestSDL3 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB40CE5F2F4E624D00F8FF32 /* Build configuration list for PBXNativeTarget "GameTestSDL3" */;
+			buildPhases = (
+				EB40CE542F4E624D00F8FF32 /* Sources */,
+				EB40CE552F4E624D00F8FF32 /* Frameworks */,
+				EB40CE562F4E624D00F8FF32 /* CopyFiles */,
+				EB40CE662F4E62EB00F8FF32 /* Embed Libraries */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EB1F9C002F5D07F30057CC3A /* Assets */,
+				EB40CE5A2F4E624D00F8FF32 /* src */,
+			);
+			name = GameTestSDL3;
+			packageProductDependencies = (
+			);
+			productName = GameTestSDL3;
+			productReference = EB40CE582F4E624D00F8FF32 /* GameTestSDL3 */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EB40CE502F4E624D00F8FF32 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					EB40CE572F4E624D00F8FF32 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+				};
+			};
+			buildConfigurationList = EB40CE532F4E624D00F8FF32 /* Build configuration list for PBXProject "GameTestSDL3" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EB40CE4F2F4E624D00F8FF32;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EB40CE592F4E624D00F8FF32 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EB40CE572F4E624D00F8FF32 /* GameTestSDL3 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EB40CE542F4E624D00F8FF32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EB40CE5D2F4E624D00F8FF32 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EB40CE5E2F4E624D00F8FF32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EB40CE602F4E624D00F8FF32 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/opt/homebrew/Cellar/sdl3/3.4.2/include,
+					/opt/homebrew/Cellar/sdl3_image/3.4.0/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl3/3.4.2/lib,
+					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EB40CE612F4E624D00F8FF32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/opt/homebrew/Cellar/sdl3/3.4.2/include,
+					/opt/homebrew/Cellar/sdl3_image/3.4.0/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl3/3.4.2/lib,
+					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EB40CE532F4E624D00F8FF32 /* Build configuration list for PBXProject "GameTestSDL3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB40CE5D2F4E624D00F8FF32 /* Debug */,
+				EB40CE5E2F4E624D00F8FF32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EB40CE5F2F4E624D00F8FF32 /* Build configuration list for PBXNativeTarget "GameTestSDL3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB40CE602F4E624D00F8FF32 /* Debug */,
+				EB40CE612F4E624D00F8FF32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EB40CE502F4E624D00F8FF32 /* Project object */;
+}
