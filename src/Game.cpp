@@ -6,6 +6,10 @@
 //
 
 #include "Game.hpp"
+#include "TextureManager.hpp"
+#include "GameObject.hpp"
+
+GameObject* player;
 
 Game::Game()
 {
@@ -56,6 +60,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     
     RUNNING = true;
     
+    player = new GameObject("Assets/Spaceship.png", RENDERER, 0, 0);
     
 }
 
@@ -63,11 +68,17 @@ int Game::run()
 {
     while (isRunning())
     {
+        FRAME_START = SDL_GetTicks();
         handleEvents();
         render();
         update();
         
-        SDL_Delay(10);
+        FRAME_TIME = SDL_GetTicks() - FRAME_START;
+        
+        if(FRAME_DELAY > FRAME_TIME)
+        {
+            SDL_Delay(FRAME_DELAY - FRAME_TIME);
+        }
     }
     
     clean();
@@ -98,7 +109,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    
+    player -> update();
 }
 
 void Game::render()
@@ -111,17 +122,8 @@ void Game::render()
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
-
-    // Draw a simple rectangle to verify rendering
-    SDL_FRect rect{ 100.0f, 100.0f, 200.0f, 150.0f };
-    if (!SDL_SetRenderDrawColor(RENDERER, 255, 255, 255, 255))
-    { // White
-        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
-    }
-    if (!SDL_RenderFillRect(RENDERER, &rect))
-    {
-        SDL_Log("SDL_RenderFillRect failed: %s\n", SDL_GetError());
-    }
+    
+    player -> render();
 
     SDL_RenderPresent(RENDERER);
 }
