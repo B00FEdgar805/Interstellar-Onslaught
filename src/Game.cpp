@@ -7,8 +7,9 @@
 
 #include "Game.hpp"
 #include "TextureManager.hpp"
+#include "GameObject.hpp"
 
-SDL_Texture* player_texture;
+GameObject* player;
 
 Game::Game()
 {
@@ -59,7 +60,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     
     RUNNING = true;
     
-    player_texture = TextureManager::loadTexture("Assets/Spaceship.png", RENDERER);
+    player = new GameObject("Assets/Spaceship.png", RENDERER, 0, 0);
+    
 }
 
 int Game::run()
@@ -107,7 +109,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    
+    player -> update();
 }
 
 void Game::render()
@@ -120,11 +122,8 @@ void Game::render()
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
-    SDL_FRect rect{ 100.0f, 100.0f, 32.0f, 32.0f };
-    if (!SDL_RenderTexture(RENDERER, player_texture, nullptr, &rect))
-    {
-        SDL_Log("SDL_RenderTexture failed: %s\n", SDL_GetError());
-    }
+    
+    player -> render();
 
     SDL_RenderPresent(RENDERER);
 }
