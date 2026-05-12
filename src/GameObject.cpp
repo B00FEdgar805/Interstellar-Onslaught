@@ -8,10 +8,9 @@
 #include "GameObject.hpp"
 #include "TextureManager.hpp"
 
-GameObject::GameObject(const char* texture_file, SDL_Renderer* renderer, int x, int y)
+GameObject::GameObject(const char* texture_file,int x, int y)
 {
-    GAME_OBJECT_RENDERER = renderer;
-    TEXTURE = TextureManager::loadTexture(texture_file, renderer);
+    TEXTURE = TextureManager::loadTexture(texture_file);
     
     X_POS = x;
     Y_POS = y;
@@ -40,7 +39,7 @@ void GameObject::update()
 
 void GameObject::render()
 {
-    if (!SDL_RenderTexture(GAME_OBJECT_RENDERER, TEXTURE, &SRC_RECT, &DEST_RECT))
+    if (!SDL_RenderTexture(Game::RENDERER, TEXTURE, &SRC_RECT, &DEST_RECT))
     {
         SDL_Log("SDL_RenderTexture failed in GameObject render: %s\n", SDL_GetError());
     }

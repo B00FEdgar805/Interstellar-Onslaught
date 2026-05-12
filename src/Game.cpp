@@ -10,10 +10,11 @@
 #include "GameObject.hpp"
 
 GameObject* player;
+SDL_Renderer* Game::RENDERER = nullptr;
 
 Game::Game()
 {
-    init("SDL Game", 800, 600, false);
+    init("SDL Game", 800, 640, false);
 }
 
 Game::~Game()
@@ -60,7 +61,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     
     RUNNING = true;
     
-    player = new GameObject("Assets/Spaceship.png", RENDERER, 0, 0);
+    player = new GameObject("Assets/Spaceship.png", 0, 0);
     
 }
 

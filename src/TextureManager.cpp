@@ -7,14 +7,19 @@
 
 #include "TextureManager.hpp"
 
-SDL_Texture* TextureManager::loadTexture(const char* filename, SDL_Renderer* renderer)
+SDL_Texture* TextureManager::loadTexture(const char* filename)
 {
     SDL_Surface* temp = IMG_Load(filename);
     if(temp == NULL)
     {
         SDL_Log("Error image not loaded ", filename);
     }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::RENDERER, temp);
     SDL_DestroySurface(temp);
     return texture;
+}
+
+void TextureManager::draw(SDL_Texture* texture, SDL_FRect source, SDL_FRect destination)
+{
+    SDL_RenderTexture(Game::RENDERER, texture, &source, &destination);
 }

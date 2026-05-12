@@ -20,7 +20,7 @@ private:
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;
-    SDL_Renderer *RENDERER;
+   
     
 public:
     Game();
@@ -32,6 +32,8 @@ public:
     void render();
     void clean();
     bool isRunning();
+    
+    static SDL_Renderer *RENDERER;
     
 };
 
