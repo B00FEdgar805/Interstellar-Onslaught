@@ -8,9 +8,12 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include "GameObject.hpp"
+#include "Map.hpp"
+
 
 GameObject* player;
 SDL_Renderer* Game::RENDERER = nullptr;
+Map* map;
 
 Game::Game()
 {
@@ -62,6 +65,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     RUNNING = true;
     
     player = new GameObject("Assets/Spaceship.png", 0, 0);
+    map = new Map();
     
 }
 
@@ -124,7 +128,9 @@ void Game::render()
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
+    map -> drawMap();
     player -> render();
+    
 
     SDL_RenderPresent(RENDERER);
 }
