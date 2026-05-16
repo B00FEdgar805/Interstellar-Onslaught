@@ -9,11 +9,14 @@
 #include "TextureManager.hpp"
 #include "GameObject.hpp"
 #include "Map.hpp"
-
+#include "ECS.hpp"
+#include "Components.hpp"
 
 GameObject* player;
 SDL_Renderer* Game::RENDERER = nullptr;
 Map* map;
+Manager manager;
+auto& newPlayer(manager.addEntity());
 
 Game::Game()
 {
@@ -62,11 +65,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
         SDL_Quit();
     }
     
+    SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    
     RUNNING = true;
     
     player = new GameObject("Assets/Spaceship.png", 0, 0);
     map = new Map();
-    
+    newPlayer.addComponent<PositionComponenet>();
+    newPlayer.getComponent<PositionComponenet>().setPosition(500, 500);
 }
 
 int Game::run()
@@ -115,6 +121,8 @@ void Game::handleEvents()
 void Game::update()
 {
     player -> update();
+    manager.update();
+    std::cout << newPlayer.getComponent<PositionComponenet>().x() << " , " << newPlayer.getComponent<PositionComponenet>().y() << std::endl;
 }
 
 void Game::render()

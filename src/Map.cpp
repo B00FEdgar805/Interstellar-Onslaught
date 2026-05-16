@@ -57,7 +57,7 @@ Map::Map()
     SRC_BLACKHOLE.w = 320;
     SRC_BLACKHOLE.h = 180;
     DEST_BLACKHOLE.x = 240;
-    DEST_BLACKHOLE.y = 230;
+    DEST_BLACKHOLE.y = 0;
     DEST_BLACKHOLE.w = 320;
     DEST_BLACKHOLE.h = 180;
 }
@@ -71,7 +71,7 @@ void Map::loadMap(int arr[20][25])
             //MAP[r][c] = arr[r][c];
             std::random_device rd;
             std::mt19937 gen(rd());
-            std::uniform_int_distribution<> distr(0, 10);
+            std::uniform_int_distribution<> distr(0, 50);
             MAP[r][c] = distr(gen);
             
         }
@@ -96,16 +96,37 @@ void Map::drawMap()
                     TextureManager::draw(STARS, SRC_RECT, DEST_RECT);
                     break;
                 case 1:
-                    TextureManager::draw(STAR, SRC_RECT, DEST_RECT);
+                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 90.f);
                     break;
                 case 2:
-                    //TextureManager::draw(PLANET, SRC_RECT, DEST_RECT);
-                    TextureManager::drawRotated(PLANET, SRC_RECT, DEST_RECT);
+                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 180.f);
+                    break;
+                case 3:
+                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 270.f);
+                    break;
+                case 4:
+                    TextureManager::draw(STAR, SRC_RECT, DEST_RECT);
+                    break;
+                case 5:
+                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 90.f);
+                    break;
+                case 6:
+                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 180.f);
+                    break;
+                case 7:
+                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 270.f);
+                    break;
+                case 8:
+                    TextureManager::draw(PLANET, SRC_RECT, DEST_RECT);
                     break;
                 default:
                     TextureManager::draw(SPACE, SRC_RECT, DEST_RECT);
+                    //TextureManager::drawRotated(PLANET, SRC_RECT, DEST_RECT, 90.f);
+
+
                     break;
             }
+             
         }
     }
     

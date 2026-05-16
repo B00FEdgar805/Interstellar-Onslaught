@@ -24,26 +24,7 @@ void TextureManager::draw(SDL_Texture* texture, SDL_FRect source, SDL_FRect dest
     SDL_RenderTexture(Game::RENDERER, texture, &source, &destination);
 }
 
-void TextureManager::drawRotated(SDL_Texture* texture, SDL_FRect source, SDL_FRect destination)
+void TextureManager::drawRotated(SDL_Texture* texture, SDL_FRect source, SDL_FRect destination, float angle)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(0, 3);
-    int angle = distr(gen);
-    
-    switch (angle) {
-        case 1:
-            SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, 90.f, nullptr, SDL_FLIP_NONE);
-            break;
-        case 2:
-            SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, 180.f, nullptr, SDL_FLIP_NONE);
-        case 3:
-            SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, 270.f, nullptr, SDL_FLIP_NONE);
-            break;
-        default:
-            draw(texture, source, destination);
-            break;
-    }
-    
-   
+    SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, angle, nullptr, SDL_FLIP_NONE);
 }
