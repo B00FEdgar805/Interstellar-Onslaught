@@ -7,16 +7,21 @@
 
 #include "Game.hpp"
 #include "TextureManager.hpp"
-#include "GameObject.hpp"
 #include "Map.hpp"
-#include "ECS.hpp"
-#include "Components.hpp"
+//#include "ECS/Components/Component.hpp"
+#include "ECS/Components/Transform.hpp"
+#include "ECS/Components/Sprite.hpp"
+#include "ECS/Systems.hpp"
+#include "ECS/Registry.hpp"
 
-GameObject* player;
+
+
 SDL_Renderer* Game::RENDERER = nullptr;
 Map* map;
-Manager manager;
-auto& newPlayer(manager.addEntity());
+Registry registry;
+Entity player = registry.create();;
+Systems systems;
+
 
 Game::Game()
 {
@@ -69,27 +74,39 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     
     RUNNING = true;
     
-    player = new GameObject("Assets/Spaceship.png", 0, 0);
     map = new Map();
-    newPlayer.addComponent<PositionComponenet>();
-    newPlayer.getComponent<PositionComponenet>().setPosition(500, 500);
+    
+    TextureManager::loadTexture("player", "Assets/Spaceship.png");
+    registry.add(player, Sprite("player"));
+    registry.add(player, Transform(100.0f, 100.0f));
+    //registry.add(player, Transform(0,0));
+
+
+    
+   // Player.addComponent<PositionComponenet>();
+    //Player.addComponent<SpriteComponent>("Assets/Spaceship.png");
 }
 
 int Game::run()
 {
+    auto lastTime = std::chrono::steady_clock::now();
+
     while (isRunning())
     {
-        FRAME_START = SDL_GetTicks();
+        auto currentTime = std::chrono::steady_clock::now();
+
+        float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+
+        lastTime = currentTime;
+
+        if (deltaTime > 0.05f)
+        {
+            deltaTime = 0.05f;
+        }
+        
         handleEvents();
         render();
         update();
-        
-        FRAME_TIME = SDL_GetTicks() - FRAME_START;
-        
-        if(FRAME_DELAY > FRAME_TIME)
-        {
-            SDL_Delay(FRAME_DELAY - FRAME_TIME);
-        }
     }
     
     clean();
@@ -116,13 +133,16 @@ void Game::handleEvents()
             break;
             
     }
+    
+    //player movemnt
 }
 
 void Game::update()
 {
-    player -> update();
-    manager.update();
-    std::cout << newPlayer.getComponent<PositionComponenet>().x() << " , " << newPlayer.getComponent<PositionComponenet>().y() << std::endl;
+    //manager.refresh();
+    //manager.update();
+    //movement system
+    
 }
 
 void Game::render()
@@ -137,8 +157,7 @@ void Game::render()
     }
     
     map -> drawMap();
-    player -> render();
-    
+    systems.renderSystem(registry, RENDERER);
 
     SDL_RenderPresent(RENDERER);
 }
@@ -146,6 +165,7 @@ void Game::render()
 void Game::clean()
 {
     // Cleanup
+    TextureManager::clear();
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();

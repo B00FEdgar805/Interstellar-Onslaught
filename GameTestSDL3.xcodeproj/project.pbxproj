@@ -134,6 +134,7 @@
 				TargetAttributes = {
 					EB40CE572F4E624D00F8FF32 = {
 						CreatedOnToolsVersion = 26.2;
+						LastSwiftMigration = 2650;
 					};
 				};
 			};
@@ -285,6 +286,7 @@
 		EB40CE602F4E624D00F8FF32 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/Cellar/sdl3/3.4.2/include,
@@ -296,12 +298,15 @@
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		EB40CE612F4E624D00F8FF32 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/Cellar/sdl3/3.4.2/include,
@@ -313,6 +318,7 @@
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};

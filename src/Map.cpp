@@ -37,11 +37,20 @@ int level1[20][25] = {
 
 Map::Map()
 {
+    /*
     STARS = TextureManager::loadTexture("Assets/stars.png");
     STAR = TextureManager::loadTexture("Assets/star.png");
     PLANET = TextureManager::loadTexture("Assets/planet.png");
     BLACKHOLE = TextureManager::loadTexture("Assets/blackhole2.png");
     SPACE = TextureManager::loadTexture("Assets/space.png");
+    */
+    TextureManager::loadTexture("stars", "Assets/stars.png");
+    TextureManager::loadTexture("star", "Assets/star.png");
+    TextureManager::loadTexture("planet", "Assets/planet.png");
+    TextureManager::loadTexture("blackhole", "Assets/blackhole2.png");
+    TextureManager::loadTexture("space", "Assets/space.png");
+
+    
     
     loadMap(level1);
     SRC_RECT.x = 0;
@@ -93,34 +102,34 @@ void Map::drawMap()
             switch (type)
             {
                 case 0:
-                    TextureManager::draw(STARS, SRC_RECT, DEST_RECT);
+                    TextureManager::draw("stars", SRC_RECT, DEST_RECT);
                     break;
                 case 1:
-                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 90.f);
+                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 90.f);
                     break;
                 case 2:
-                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 180.f);
+                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 180.f);
                     break;
                 case 3:
-                    TextureManager::drawRotated(STARS, SRC_RECT, DEST_RECT, 270.f);
+                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 270.f);
                     break;
                 case 4:
-                    TextureManager::draw(STAR, SRC_RECT, DEST_RECT);
+                    TextureManager::draw("star", SRC_RECT, DEST_RECT);
                     break;
                 case 5:
-                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 90.f);
+                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 90.f);
                     break;
                 case 6:
-                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 180.f);
+                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 180.f);
                     break;
                 case 7:
-                    TextureManager::drawRotated(STAR, SRC_RECT, DEST_RECT, 270.f);
+                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 270.f);
                     break;
                 case 8:
-                    TextureManager::draw(PLANET, SRC_RECT, DEST_RECT);
+                    TextureManager::draw("planet", SRC_RECT, DEST_RECT);
                     break;
                 default:
-                    TextureManager::draw(SPACE, SRC_RECT, DEST_RECT);
+                    TextureManager::draw("space", SRC_RECT, DEST_RECT);
                     //TextureManager::drawRotated(PLANET, SRC_RECT, DEST_RECT, 90.f);
 
 
@@ -130,5 +139,5 @@ void Map::drawMap()
         }
     }
     
-    TextureManager::draw(BLACKHOLE, SRC_BLACKHOLE, DEST_BLACKHOLE);
+    TextureManager::draw("blackhole", SRC_BLACKHOLE, DEST_BLACKHOLE);
 }

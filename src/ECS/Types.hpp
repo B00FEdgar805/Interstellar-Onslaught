@@ -8,6 +8,8 @@
 #ifndef Types_hpp
 #define Types_hpp
 
-#include <stdio.h>
+#include <cstdint>
+
+using Entity = std::uint32_t;
 
 #endif /* Types_hpp */

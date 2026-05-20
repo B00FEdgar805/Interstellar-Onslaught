@@ -8,6 +8,11 @@
 #ifndef Component_hpp
 #define Component_hpp
 
-#include <stdio.h>
+class BaseComponent
+{
+public:
+    virtual ~BaseComponent() = default;
+
+};
 
 #endif /* Component_hpp */
