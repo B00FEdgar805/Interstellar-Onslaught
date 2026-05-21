@@ -1,20 +1,14 @@
-//
-//  Game.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 2/25/26.
-//
-
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include "Map.hpp"
-//#include "ECS/Components/Component.hpp"
 #include "ECS/Components/Transform.hpp"
 #include "ECS/Components/Sprite.hpp"
+#include "ECS/Components/Velocity.hpp"
+#include "ECS/Components/PlayerControl.hpp"
 #include "ECS/Systems.hpp"
 #include "ECS/Registry.hpp"
 
-
+// Init ECS system
 
 SDL_Renderer* Game::RENDERER = nullptr;
 Map* map;
@@ -33,7 +27,7 @@ Game::~Game()
     clean();
 }
 
-void Game::init(const char* title, int width, int height, bool fullscreen)
+void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
     int flags = 0;
     
@@ -74,42 +68,42 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     
     RUNNING = true;
     
+    // Inits player and map
+    
     map = new Map();
     
     TextureManager::loadTexture("player", "Assets/Spaceship.png");
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(100.0f, 100.0f));
-    //registry.add(player, Transform(0,0));
+    registry.add(player, Velocity());
+    registry.add(player, PlayerControl());
 
-
-    
-   // Player.addComponent<PositionComponenet>();
-    //Player.addComponent<SpriteComponent>("Assets/Spaceship.png");
 }
 
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
 
-    while (isRunning())
+    while (isRunning()) // Main game loop
     {
         auto currentTime = std::chrono::steady_clock::now();
 
-        float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+        DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
 
         lastTime = currentTime;
 
-        if (deltaTime > 0.05f)
+        if (DELTA_TIME > 0.05f)
         {
-            deltaTime = 0.05f;
+            DELTA_TIME = 0.05f;
         }
-        
-        handleEvents();
-        render();
-        update();
+
+        handleEvents(); // Handles user inputes
+        render();   // Handles any rendering
+        update();   // Handlers movemnts systems
+       // UpdateFPSCounter(DELTA_TIME);
     }
     
-    clean();
+    clean();    // Called when program ends to close safley
     return 0;
 }
 
@@ -118,7 +112,7 @@ void Game::handleEvents()
 {
     SDL_Event e;
     SDL_PollEvent(&e);
-    switch (e.type)
+    switch (e.type)     // Handles ending the program
     {
         case SDL_EVENT_QUIT:
             RUNNING = false;
@@ -133,16 +127,12 @@ void Game::handleEvents()
             break;
             
     }
-    
-    //player movemnt
+    systems.playerInputSystem(registry);    // player inputs
 }
 
 void Game::update()
 {
-    //manager.refresh();
-    //manager.update();
-    //movement system
-    
+    systems.movementSystem(registry, DELTA_TIME);
 }
 
 void Game::render()
@@ -174,4 +164,21 @@ void Game::clean()
 bool Game::isRunning()
 {
     return RUNNING;
+}
+
+void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
+{
+    static int frames = 0;
+    static float accumulator = 0.0f;
+
+    frames++;
+    accumulator += deltaTime;
+
+    if (accumulator >= 1.0f)
+    {
+        float fps = frames / accumulator;
+        SDL_Log("FPS: %.1f", fps);
+        frames = 0;
+        accumulator = 0.0f;
+    }
 }

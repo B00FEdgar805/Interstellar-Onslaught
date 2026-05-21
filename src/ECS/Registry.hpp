@@ -1,10 +1,3 @@
-//
-//  Registry.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/19/26.
-//
-
 #ifndef Registry_hpp
 #define Registry_hpp
 
@@ -19,24 +12,24 @@
 #include <utility>
 #include <vector>
 
-class IComponentStorage {
+class IComponentStorage // Base class for component storage
+{
 public:
     virtual ~IComponentStorage() = default;
     virtual void erase(Entity entity) = 0;
 };
 
 template <typename T>
-class ComponentStorage final : public IComponentStorage {
-    static_assert(
-        std::is_base_of_v<BaseComponent, T> &&
-        !std::is_same_v<BaseComponent, T>,
-        "ComponentStorage<T>: T must inherit from BaseComponent."
-    );
+class ComponentStorage final : public IComponentStorage // Makes sure new componets derive from bas component class and stores them in a map
+{
+    static_assert(std::is_base_of_v<BaseComponent, T> && !std::is_same_v<BaseComponent, T>,
+        "ComponentStorage<T>: T must inherit from BaseComponent.");
 
 public:
     std::unordered_map<Entity, T> data;
 
-    void erase(Entity entity) override {
+    void erase(Entity entity) override
+    {
         data.erase(entity);
     }
 };
@@ -44,47 +37,39 @@ public:
 class Registry
 {
 private:
-    Entity nextEntity_ = 1;
+    Entity NEXT_ENTITY = 1;
 
-    std::vector<Entity> aliveEntities_;
+    std::vector<Entity> ALIVE_ENTITES;
 
-    std::unordered_map<std::type_index,
-        std::unique_ptr<IComponentStorage>
-    > componentStorages_;
+    std::unordered_map<std::type_index,std::unique_ptr<IComponentStorage>> COMPONENT_STORAGES;
 public:
-    Entity create() {
-        Entity entity = nextEntity_++;
-        aliveEntities_.push_back(entity);
+    Entity create() // Adds new entities and puts them into the vector
+    {
+        Entity entity = NEXT_ENTITY++;
+        ALIVE_ENTITES.push_back(entity);
         return entity;
     }
 
-    void destroy(Entity entity)
+    void destroy(Entity entity) // Destorys entities and all of its components
     {
-        aliveEntities_.erase(
-            std::remove(aliveEntities_.begin(), aliveEntities_.end(), entity),
-            aliveEntities_.end()
-        );
+        ALIVE_ENTITES.erase(std::remove(ALIVE_ENTITES.begin(), ALIVE_ENTITES.end(), entity),ALIVE_ENTITES.end());
 
-        for (auto& [type, storage] : componentStorages_) {
+        for (auto& [type, storage] : COMPONENT_STORAGES)
+        {
             (void)type;
-            storage->erase(entity);
+            storage -> erase(entity);
         }
     }
 
     template <typename T>
-    T& add(Entity entity, T component) {
-        static_assert(
-            std::is_base_of_v<BaseComponent, T> &&
-            !std::is_same_v<BaseComponent, T>,
-            "Registry::add<T>: T must inherit from BaseComponent."
-        );
+    T& add(Entity entity, T component)  // Adds components to exisiting eneitiies and also checks if compoennts are valid
+    {
+        static_assert(std::is_base_of_v<BaseComponent, T> && !std::is_same_v<BaseComponent, T>,
+            "Registry::add<T>: T must inherit from BaseComponent.");
 
         auto& components = getStorage<T>().data;
 
-        auto [it, inserted] = components.insert_or_assign(
-            entity,
-            std::move(component)
-        );
+        auto [it, inserted] = components.insert_or_assign(entity, std::move(component));
 
         (void)inserted;
 
@@ -92,12 +77,14 @@ public:
     }
 
     template <typename T>
-    T* get(Entity entity) {
+    T* get(Entity entity)   // Returns entities compoenet
+    {
         auto& components = getStorage<T>().data;
 
         auto it = components.find(entity);
 
-        if (it == components.end()) {
+        if (it == components.end())
+        {
             return nullptr;
         }
 
@@ -105,38 +92,40 @@ public:
     }
 
     template <typename T>
-    bool has(Entity entity) {
+    bool has(Entity entity)
+    {
         return get<T>(entity) != nullptr;
     }
 
     template <typename T>
-    void remove(Entity entity) {
+    void remove(Entity entity)
+    {
         getStorage<T>().data.erase(entity);
     }
 
     template <typename T>
-    std::unordered_map<Entity, T>& all() {
+    std::unordered_map<Entity, T>& all() // Returns all entities compoentns
+    {
         return getStorage<T>().data;
     }
 
 private:
     template <typename T>
-    ComponentStorage<T>& getStorage() {
-        static_assert(
-            std::is_base_of_v<BaseComponent, T> &&
-            !std::is_same_v<BaseComponent, T>,
-            "Registry component type T must inherit from BaseComponent."
-        );
+    ComponentStorage<T>& getStorage()
+    {
+        static_assert(std::is_base_of_v<BaseComponent, T> && !std::is_same_v<BaseComponent, T>,
+            "Registry component type T must inherit from BaseComponent.");
 
         std::type_index type = std::type_index(typeid(T));
 
-        auto it = componentStorages_.find(type);
+        auto it = COMPONENT_STORAGES.find(type);
 
-        if (it == componentStorages_.end()) {
+        if (it == COMPONENT_STORAGES.end())
+        {
             auto storage = std::make_unique<ComponentStorage<T>>();
             auto* rawStorage = storage.get();
 
-            componentStorages_.emplace(type, std::move(storage));
+            COMPONENT_STORAGES.emplace(type, std::move(storage));
 
             return *rawStorage;
         }

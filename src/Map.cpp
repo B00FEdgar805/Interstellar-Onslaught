@@ -1,16 +1,8 @@
-//
-//  Map.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/11/26.
-//
-
 #include "Map.hpp"
 #include "TextureManager.hpp"
 
 
-//int level[500];
-
+// Base map initilized to 0;
 int level1[20][25] = {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -37,13 +29,7 @@ int level1[20][25] = {
 
 Map::Map()
 {
-    /*
-    STARS = TextureManager::loadTexture("Assets/stars.png");
-    STAR = TextureManager::loadTexture("Assets/star.png");
-    PLANET = TextureManager::loadTexture("Assets/planet.png");
-    BLACKHOLE = TextureManager::loadTexture("Assets/blackhole2.png");
-    SPACE = TextureManager::loadTexture("Assets/space.png");
-    */
+    // Loads all map textures
     TextureManager::loadTexture("stars", "Assets/stars.png");
     TextureManager::loadTexture("star", "Assets/star.png");
     TextureManager::loadTexture("planet", "Assets/planet.png");
@@ -51,7 +37,7 @@ Map::Map()
     TextureManager::loadTexture("space", "Assets/space.png");
 
     
-    
+    // Initalizes all the tiles for the map
     loadMap(level1);
     SRC_RECT.x = 0;
     SRC_RECT.y = 0;
@@ -71,7 +57,7 @@ Map::Map()
     DEST_BLACKHOLE.h = 180;
 }
 
-void Map::loadMap(int arr[20][25])
+void Map::loadMap(int arr[20][25])  // Loads the map and also radomizes the tiles for the map
 {
     for (int r = 0; r < 20; r++)
     {
@@ -87,7 +73,7 @@ void Map::loadMap(int arr[20][25])
     }
 }
 
-void Map::drawMap()
+void Map::drawMap() // Takes in the loaded map and draws tile based on value given
 {
     int type = 0;
     
@@ -130,9 +116,6 @@ void Map::drawMap()
                     break;
                 default:
                     TextureManager::draw("space", SRC_RECT, DEST_RECT);
-                    //TextureManager::drawRotated(PLANET, SRC_RECT, DEST_RECT, 90.f);
-
-
                     break;
             }
              

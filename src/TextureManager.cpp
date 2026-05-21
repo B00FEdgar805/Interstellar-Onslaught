@@ -1,41 +1,8 @@
-//
-//  TextureManager.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/10/26.
-//
-
-//#include "TextureManager.hpp"
-/*
-SDL_Texture* TextureManager::loadTexture(const char* filepath)
-{
-    SDL_Surface* temp = IMG_Load(filepath);
-    if(temp == NULL)
-    {
-        SDL_Log("Error image not loaded ");
-        SDL_Log("%s" ,filepath);
-    }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::RENDERER, temp);
-    SDL_DestroySurface(temp);
-    return texture;
-}
-
-void TextureManager::draw(SDL_Texture* texture, SDL_FRect source, SDL_FRect destination)
-{
-    SDL_RenderTexture(Game::RENDERER, texture, &source, &destination);
-}
-
-void TextureManager::drawRotated(SDL_Texture* texture, SDL_FRect source, SDL_FRect destination, float angle)
-{
-    SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, angle, nullptr, SDL_FLIP_NONE);
-}
-*/
-
 #include "TextureManager.hpp"
 
-std::unordered_map<std::string, SDL_Texture*> TextureManager::textures;
+std::unordered_map<std::string, SDL_Texture*> TextureManager::TEXTURES; // Stores all loaded textures
 
-bool TextureManager::loadTexture(const std::string& id, const char* filepath)
+bool TextureManager::loadTexture(const std::string& id, const char* filepath)   // Creates and ID and stores texture for later use
 {
     SDL_Surface* temp = IMG_Load(filepath);
 
@@ -59,28 +26,28 @@ bool TextureManager::loadTexture(const std::string& id, const char* filepath)
 
     unloadTexture(id);
 
-    textures[id] = texture;
+    TEXTURES[id] = texture;
 
     return true;
 }
 
 SDL_Texture* TextureManager::getTexture(const std::string& id)
 {
-    auto it = textures.find(id);
+    auto it = TEXTURES.find(id);
 
-    if (it == textures.end())
+    if (it == TEXTURES.end())
     {
         return nullptr;
     }
 
-    return it->second;
+    return it -> second;
 }
 
 void TextureManager::unloadTexture(const std::string& id)
 {
-    auto it = textures.find(id);
+    auto it = TEXTURES.find(id);
 
-    if (it == textures.end())
+    if (it == TEXTURES.end())
     {
         return;
     }
@@ -90,12 +57,12 @@ void TextureManager::unloadTexture(const std::string& id)
         SDL_DestroyTexture(it->second);
     }
 
-    textures.erase(it);
+    TEXTURES.erase(it);
 }
 
-void TextureManager::clear()
+void TextureManager::clear()    // Unloads all textures
 {
-    for (auto& [id, texture] : textures)
+    for (auto& [id, texture] : TEXTURES)
     {
         (void)id;
 
@@ -105,14 +72,10 @@ void TextureManager::clear()
         }
     }
 
-    textures.clear();
+    TEXTURES.clear();
 }
 
-void TextureManager::draw(
-    const std::string& id,
-    SDL_FRect source,
-    SDL_FRect destination
-)
+void TextureManager::draw(const std::string& id, SDL_FRect source, SDL_FRect destination)
 {
     SDL_Texture* texture = getTexture(id);
 
@@ -130,12 +93,7 @@ void TextureManager::draw(
     );
 }
 
-void TextureManager::drawRotated(
-    const std::string& id,
-    SDL_FRect source,
-    SDL_FRect destination,
-    float angle
-)
+void TextureManager::drawRotated(const std::string& id, SDL_FRect source, SDL_FRect destination, float angle)
 {
     SDL_Texture* texture = getTexture(id);
 
@@ -144,14 +102,6 @@ void TextureManager::drawRotated(
         return;
     }
 
-    SDL_RenderTextureRotated(
-        Game::RENDERER,
-        texture,
-        &source,
-        &destination,
-        angle,
-        nullptr,
-        SDL_FLIP_NONE
-    );
+    SDL_RenderTextureRotated(Game::RENDERER, texture, &source, &destination, angle, nullptr, SDL_FLIP_NONE);
     
 }
