@@ -22,27 +22,26 @@ void Systems::playerInputSystem(Registry& registry)
 
         constexpr float speed = 220.0f;
 
-        velocity -> x = 0.0f;
-        velocity -> y = 0.0f;
+        velocity -> value = Vector2D(0.0f, 0.0f);
 
         if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
         {
-            velocity -> x -= speed;
+            velocity -> value.x -= speed;
         }
 
         if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
         {
-            velocity -> x += speed;
+            velocity -> value.x += speed;
         }
 
         if (keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_UP])
         {
-            velocity -> y -= speed;
+            velocity -> value.y -= speed;
         }
 
         if (keys[SDL_SCANCODE_S] || keys[SDL_SCANCODE_DOWN])
         {
-            velocity -> y += speed;
+            velocity -> value.y += speed;
         }
     }
 }
@@ -57,9 +56,9 @@ void Systems::movementSystem(Registry& registry, float deltaTime)
         {
             continue;
         }
-
-        transform -> x += velocity.x * deltaTime;
-        transform -> y += velocity.y * deltaTime;
+        
+        transform -> position += velocity.value.scale(deltaTime);
+        
     }
 }
 
@@ -74,8 +73,11 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer)  // Rende
             continue;
         }
 
-        sprite.x(transform -> x);
-        sprite.y(transform -> y);
+        //sprite.x(transform -> position.x);
+        //sprite.y(transform -> position.y);
+        
+        sprite.setPosition(transform -> position);
+        
         //SDL_Log("%f", transform -> x);
         //SDL_Log("%f", transform -> y);
 

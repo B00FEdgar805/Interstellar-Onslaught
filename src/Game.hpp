@@ -10,8 +10,6 @@ class Game
 {
 private:
     bool RUNNING;
-    //const int FPS = 60;
-    //const int FRAME_DELAY = 1000 / FPS;
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;

@@ -32,6 +32,7 @@ public:
         DESTINATION.w = w;
         DESTINATION.h = h;
     }
+    
     void x(int x)
     {
         DESTINATION.x = x;
@@ -40,6 +41,12 @@ public:
     void y(int y)
     {
         DESTINATION.y = y;
+    }
+    
+    void setPosition(const Vector2D& v)
+    {
+        DESTINATION.x = v.x;
+        DESTINATION.y = v.y;
     }
     
     void draw() // Called by Systems to draw sprite

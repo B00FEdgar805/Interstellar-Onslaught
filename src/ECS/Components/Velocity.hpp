@@ -6,13 +6,21 @@
 class Velocity final : public BaseComponent
 {
 public:
-    float x = 0.0f;
-    float y = 0.0f;
+    Vector2D value;
     
     Velocity() = default;
-
-    Velocity(float x, float y)  // Sets x and y velocity for entity
-        : x(x), y(y) {
+    
+    // Velocity(float x, float y)  // Sets x and y velocity for entity
+    //   : x(x), y(y) {}
+    Velocity(float x, float y)
+    {
+        value.x = x;
+        value.y = y;
+    }
+    
+    Velocity(const Vector2D& v)
+    {
+        value = v;
     }
 };
 #endif /* Velocity_hpp */

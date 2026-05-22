@@ -74,7 +74,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     TextureManager::loadTexture("player", "Assets/Spaceship.png");
     registry.add(player, Sprite("player"));
-    registry.add(player, Transform(100.0f, 100.0f));
+    registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
     registry.add(player, Velocity());
     registry.add(player, PlayerControl());
 
@@ -100,7 +100,7 @@ int Game::run()
         handleEvents(); // Handles user inputes
         render();   // Handles any rendering
         update();   // Handlers movemnts systems
-       // UpdateFPSCounter(DELTA_TIME);
+        //UpdateFPSCounter(DELTA_TIME);
     }
     
     clean();    // Called when program ends to close safley
