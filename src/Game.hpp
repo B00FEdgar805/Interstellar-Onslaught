@@ -1,26 +1,20 @@
-//
-//  Game.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 2/25/26.
-//
-
 #ifndef Game_hpp
 #define Game_hpp
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <random>
+#include <chrono>
 
 class Game
 {
 private:
     bool RUNNING;
-    const int FPS = 60;
-    const int FRAME_DELAY = 1000 / FPS;
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;
-    SDL_Renderer *RENDERER;
+    float DELTA_TIME;
+   
     
 public:
     Game();
@@ -32,6 +26,8 @@ public:
     void render();
     void clean();
     bool isRunning();
+    static void UpdateFPSCounter(float deltaTime);
+    static SDL_Renderer *RENDERER;
     
 };
 
