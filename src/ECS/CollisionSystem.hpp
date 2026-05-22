@@ -1,0 +1,25 @@
+#ifndef CollisionSystem_hpp
+#define CollisionSystem_hpp
+
+#include "Registry.hpp"
+#include "Types.hpp"
+#include "Math.hpp"
+
+struct CollisionEvent
+{
+    Entity a = 0;
+    Entity b = 0;
+
+    // Direction to move entity A out of entity B.
+    Vector2D normal{0.0f, 0.0f};
+
+    // How far A overlaps B.
+    float depth = 0.0f;
+
+    bool isTrigger = false;
+};
+
+std::vector<CollisionEvent> collisionSystem(Registry& registry,bool resolveSolidCollisions = true);
+
+
+#endif /* CollisionSystem_hpp */

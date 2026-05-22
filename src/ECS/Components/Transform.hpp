@@ -11,8 +11,6 @@ public:
     
     Transform() = default;
 
-    //Transform(float x, float y) // Sets x and y for enetity
-      //  : x(x), y(y) {}
     Transform(float x, float y)
     {
         position.x = x;

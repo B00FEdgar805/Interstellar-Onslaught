@@ -5,6 +5,8 @@
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Components/PlayerControl.hpp"
+#include "ECS/Components/BoxCollider.hpp"
+#include "ECS/CollisionSystem.hpp"
 #include "ECS/Systems.hpp"
 #include "ECS/Registry.hpp"
 
@@ -72,11 +74,24 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     map = new Map();
     
+    Entity coin = registry.create();
+
+    registry.add(coin, Transform(500.0f, 300.0f));
+    registry.add(coin, Sprite("player"));
+    registry.add(coin, BoxCollider(
+        Vector2D(32.0f, 32.0f),
+        Vector2D(0.0f, 0.0f),
+        false,     // isTrigger
+        true,     // isStatic
+        "coin"
+    ));
+    
     TextureManager::loadTexture("player", "Assets/Spaceship.png");
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
     registry.add(player, Velocity());
     registry.add(player, PlayerControl());
+    registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
 
 }
 
@@ -98,8 +113,8 @@ int Game::run()
         }
 
         handleEvents(); // Handles user inputes
-        render();   // Handles any rendering
         update();   // Handlers movemnts systems
+        render();   // Handles any rendering
         //UpdateFPSCounter(DELTA_TIME);
     }
     
@@ -132,6 +147,31 @@ void Game::handleEvents()
 
 void Game::update()
 {
+   // collisionSystem(registry);
+    std::vector<CollisionEvent> collisions = collisionSystem(registry);
+
+    for (const CollisionEvent& collision : collisions)
+    {
+        BoxCollider* a = registry.get<BoxCollider>(collision.a);
+        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+
+        if (a == nullptr || b == nullptr)
+        {
+            continue;
+        }
+
+        if (
+            collision.isTrigger &&
+            (
+                (a->tag == "player" && b->tag == "coin") ||
+                (a->tag == "coin" && b->tag == "player")
+            )
+        )
+        {
+            SDL_Log("Player touched coin!");
+        }
+    }
+    
     systems.movementSystem(registry, DELTA_TIME);
 }
 

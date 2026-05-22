@@ -10,8 +10,6 @@ public:
     
     Velocity() = default;
     
-    // Velocity(float x, float y)  // Sets x and y velocity for entity
-    //   : x(x), y(y) {}
     Velocity(float x, float y)
     {
         value.x = x;
