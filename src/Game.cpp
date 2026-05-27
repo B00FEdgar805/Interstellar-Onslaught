@@ -6,9 +6,11 @@
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Components/PlayerControl.hpp"
 #include "ECS/Components/BoxCollider.hpp"
+#include "ECS/Components/TileMap.hpp"
 #include "ECS/CollisionSystem.hpp"
 #include "ECS/Systems.hpp"
 #include "ECS/Registry.hpp"
+#include "ECS/TileSystem.hpp"
 
 // Init ECS system
 
@@ -75,23 +77,41 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     map = new Map();
     
     Entity coin = registry.create();
+    
+    TextureManager::loadTexture("player", "Assets/Spaceship.png");
+    TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
+    TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
 
-    registry.add(coin, Transform(500.0f, 300.0f));
-    registry.add(coin, Sprite("player"));
+    registry.add(coin, Transform(240.0f, 230.0f));
+    registry.add(coin, Sprite("Blackhole"));
     registry.add(coin, BoxCollider(
-        Vector2D(32.0f, 32.0f),
+        Vector2D(320.0f, 180.0f),
         Vector2D(0.0f, 0.0f),
         false,     // isTrigger
         true,     // isStatic
         "coin"
     ));
     
-    TextureManager::loadTexture("player", "Assets/Spaceship.png");
+    
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
     registry.add(player, Velocity());
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    Entity level = registry.create();
+
+    registry.add(level, Transform(0.0f, 0.0f));
+
+    TileMap levelMap = Map::loadFromFile(
+        "Assets/Maps/Level1.txt",
+        "Level1",
+        32,     // tile size in the tileset image
+        2,      // how many columns the tileset has
+        1.0f,   // scale: 32px tiles become 64px on screen
+        0      // empty tile value
+    );
+
+    registry.add(level, levelMap);
 
 }
 
@@ -186,7 +206,8 @@ void Game::render()
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
-    map -> drawMap();
+    //map -> drawMap();
+    RenderTileMap(registry);
     systems.renderSystem(registry, RENDERER);
 
     SDL_RenderPresent(RENDERER);

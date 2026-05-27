@@ -2,7 +2,6 @@
 #define Transform_hpp
 
 #include "Component.hpp"
-//#include "../../Math.hpp"
 
 class Transform final : public BaseComponent 
 {
