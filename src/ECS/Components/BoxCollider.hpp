@@ -35,8 +35,7 @@ public:
           isTrigger(isTrigger),
           isStatic(isStatic),
           tag(std::move(tag))
-    {
-    }
+    {}
 };
 
 

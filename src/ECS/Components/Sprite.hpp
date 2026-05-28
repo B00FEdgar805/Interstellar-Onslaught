@@ -25,6 +25,19 @@ public:
         DESTINATION.y = 0;
     }
     
+    Sprite(const std::string &textureID,const Vector2D& size)
+    {
+        TEXTURE_ID = textureID;
+        SOURCE.x = 0;
+        SOURCE.y = 0;
+        SOURCE.w = size.x;
+        SOURCE.h = size.y;
+        DESTINATION.w = size.x;
+        DESTINATION.h = size.y;
+        DESTINATION.x = 0;
+        DESTINATION.y = 0;
+    }
+    
     virtual ~Sprite(){}
     
     void setSize(int w, int h)
@@ -47,6 +60,12 @@ public:
     {
         DESTINATION.x = v.x;
         DESTINATION.y = v.y;
+    }
+    
+    void Animate(float delta, int speed, int frames)
+    {
+        int frame = static_cast<int>(delta / speed) % frames;
+        SOURCE.x = SOURCE.w * frame;
     }
     
     void draw() // Called by Systems to draw sprite

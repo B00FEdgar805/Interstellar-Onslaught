@@ -32,7 +32,6 @@ public:
 
     std::vector<int> tiles;
 
-public:
     TileMap() = default;
 
     TileMap(
@@ -44,8 +43,7 @@ public:
           tilesetColumns(tilesetColumns),
           scale(scale),
           emptyTile(emptyTile)
-    {
-    }
+    {}
 
     bool isValid() const
     {

@@ -3,6 +3,7 @@
 #include "Components/Velocity.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Animation.hpp"
 
 
 void Systems::playerInputSystem(Registry& registry)
@@ -67,7 +68,9 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer)  // Rende
     for (auto& [entity, sprite] : registry.all<Sprite>())
     {
         Transform* transform = registry.get<Transform>(entity);
-
+        Animation* animation = registry.get<Animation>(entity);
+        
+        
         if (!transform)
         {
             continue;
@@ -80,7 +83,11 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer)  // Rende
         
         //SDL_Log("%f", transform -> x);
         //SDL_Log("%f", transform -> y);
-
+        if (animation)
+        {
+            sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
+            //SDL_Log("Working");
+        }
         
         sprite.draw();
         //SDL_Log("Render system working");

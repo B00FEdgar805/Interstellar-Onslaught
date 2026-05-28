@@ -7,6 +7,7 @@
 #include "ECS/Components/PlayerControl.hpp"
 #include "ECS/Components/BoxCollider.hpp"
 #include "ECS/Components/TileMap.hpp"
+#include "ECS/Components/Animation.hpp"
 #include "ECS/CollisionSystem.hpp"
 #include "ECS/Systems.hpp"
 #include "ECS/Registry.hpp"
@@ -76,20 +77,20 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     map = new Map();
     
-    Entity coin = registry.create();
+    Entity blackhole = registry.create();
     
-    TextureManager::loadTexture("player", "Assets/Spaceship.png");
+    TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
 
-    registry.add(coin, Transform(240.0f, 230.0f));
-    registry.add(coin, Sprite("Blackhole"));
-    registry.add(coin, BoxCollider(
+    registry.add(blackhole, Transform(260.0f, 230.0f));
+    registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f)));
+    registry.add(blackhole, BoxCollider(
         Vector2D(320.0f, 180.0f),
         Vector2D(0.0f, 0.0f),
         false,     // isTrigger
         true,     // isStatic
-        "coin"
+        "blackhole"
     ));
     
     
@@ -98,6 +99,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     registry.add(player, Velocity());
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    registry.add(player, Animation(DELTA_TIME, 3, 150));
     Entity level = registry.create();
 
     registry.add(level, Transform(0.0f, 0.0f));
@@ -183,12 +185,12 @@ void Game::update()
         if (
             collision.isTrigger &&
             (
-                (a->tag == "player" && b->tag == "coin") ||
-                (a->tag == "coin" && b->tag == "player")
+                (a->tag == "player" && b->tag == "blackhole") ||
+                (a->tag == "blackhole" && b->tag == "player")
             )
         )
         {
-            SDL_Log("Player touched coin!");
+            SDL_Log("Player touched blackhole!");
         }
     }
     
