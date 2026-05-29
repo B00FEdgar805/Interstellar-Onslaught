@@ -47,6 +47,9 @@ void Systems::playerInputSystem(Registry& registry)
     }
 }
 
+
+
+
 void Systems::movementSystem(Registry& registry, float deltaTime)
 {
     for (auto& [entity, velocity] : registry.all<Velocity>())
@@ -63,7 +66,7 @@ void Systems::movementSystem(Registry& registry, float deltaTime)
     }
 }
 
-void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer)  // Renders every entity that has a sprite
+void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
 {
     for (auto& [entity, sprite] : registry.all<Sprite>())
     {
@@ -75,11 +78,21 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer)  // Rende
         {
             continue;
         }
+        
+        SDL_FRect worldDestination;
+        worldDestination.x = transform -> position.x;
+        worldDestination.y = transform -> position.y;
+        worldDestination.w = sprite.w();
+        worldDestination.h = sprite.h();
+        
+        SDL_FRect screenDestination = camera.worldToScreenRect(worldDestination);
 
         //sprite.x(transform -> position.x);
         //sprite.y(transform -> position.y);
         
-        sprite.setPosition(transform -> position);
+       // sprite.setPosition(transform -> position);
+        
+        sprite.setRect(screenDestination);
         
         //SDL_Log("%f", transform -> x);
         //SDL_Log("%f", transform -> y);

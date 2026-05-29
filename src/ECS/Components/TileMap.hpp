@@ -19,6 +19,7 @@ class TileMap final : public BaseComponent
 {
 public:
     std::string textureId;
+    Vector2D position;
 
     int mapWidth = 0;
     int mapHeight = 0;

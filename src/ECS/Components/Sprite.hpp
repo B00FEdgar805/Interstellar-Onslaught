@@ -56,10 +56,35 @@ public:
         DESTINATION.y = y;
     }
     
+    int x()
+    {
+        return DESTINATION.x;
+    }
+    
+    int y()
+    {
+        return DESTINATION.y;
+    }
+    
+    int w()
+    {
+        return DESTINATION.w;
+    }
+    
+    int h()
+    {
+        return DESTINATION.h;
+    }
+    
     void setPosition(const Vector2D& v)
     {
         DESTINATION.x = v.x;
         DESTINATION.y = v.y;
+    }
+    
+    void setRect(SDL_FRect rect)
+    {
+        DESTINATION = rect;
     }
     
     void Animate(float delta, int speed, int frames)
