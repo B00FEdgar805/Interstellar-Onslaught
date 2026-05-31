@@ -7,8 +7,12 @@
 
 #include <SDL3/SDL.h>
 
-struct Systems
+class Systems
 {
+private:
+    float angle = 0.0f;
+    
+public:
     void playerInputSystem(Registry& registry);
         
     void movementSystem(Registry& registry, float deltaTime);

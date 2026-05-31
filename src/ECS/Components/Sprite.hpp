@@ -98,6 +98,13 @@ public:
         TextureManager::draw(TEXTURE_ID, SOURCE, DESTINATION);
        // SDL_Log("Sprite drawing");
     }
+    
+    void draw(float angle) // Called by Systems to draw sprite
+    {
+        //TextureManager::draw(TEXTURE_ID, SOURCE, DESTINATION);
+        TextureManager::drawRotated(TEXTURE_ID, SOURCE, DESTINATION, angle);
+       // SDL_Log("Sprite drawing");
+    }
 };
 
 #endif /* Sprite_hpp */

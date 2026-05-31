@@ -22,7 +22,7 @@ Registry registry;
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
-Camera2D camera(800.0f, 600.0f);
+Camera2D camera(800.0f, 640.0f);
 
 
 Game::Game()
@@ -87,7 +87,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
 
-    registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(260.0f, 230.0f))));
+    registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
         Vector2D(320.0f, 180.0f).scale(2),

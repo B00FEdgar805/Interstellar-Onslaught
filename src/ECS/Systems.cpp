@@ -27,23 +27,54 @@ void Systems::playerInputSystem(Registry& registry)
 
         if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
         {
-            velocity -> value.x -= speed;
+            velocity -> value.x -= 1.0f;
+            angle = 270.0f;
         }
 
         if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
         {
-            velocity -> value.x += speed;
+            velocity -> value.x += 1.0f;
+            angle = 90.0f;
         }
 
         if (keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_UP])
         {
-            velocity -> value.y -= speed;
+            velocity -> value.y -= 1.0f;
+            angle = 0.0f;
         }
 
         if (keys[SDL_SCANCODE_S] || keys[SDL_SCANCODE_DOWN])
         {
-            velocity -> value.y += speed;
+            velocity -> value.y += 1.0f;
+            angle = 180.0f;
         }
+        
+        if (velocity -> value.y != 0 && velocity -> value.x != 0)
+        {
+            velocity -> value.normalize();
+            if (velocity -> value.y < 0 && velocity -> value.x < 0)
+            {
+                angle = 315.0f;
+            }
+            else if (velocity -> value.y > 0 && velocity -> value.x < 0)
+            {
+                angle = 225.0f;
+            }
+            else if (velocity -> value.y > 0 && velocity -> value.x > 0)
+            {
+                angle = 135.0f;
+            }
+            else if (velocity -> value.y < 0 && velocity -> value.x > 0)
+            {
+                angle = 45.0f;
+            }
+        }
+        
+        velocity -> value.scale(speed);
+        
+        //SDL_Log("X %f", velocity -> value.x);
+        //SDL_Log("Y %f", velocity -> value.y);
+
     }
 }
 
@@ -72,6 +103,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
     {
         Transform* transform = registry.get<Transform>(entity);
         Animation* animation = registry.get<Animation>(entity);
+        PlayerControl* controlled = registry.get<PlayerControl>(entity);
         
         
         if (!transform)
@@ -96,13 +128,24 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
         //SDL_Log("%f", transform -> x);
         //SDL_Log("%f", transform -> y);
+        
+        
+        
         if (animation)
         {
             sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
             //SDL_Log("Working");
         }
         
-        sprite.draw();
+        if(controlled)
+        {
+            sprite.draw(angle);
+        }
+        else
+        {
+            sprite.draw();
+        }
+        
         //SDL_Log("Render system working");
         
     }

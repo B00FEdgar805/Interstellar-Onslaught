@@ -87,12 +87,7 @@ void TextureManager::draw(const std::string& id, SDL_FRect source, SDL_FRect des
         return;
     }
 
-    SDL_RenderTexture(
-        Game::RENDERER,
-        texture,
-        &source,
-        &destination
-    );
+    SDL_RenderTexture(Game::RENDERER, texture, &source, &destination);
 }
 
 void TextureManager::drawRotated(const std::string& id, SDL_FRect source, SDL_FRect destination, float angle)

@@ -59,6 +59,18 @@ Vector2D& Vector2D::scale(float scaler)
     return *this;
 }
 
+Vector2D& Vector2D::normalize()
+{
+    float l = std::sqrt((this -> x * this -> x) + (this -> y * this -> y));
+   // v.x /= l;
+    //v.y /= l;
+    this -> x /= l;
+    this -> y /= l;
+    
+    return *this;
+}
+
+
 Vector2D& operator+(Vector2D& v1, const Vector2D& v2)
 {
     return v1.add(v2);

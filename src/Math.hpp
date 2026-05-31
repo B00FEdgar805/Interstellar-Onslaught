@@ -9,6 +9,7 @@
 #define Math_hpp
 
 #include <iostream>
+#include <math.h>
 
 struct Vector2D
 {
@@ -22,6 +23,7 @@ struct Vector2D
     Vector2D& mutiplie(const Vector2D& v);
     Vector2D& divide(const Vector2D& v);
     Vector2D& scale(float scaler);
+    Vector2D& normalize();
     
     friend Vector2D& operator+(Vector2D& v1, const Vector2D& v2);
     friend Vector2D& operator-(Vector2D& v1, const Vector2D& v2);
