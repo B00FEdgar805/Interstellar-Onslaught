@@ -7,7 +7,6 @@ class BaseComponent
 {
 public:
     virtual ~BaseComponent() = default;
-
 };
 
 #endif /* Component_hpp */

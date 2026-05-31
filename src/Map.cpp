@@ -1,126 +1,77 @@
 #include "Map.hpp"
-#include "TextureManager.hpp"
 
 
-// Base map initilized to 0;
-int level1[20][25] = {
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-
-};
-
-Map::Map()
+TileMap Map::loadFromFile(const std::string& filepath, const std::string& textureId, int tileSize, int tilesetColumns, float scale, int emptyTile)
 {
-    // Loads all map textures
-    TextureManager::loadTexture("stars", "Assets/stars.png");
-    TextureManager::loadTexture("star", "Assets/star.png");
-    TextureManager::loadTexture("planet", "Assets/planet.png");
-    TextureManager::loadTexture("blackhole", "Assets/blackhole2.png");
-    TextureManager::loadTexture("space", "Assets/space.png");
+    std::ifstream file(filepath);
 
-    
-    // Initalizes all the tiles for the map
-    loadMap(level1);
-    SRC_RECT.x = 0;
-    SRC_RECT.y = 0;
-    SRC_RECT.w = 32;
-    SRC_RECT.h = 32;
-    DEST_RECT.w = 32;
-    DEST_RECT.h = 32;
-    DEST_RECT.x = 0;
-    DEST_RECT.y = 0;
-    SRC_BLACKHOLE.x = 0;
-    SRC_BLACKHOLE.y = 0;
-    SRC_BLACKHOLE.w = 320;
-    SRC_BLACKHOLE.h = 180;
-    DEST_BLACKHOLE.x = 240;
-    DEST_BLACKHOLE.y = 0;
-    DEST_BLACKHOLE.w = 320;
-    DEST_BLACKHOLE.h = 180;
-}
-
-void Map::loadMap(int arr[20][25])  // Loads the map and also radomizes the tiles for the map
-{
-    for (int r = 0; r < 20; r++)
+    if (!file.is_open())
     {
-        for (int c = 0; c < 25; c++)
-        {
-            //MAP[r][c] = arr[r][c];
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_int_distribution<> distr(0, 50);
-            MAP[r][c] = distr(gen);
-            
-        }
+        SDL_Log("Failed to open tile map file: %s", filepath.c_str());
+        return TileMap();
     }
-}
 
-void Map::drawMap() // Takes in the loaded map and draws tile based on value given
-{
-    int type = 0;
-    
-    for (int r = 0; r < 20; r++)
+    std::vector<int> tiles;
+
+    int mapWidth = 0;
+    int mapHeight = 0;
+
+    std::string line;
+    int lineNumber = 0;
+
+    while (std::getline(file, line))
     {
-        for (int c = 0; c < 25; c++)
+        lineNumber++;
+
+        // Allow both "1 2 3" and "1,2,3".
+        std::replace(line.begin(), line.end(), ',', ' ');
+
+        std::istringstream stream(line);
+
+        std::vector<int> row;
+        int tileId = 0;
+
+        while (stream >> tileId)
         {
-            type = MAP[r][c];
-            DEST_RECT.x = c * 32;
-            DEST_RECT.y = r * 32;
-            
-            switch (type)
-            {
-                case 0:
-                    TextureManager::draw("stars", SRC_RECT, DEST_RECT);
-                    break;
-                case 1:
-                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 90.f);
-                    break;
-                case 2:
-                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 180.f);
-                    break;
-                case 3:
-                    TextureManager::drawRotated("stars", SRC_RECT, DEST_RECT, 270.f);
-                    break;
-                case 4:
-                    TextureManager::draw("star", SRC_RECT, DEST_RECT);
-                    break;
-                case 5:
-                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 90.f);
-                    break;
-                case 6:
-                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 180.f);
-                    break;
-                case 7:
-                    TextureManager::drawRotated("star", SRC_RECT, DEST_RECT, 270.f);
-                    break;
-                case 8:
-                    TextureManager::draw("planet", SRC_RECT, DEST_RECT);
-                    break;
-                default:
-                    TextureManager::draw("space", SRC_RECT, DEST_RECT);
-                    break;
-            }
-             
+            row.push_back(tileId);
         }
+
+        // Skip empty lines.
+        if (row.empty())
+        {
+            continue;
+        }
+
+        if (mapWidth == 0)
+        {
+            mapWidth = static_cast<int>(row.size());
+        }
+        else if (static_cast<int>(row.size()) != mapWidth)
+        {
+            SDL_Log(
+                "Tile map error in %s at line %d: expected %d tiles, got %d.",
+                filepath.c_str(),
+                lineNumber,
+                mapWidth,
+                static_cast<int>(row.size())
+            );
+
+            return TileMap();
+        }
+
+        tiles.insert(tiles.end(), row.begin(), row.end());
+        mapHeight++;
     }
-    
-    TextureManager::draw("blackhole", SRC_BLACKHOLE, DEST_BLACKHOLE);
+
+    TileMap tileMap(textureId, mapWidth, mapHeight, tileSize, tilesetColumns, scale, emptyTile);
+
+    tileMap.tiles = std::move(tiles);
+
+    if (!tileMap.isValid())
+    {
+        SDL_Log("Tile map failed validation: %s", filepath.c_str());
+        return TileMap();
+    }
+
+    return tileMap;
 }

@@ -1,19 +1,21 @@
 #ifndef Map_hpp
 #define Map_hpp
 
-#include "Game.hpp"
+#include "ECS/Components/TileMap.hpp"
 
+#include <SDL3/SDL.h>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
-class Map
+struct Map
 {
-private:
-    SDL_FRect SRC_RECT, DEST_RECT, SRC_BLACKHOLE, DEST_BLACKHOLE;
-    int MAP[20][25];
-public:
-    Map();
-    ~Map();
-    void loadMap(int arr[20][25]);
-    void drawMap();
+
+    static TileMap loadFromFile(const std::string& filepath, const std::string& textureId,int tileSize, int tilesetColumns, float scale = 1.0f, int emptyTile = 0);
 };
+
 
 #endif /* Map_hpp */

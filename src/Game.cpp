@@ -5,16 +5,24 @@
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Components/PlayerControl.hpp"
+#include "ECS/Components/BoxCollider.hpp"
+#include "ECS/Components/TileMap.hpp"
+#include "ECS/Components/Animation.hpp"
+#include "ECS/CollisionSystem.hpp"
 #include "ECS/Systems.hpp"
 #include "ECS/Registry.hpp"
+#include "ECS/TileSystem.hpp"
+#include "ECS/Camera.hpp"
 
 // Init ECS system
 
 SDL_Renderer* Game::RENDERER = nullptr;
 Map* map;
 Registry registry;
-Entity player = registry.create();;
+Entity player = registry.create();
+Entity level = registry.create();
 Systems systems;
+Camera2D camera(800.0f, 640.0f);
 
 
 Game::Game()
@@ -65,6 +73,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
     
     RUNNING = true;
     
@@ -72,11 +81,42 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     map = new Map();
     
-    TextureManager::loadTexture("player", "Assets/Spaceship.png");
+    Entity blackhole = registry.create();
+    
+    TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
+    TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
+    TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+
+    registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
+    registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
+    registry.add(blackhole, BoxCollider(
+        Vector2D(320.0f, 180.0f).scale(2),
+        Vector2D(0.0f, 0.0f),
+        false,     // isTrigger
+        true,     // isStatic
+        "blackhole"
+    ));
+    
+    
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
     registry.add(player, Velocity());
     registry.add(player, PlayerControl());
+    registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    registry.add(player, Animation(DELTA_TIME, 3, 150));
+
+    registry.add(level, Transform(0.0f, 0.0f));
+
+    TileMap levelMap = Map::loadFromFile(
+        "Assets/Maps/Level1.txt",
+        "Level1",
+        32,     // tile size in the tileset image
+        2,      // how many columns the tileset has
+        2.0f,   // scale: 32px tiles become 64px on screen
+        0      // empty tile value
+    );
+
+    registry.add(level, levelMap);
 
 }
 
@@ -98,8 +138,8 @@ int Game::run()
         }
 
         handleEvents(); // Handles user inputes
-        render();   // Handles any rendering
         update();   // Handlers movemnts systems
+        render();   // Handles any rendering
         //UpdateFPSCounter(DELTA_TIME);
     }
     
@@ -132,7 +172,46 @@ void Game::handleEvents()
 
 void Game::update()
 {
+   // need to make function for game logic
+    std::vector<CollisionEvent> collisions = collisionSystem(registry);
+    // Collisions events
+    for (const CollisionEvent& collision : collisions)
+    {
+        BoxCollider* a = registry.get<BoxCollider>(collision.a);
+        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+
+        if (a == nullptr || b == nullptr)
+        {
+            continue;
+        }
+
+        if (
+            collision.isTrigger &&
+            (
+                (a->tag == "player" && b->tag == "blackhole") ||
+                (a->tag == "blackhole" && b->tag == "player")
+            )
+        )
+        {
+            SDL_Log("Player touched blackhole!");
+        }
+    }
+    
     systems.movementSystem(registry, DELTA_TIME);
+    
+    // camera systems
+    
+    Transform* player_transform = registry.get<Transform>(player);
+    if (player_transform)
+    {
+        camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
+    }
+    
+    TileMap* tilemap = registry.get<TileMap>(level);
+    if(tilemap)
+    {
+        camera.clampToWorld(tilemap -> mapWidth * tilemap -> worldTileSize(), tilemap -> mapHeight * tilemap -> worldTileSize());
+    }
 }
 
 void Game::render()
@@ -146,8 +225,9 @@ void Game::render()
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
-    map -> drawMap();
-    systems.renderSystem(registry, RENDERER);
+    //map -> drawMap();
+    RenderTileMap(registry, camera);
+    systems.renderSystem(registry, RENDERER, camera);
 
     SDL_RenderPresent(RENDERER);
 }

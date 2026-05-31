@@ -2,15 +2,22 @@
 #define Systems_hpp
 
 #include "Registry.hpp"
+#include "Camera.hpp"
+
 
 #include <SDL3/SDL.h>
 
-struct Systems
+class Systems
 {
-    void playerInputSystem(Registry& registry);
+private:
+    float angle = 0.0f;
     
+public:
+    void playerInputSystem(Registry& registry);
+        
     void movementSystem(Registry& registry, float deltaTime);
     
-    void renderSystem(Registry& registry, SDL_Renderer* renderer);
+    void renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera);
+    
 };
 #endif /* Systems_hpp */
