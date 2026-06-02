@@ -1,10 +1,3 @@
-//
-//  Math.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/21/26.
-//
-
 #include "Math.hpp"
 
 Vector2D::Vector2D()

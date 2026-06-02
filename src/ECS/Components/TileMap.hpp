@@ -1,10 +1,3 @@
-//
-//  TileMap.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/27/26.
-//
-
 #ifndef TileMap_hpp
 #define TileMap_hpp
 

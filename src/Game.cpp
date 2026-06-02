@@ -13,6 +13,7 @@
 #include "ECS/Registry.hpp"
 #include "ECS/TileSystem.hpp"
 #include "ECS/Camera.hpp"
+#include "ECS/ProjectileSystem.hpp"
 
 // Init ECS system
 
@@ -22,6 +23,8 @@ Registry registry;
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
+ProjectileSystem projectiles;
+bool fire = true;
 Camera2D camera(800.0f, 640.0f);
 
 
@@ -86,6 +89,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+    TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
 
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -100,7 +104,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(player, Velocity());
+    registry.add(player, Velocity(220.0f));
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
     registry.add(player, Animation(DELTA_TIME, 3, 150));
@@ -198,6 +202,14 @@ void Game::update()
     }
     
     systems.movementSystem(registry, DELTA_TIME);
+    projectiles.projectilesCollisons(registry, collisions);
+    projectiles.projectileSystem(registry, DELTA_TIME);
+
+    if (fire)
+    {
+        projectiles.createProjectile(registry, player, Vector2D(150.0f, 150.0f), Vector2D(0.0f, 1.0f).normalize(), 150.0f);
+        fire = false;
+    }
     
     // camera systems
     

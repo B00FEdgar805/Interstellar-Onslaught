@@ -1,10 +1,3 @@
-//
-//  Math.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/21/26.
-//
-
 #ifndef Math_hpp
 #define Math_hpp
 

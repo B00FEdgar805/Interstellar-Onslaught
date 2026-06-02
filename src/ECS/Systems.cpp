@@ -21,7 +21,7 @@ void Systems::playerInputSystem(Registry& registry)
             continue;
         }
 
-        constexpr float speed = 220.0f;
+        //constexpr float speed = 220.0f;
 
         velocity -> value = Vector2D(0.0f, 0.0f);
 
@@ -70,7 +70,7 @@ void Systems::playerInputSystem(Registry& registry)
             }
         }
         
-        velocity -> value.scale(speed);
+        //velocity -> value.scale(speed);
         
         //SDL_Log("X %f", velocity -> value.x);
         //SDL_Log("Y %f", velocity -> value.y);
@@ -81,18 +81,30 @@ void Systems::playerInputSystem(Registry& registry)
 
 
 
-void Systems::movementSystem(Registry& registry, float deltaTime)
+void Systems::movementSystem(Registry& registry, float delta_time)
 {
     for (auto& [entity, velocity] : registry.all<Velocity>())
     {
         Transform* transform = registry.get<Transform>(entity);
-
+        //velocity.value.scale(velocity.m_speed);
+        
         if (!transform)
         {
             continue;
         }
         
-        transform -> position += velocity.value.scale(deltaTime);
+        transform -> position += velocity.value.scale(delta_time * velocity.m_speed);
+        
+       // Vector2D delta = velocity.value;
+        //delta.scale(delta_time * velocity.m_speed);
+        //transform->position += delta;
+        
+        //SDL_Log("X: %f", velocity.value.x);
+        //SDL_Log("Y: %f", velocity.value.y);
+        
+        //SDL_Log("X: %f", transform -> position.x);
+        //SDL_Log("Y: %f", transform -> position.y);
+
         
     }
 }

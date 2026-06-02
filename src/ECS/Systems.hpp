@@ -11,11 +11,12 @@ class Systems
 {
 private:
     float angle = 0.0f;
+    //float speed = 220.0f;
     
 public:
     void playerInputSystem(Registry& registry);
         
-    void movementSystem(Registry& registry, float deltaTime);
+    void movementSystem(Registry& registry, float delta_time);
     
     void renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera);
     

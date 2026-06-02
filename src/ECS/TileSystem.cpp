@@ -1,10 +1,3 @@
-//
-//  TileSystem.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/27/26.
-//
-
 #include "TileSystem.hpp"
 #include "../TextureManager.hpp"
 #include "Components/TileMap.hpp"

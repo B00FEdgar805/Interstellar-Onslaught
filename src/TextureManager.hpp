@@ -15,6 +15,7 @@ public:
     static SDL_Texture* getTexture(const std::string& id);
     static void unloadTexture(const std::string& id);
     static void clear();
+    static void drawRect(SDL_FRect source,SDL_FRect destination);
     static void draw(const std::string& id,SDL_FRect source,SDL_FRect destination);
     static void drawRotated(const std::string& id, SDL_FRect source,SDL_FRect destination, float angle);
 };

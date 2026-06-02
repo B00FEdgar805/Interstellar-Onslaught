@@ -1,10 +1,3 @@
-//
-//  Animation.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/27/26.
-//
-
 #ifndef Animation_hpp
 #define Animation_hpp
 
