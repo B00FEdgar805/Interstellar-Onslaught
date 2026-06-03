@@ -15,9 +15,9 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
     {
         projectile.addDistance(delta_time); // Keeps track of distance of projectile
         Velocity* velocity = registry.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
-        velocity -> value = Vector2D(0.0f, 0.0f);
-        velocity -> value += DIRECTION;
-        
+        velocity -> value.zero();
+        velocity -> value += velocity -> direction;
+        //SDL_Log("%f", velocity -> directionToDegrees());
         if (projectile.hasExpired())
         {
             //SDL_Log("Dead");
@@ -35,16 +35,18 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
 Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed)
 {
     Entity projectile = registry.create();
-    DIRECTION = direction;
+    //DIRECTION = direction;
     
     registry.add(projectile, Transform(position));
     registry.add(projectile, Velocity(direction, speed));
-    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE));
+    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE, owner));
     registry.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
     registry.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
     
     //SDL_Log("created projectile");
-    
+    Velocity* velocity = registry.get<Velocity>(projectile);
+    velocity -> direction = direction;
+    velocity -> value = direction;
     
     return projectile;
 }
@@ -79,9 +81,17 @@ void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<Coll
             continue;
         }
         
-       
+        if (otherEntity == projectile -> OWNER)
+        {
+            continue;
+        }
+        else
+        {
+            destroyQueue.push_back(projectileEntity);
+        }
         
-        destroyQueue.push_back(projectileEntity);
+        // Add check if it destroy on hit
+        
         
         for(Entity entity: destroyQueue)    // Destroys any projectiles that have had collsions
         {

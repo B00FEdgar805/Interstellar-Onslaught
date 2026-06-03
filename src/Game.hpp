@@ -14,6 +14,11 @@ private:
     int FRAME_TIME;
     SDL_Window *WINDOW;
     float DELTA_TIME;
+    
+    // Timer
+    Uint64 START_TIME = 0;
+    Uint64 LAST_TIME = 0;
+    Uint64 RoF = 1000;
    
     
 public:

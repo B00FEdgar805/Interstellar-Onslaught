@@ -2,6 +2,7 @@
 #define Projectile_hpp
 
 #include "Component.hpp"
+#include "../Types.hpp"
 
 class Projectile final : public BaseComponent
 {
@@ -12,11 +13,14 @@ private:
     float RATE_OF_FIRE;
     
 public:
+    Entity OWNER;
+
     Projectile() = default;
-    Projectile(int range, float speed, float RoF)
+    Projectile(int range, float speed, float RoF, Entity owner)
     :   RANGE(range),
         SPEED(speed),
-        RATE_OF_FIRE(RoF)
+        RATE_OF_FIRE(RoF),
+        OWNER(owner)
     {}
     
     void addDistance(float delta_time)

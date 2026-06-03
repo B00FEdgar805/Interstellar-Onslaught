@@ -17,6 +17,8 @@ struct Vector2D
     Vector2D& divide(const Vector2D& v);
     Vector2D& scale(float scaler);
     Vector2D& normalize();
+    Vector2D& zero();
+
     
     friend Vector2D& operator+(Vector2D& v1, const Vector2D& v2);
     friend Vector2D& operator-(Vector2D& v1, const Vector2D& v2);

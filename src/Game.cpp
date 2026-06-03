@@ -28,6 +28,8 @@ bool fire = true;
 Camera2D camera(800.0f, 640.0f);
 
 
+
+
 Game::Game()
 {
     init("SDL Game", 800, 640, false);
@@ -77,6 +79,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
+    START_TIME = SDL_GetTicks();
+    LAST_TIME = START_TIME;
+    
     
     RUNNING = true;
     
@@ -100,7 +105,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         true,     // isStatic
         "blackhole"
     ));
-    
     
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
@@ -205,18 +209,24 @@ void Game::update()
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
 
-    if (fire)
-    {
-        projectiles.createProjectile(registry, player, Vector2D(150.0f, 150.0f), Vector2D(0.0f, 1.0f).normalize(), 150.0f);
-        fire = false;
-    }
+    
+   
     
     // camera systems
     
     Transform* player_transform = registry.get<Transform>(player);
+    Velocity* player_velocity = registry.get<Velocity>(player);
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
+    }
+    
+    Uint64 current_time = SDL_GetTicks();
+    
+    if (current_time - LAST_TIME >= RoF)
+    {
+        projectiles.createProjectile(registry, player, player_transform -> position, player_velocity -> direction.normalize() , 150.0f);
+        LAST_TIME = current_time;
     }
     
     TileMap* tilemap = registry.get<TileMap>(level);

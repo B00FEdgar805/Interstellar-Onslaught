@@ -63,6 +63,13 @@ Vector2D& Vector2D::normalize()
     return *this;
 }
 
+Vector2D& Vector2D::zero()
+{
+    this -> x = 0;
+    this -> y = 0;
+    return *this;
+}
+
 
 Vector2D& operator+(Vector2D& v1, const Vector2D& v2)
 {

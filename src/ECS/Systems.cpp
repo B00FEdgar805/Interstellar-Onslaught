@@ -4,7 +4,7 @@
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
-
+#include "Components/Projectile.hpp"
 
 void Systems::playerInputSystem(Registry& registry)
 {
@@ -70,8 +70,13 @@ void Systems::playerInputSystem(Registry& registry)
             }
         }
         
-        //velocity -> value.scale(speed);
+        if (velocity -> value.y != 0 || velocity -> value.x != 0)   // used to store last direction of player
+        {
+            velocity -> direction = velocity -> value;
+        }
         
+        //velocity -> value.scale(speed);
+       
         //SDL_Log("X %f", velocity -> value.x);
         //SDL_Log("Y %f", velocity -> value.y);
 
@@ -116,6 +121,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         Transform* transform = registry.get<Transform>(entity);
         Animation* animation = registry.get<Animation>(entity);
         PlayerControl* controlled = registry.get<PlayerControl>(entity);
+        Projectile* projectile = registry.get<Projectile>(entity);
         
         
         if (!transform)
@@ -149,7 +155,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
             //SDL_Log("Working");
         }
         
-        if(controlled)
+        if(controlled || projectile)
         {
             sprite.draw(angle);
         }
