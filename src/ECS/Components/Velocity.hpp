@@ -38,7 +38,7 @@ public:
         {
             degrees += 360;
         }
-        return (degrees - 180);
+        return -(degrees - 180);
     }
 };
 #endif /* Velocity_hpp */

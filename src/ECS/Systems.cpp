@@ -155,9 +155,14 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
             //SDL_Log("Working");
         }
         
-        if(controlled || projectile)
+        if(controlled)
         {
             sprite.draw(angle);
+        }
+        else if (projectile)
+        {
+            Velocity* v = registry.get<Velocity>(entity);
+            sprite.draw(v -> directionToDegrees());
         }
         else
         {

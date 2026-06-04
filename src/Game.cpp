@@ -108,7 +108,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(player, Velocity(220.0f));
+    registry.add(player, Velocity(150.0f));
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
     registry.add(player, Animation(DELTA_TIME, 3, 150));
@@ -225,7 +225,8 @@ void Game::update()
     
     if (current_time - LAST_TIME >= RoF)
     {
-        projectiles.createProjectile(registry, player, player_transform -> position, player_velocity -> direction.normalize() , 150.0f);
+        Vector2D pos = player_transform -> position;    // Add offset for better looking sprite
+        projectiles.createProjectile(registry, player, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
         LAST_TIME = current_time;
     }
     
