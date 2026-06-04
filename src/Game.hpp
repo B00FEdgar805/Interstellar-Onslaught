@@ -13,7 +13,6 @@ private:
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;
-    float DELTA_TIME;
     
     // Timer
     Uint64 START_TIME = 0;
@@ -22,9 +21,11 @@ private:
    
     
 public:
+    float DELTA_TIME;
+
     Game();
     ~Game();
-    void init(const char* title, int width, int height, bool fullscreen);
+    bool init(const char* title, int width, int height, bool fullscreen);
     int run();
     void handleEvents();
     void update();
@@ -33,6 +34,7 @@ public:
     bool isRunning();
     static void UpdateFPSCounter(float deltaTime);
     static SDL_Renderer *RENDERER;
+    void handleSingleEvent(SDL_Event* e);
     
 };
 

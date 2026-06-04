@@ -47,6 +47,7 @@ Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, cons
     Velocity* velocity = registry.get<Velocity>(projectile);
     velocity -> direction = direction;
     velocity -> value = direction;
+    velocity -> directionToDegrees();
     
     return projectile;
 }

@@ -114,14 +114,16 @@ void Systems::movementSystem(Registry& registry, float delta_time)
     }
 }
 
+/*
 void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
 {
     for (auto& [entity, sprite] : registry.all<Sprite>())
     {
         Transform* transform = registry.get<Transform>(entity);
         Animation* animation = registry.get<Animation>(entity);
-        PlayerControl* controlled = registry.get<PlayerControl>(entity);
+        //PlayerControl* controlled = registry.get<PlayerControl>(entity);
         Projectile* projectile = registry.get<Projectile>(entity);
+        
         
         
         if (!transform)
@@ -149,20 +151,21 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
         
         
+        
         if (animation)
         {
             sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
             //SDL_Log("Working");
         }
         
-        if(controlled)
+        if(registry.has<PlayerControl>(entity))
         {
             sprite.draw(angle);
         }
         else if (projectile)
         {
             Velocity* v = registry.get<Velocity>(entity);
-            sprite.draw(v -> directionToDegrees());
+            sprite.draw(v -> directionAsDegrees());
         }
         else
         {
@@ -173,3 +176,74 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
     }
 }
+*/
+
+void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)
+{
+    
+    // 1. Fetch the inner maps ONCE at the top.
+    // This completely bypasses the std::type_index lookup inside the loop!
+    auto& spriteMap = registry.all<Sprite>();
+    auto& transformMap = registry.all<Transform>();
+    auto& animationMap = registry.all<Animation>();
+    auto& controlledMap = registry.all<PlayerControl>();
+    auto& projectileMap = registry.all<Projectile>();
+    auto& velocityMap = registry.all<Velocity>();
+
+    // 2. Loop directly through the Sprite map
+    for (auto& [entity, sprite] : spriteMap)
+    {
+        // 3. Instead of calling registry.get<T>(entity), look it up directly in the local maps.
+        // This cuts the hashing operations in half!
+        auto transformIt = transformMap.find(entity);
+        if (transformIt == transformMap.end())
+        {
+            continue; // Skip if there's no transform component
+        }
+        Transform& transform = transformIt->second;
+        
+        // Compute destination bounds
+        SDL_FRect worldDestination;
+        worldDestination.x = transform.position.x;
+        worldDestination.y = transform.position.y;
+        worldDestination.w = sprite.w();
+        worldDestination.h = sprite.h();
+        
+        SDL_FRect screenDestination = camera.worldToScreenRect(worldDestination);
+        sprite.setRect(screenDestination);
+        
+        // 4. Check for optional components using the pre-fetched maps
+        auto animationIt = animationMap.find(entity);
+        if (animationIt != animationMap.end())
+        {
+            sprite.Animate(SDL_GetTicks(), animationIt->second.speed, animationIt->second.frames);
+        }
+        
+        // Render logic branching
+        if (controlledMap.find(entity) != controlledMap.end())
+        {
+            sprite.draw(angle);
+        }
+        else {
+            auto projectileIt = projectileMap.find(entity);
+            if (projectileIt != projectileMap.end())
+            {
+                auto velocityIt = velocityMap.find(entity);
+                if (velocityIt != velocityMap.end())
+                {
+                    sprite.draw(velocityIt->second.directionAsDegrees());
+                }
+                else
+                {
+                    sprite.draw();
+                }
+            }
+            else
+            {
+                sprite.draw();
+            }
+        }
+    }
+     
+}
+

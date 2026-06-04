@@ -32,7 +32,7 @@ Camera2D camera(800.0f, 640.0f);
 
 Game::Game()
 {
-    init("SDL Game", 800, 640, false);
+    //init("SDL Game", 800, 640, false);
 }
 
 Game::~Game()
@@ -40,7 +40,7 @@ Game::~Game()
     clean();
 }
 
-void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
+bool Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
     int flags = 0;
     
@@ -52,7 +52,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     {
         flags = SDL_WINDOW_RESIZABLE;
     }
-    
+   // SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
+
     // Initialize SDL (video + events)
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
@@ -77,6 +78,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Quit();
     }
     
+    SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     START_TIME = SDL_GetTicks();
@@ -125,11 +127,13 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     );
 
     registry.add(level, levelMap);
-
+    return true;
 }
 
+#include <thread>
 int Game::run()
 {
+    /*
     auto lastTime = std::chrono::steady_clock::now();
 
     while (isRunning()) // Main game loop
@@ -148,9 +152,120 @@ int Game::run()
         handleEvents(); // Handles user inputes
         update();   // Handlers movemnts systems
         render();   // Handles any rendering
-        //UpdateFPSCounter(DELTA_TIME);
+       // UpdateFPSCounter(DELTA_TIME);
+        SDL_Delay(16);
     }
-    
+    */
+    // Define exactly how long a single frame takes (16.67ms for 60 FPS)
+        const std::chrono::duration<double, std::milli> frameDuration(16.666);
+
+        // Set our initial time anchor to right now
+        auto nextFrameTime = std::chrono::steady_clock::now();
+
+       // while (isRunning()) // Main game loop
+        //{
+            // 1. Advance our absolute time target to the next frame slot
+            nextFrameTime += std::chrono::round<std::chrono::steady_clock::duration>(frameDuration);
+
+            // 2. Track physics Delta Time using the steady clock
+            static auto lastTime = std::chrono::steady_clock::now();
+            auto currentTime = std::chrono::steady_clock::now();
+            DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
+            lastTime = currentTime;
+
+            if (DELTA_TIME > 0.05f) {
+                DELTA_TIME = 0.05f;
+            }
+
+            // 3. Process game logic
+            handleEvents();
+            update();
+            render(); // (Calls clear and present)
+
+            // --- THE PERFECT MAC THROTTLE ---
+            // Force the thread to sleep until the precise mathematical time anchor is hit.
+            // If our work finished early, this completely halts the CPU core.
+            // It uses absolute time points, making underflow mathematically impossible.
+            std::this_thread::sleep_until(nextFrameTime);
+       // }
+        
+        //clean();
+        //return 0;
+    /*
+    const uint32_t TARGET_FRAME_MS = 16;
+        
+        // Store clock anchors using standard millisecond Ticks
+        uint64_t lastTimeNS = SDL_GetTicksNS();
+
+        while (isRunning()) // Main game loop
+        {
+            uint64_t currentTimeNS = SDL_GetTicksNS();
+            uint64_t frameDeltaNS = currentTimeNS - lastTimeNS;
+            lastTimeNS = currentTimeNS;
+
+            // Convert nanoseconds cleanly to float seconds for your update systems
+            DELTA_TIME = (float)frameDeltaNS / 1000000000.0f;
+            if (DELTA_TIME > 0.05f) {
+                DELTA_TIME = 0.05f;
+            }
+
+            // Track how long the frame functions take using regular millisecond ticks
+            uint32_t frameStartMS = SDL_GetTicks();
+
+            handleEvents();
+            update();
+            render();
+
+            // --- SAFE UNDERFLOW GUARD THROTTLE ---
+            uint32_t elapsedMS = SDL_GetTicks() - frameStartMS;
+
+            if (elapsedMS < TARGET_FRAME_MS)
+            {
+                // Simple, foolproof subtraction that cannot underflow
+                SDL_Delay(TARGET_FRAME_MS - elapsedMS);
+            }
+        }
+     */
+    /*
+    const uint64_t TARGET_FPS = 60;
+        // Calculate how many nanoseconds one frame should take (1 second = 1,000,000,000 ns)
+        const uint64_t NS_PER_FRAME = 1000000000 / TARGET_FPS;
+
+        // Use SDL3's native high-resolution timer
+        uint64_t lastTime = SDL_GetTicksNS();
+
+        while (isRunning()) // Main game loop
+        {
+            uint64_t currentTime = SDL_GetTicksNS();
+            uint64_t frameTimeNS = currentTime - lastTime;
+            lastTime = currentTime;
+
+            // Convert nanoseconds to float seconds for your movement systems
+            DELTA_TIME = (float)frameTimeNS / 1000000000.0f;
+
+            // Cap maximum delta time to prevent massive physics jumps during hiccups
+            if (DELTA_TIME > 0.05f)
+            {
+                DELTA_TIME = 0.05f;
+            }
+
+            handleEvents(); // Handles user inputs
+            update();       // Handles movement systems
+            render();       // Handles rendering (VSync blocks here if enabled)
+
+            // --- THE FIX: SLEEP THE CPU FOR THE REMAINDER OF THE FRAME ---
+            uint64_t executionTimeNS = SDL_GetTicksNS() - currentTime;
+
+            if (executionTimeNS < NS_PER_FRAME)
+            {
+                // Calculate how long the CPU should rest
+                uint64_t sleepTimeNS = NS_PER_FRAME - executionTimeNS;
+                
+                // Explicitly put the CPU thread to sleep, dropping utilization
+                SDL_DelayNS(sleepTimeNS);
+            }
+        }
+    */
     clean();    // Called when program ends to close safley
     return 0;
 }
@@ -158,6 +273,7 @@ int Game::run()
 
 void Game::handleEvents()
 {
+    
     SDL_Event e;
     SDL_PollEvent(&e);
     switch (e.type)     // Handles ending the program
@@ -239,7 +355,7 @@ void Game::update()
 
 void Game::render()
 {
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 255))
     {
         SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
     }
@@ -284,4 +400,9 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
         frames = 0;
         accumulator = 0.0f;
     }
+}
+
+void Game::handleSingleEvent(SDL_Event* e) {
+    // Processes isolated keystrokes or coordinates right as they trigger
+    systems.playerInputSystem(registry);
 }

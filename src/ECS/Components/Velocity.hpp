@@ -5,6 +5,8 @@
 
 class Velocity final : public BaseComponent
 {
+private:
+    float DEGREES = 0.0f;
 public:
     float m_speed;
     Vector2D value;
@@ -30,7 +32,7 @@ public:
         m_speed = speed;
     }
     
-    float directionToDegrees()
+    void directionToDegrees()
     {
         double radians = std::atan2(direction.x, direction.y);
         double degrees = radians * (180 / M_PI);
@@ -38,7 +40,12 @@ public:
         {
             degrees += 360;
         }
-        return -(degrees - 180);
+        DEGREES = -(degrees - 180);
+    }
+    
+    float directionAsDegrees()
+    {
+        return DEGREES;
     }
 };
 #endif /* Velocity_hpp */
