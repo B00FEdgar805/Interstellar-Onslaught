@@ -76,7 +76,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_DestroyWindow(WINDOW);
         SDL_Quit();
     }
-    
+    SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     START_TIME = SDL_GetTicks();
@@ -148,7 +148,8 @@ int Game::run()
         handleEvents(); // Handles user inputes
         update();   // Handlers movemnts systems
         render();   // Handles any rendering
-        //UpdateFPSCounter(DELTA_TIME);
+        UpdateFPSCounter(DELTA_TIME);
+        //SDL_Delay(16);
     }
     
     clean();    // Called when program ends to close safley
@@ -251,7 +252,6 @@ void Game::render()
     //map -> drawMap();
     RenderTileMap(registry, camera);
     systems.renderSystem(registry, RENDERER, camera);
-
     SDL_RenderPresent(RENDERER);
 }
 
