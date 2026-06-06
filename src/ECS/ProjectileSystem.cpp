@@ -16,7 +16,7 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
         projectile.addDistance(delta_time); // Keeps track of distance of projectile
         Velocity* velocity = registry.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
         velocity -> value.zero();
-        velocity -> value += velocity -> direction;
+        velocity -> value += velocity -> direction.normalize();
         //SDL_Log("%f", velocity -> directionToDegrees());
         if (projectile.hasExpired())
         {

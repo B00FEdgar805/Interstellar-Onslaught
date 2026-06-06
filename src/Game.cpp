@@ -14,6 +14,8 @@
 #include "ECS/TileSystem.hpp"
 #include "ECS/Camera.hpp"
 #include "ECS/ProjectileSystem.hpp"
+#include "ECS/EnemyAI.hpp"
+#include "ECS/Components/Health.hpp"
 
 // Init ECS system
 
@@ -24,6 +26,7 @@ Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
+EnemyAi enemies(player);
 bool fire = true;
 Camera2D camera(800.0f, 640.0f);
 
@@ -95,6 +98,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
+    TextureManager::loadTexture("Enemy", "Assets/Spaceship.png");
 
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -112,9 +116,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
     registry.add(player, Animation(DELTA_TIME, 3, 150));
+    registry.add(player, Health(100.0f));
 
     registry.add(level, Transform(0.0f, 0.0f));
 
+    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+    
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
         "Level1",
@@ -148,7 +155,7 @@ int Game::run()
         handleEvents(); // Handles user inputes
         update();   // Handlers movemnts systems
         render();   // Handles any rendering
-        UpdateFPSCounter(DELTA_TIME);
+        //UpdateFPSCounter(DELTA_TIME);
         //SDL_Delay(16);
     }
     
@@ -207,6 +214,8 @@ void Game::update()
     }
     
     systems.movementSystem(registry, DELTA_TIME);
+    enemies.enemyAISystem(registry);
+    enemies.enemyCollisions(registry, collisions);
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
 

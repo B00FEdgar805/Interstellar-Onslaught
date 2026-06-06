@@ -119,9 +119,9 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
     for (auto& [entity, sprite] : registry.all<Sprite>())
     {
         Transform* transform = registry.get<Transform>(entity);
-        Animation* animation = registry.get<Animation>(entity);
-        PlayerControl* controlled = registry.get<PlayerControl>(entity);
-        Projectile* projectile = registry.get<Projectile>(entity);
+        //Animation* animation = registry.get<Animation>(entity);
+        //PlayerControl* controlled = registry.get<PlayerControl>(entity);
+        //Projectile* projectile = registry.get<Projectile>(entity);
         
         
         if (!transform)
@@ -149,17 +149,18 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
         
         
-        if (animation)
+        if (registry.has<Animation>(entity))
         {
+            Animation* animation = registry.get<Animation>(entity);
             sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
             //SDL_Log("Working");
         }
         
-        if(controlled)
+        if(registry.has<PlayerControl>(entity))
         {
             sprite.draw(angle);
         }
-        else if (projectile)
+        else if (registry.has<Projectile>(entity))
         {
             Velocity* v = registry.get<Velocity>(entity);
             sprite.draw(v -> directionToDegrees());
