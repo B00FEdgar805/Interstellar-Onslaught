@@ -25,12 +25,15 @@ namespace
 
     bool intersects(const SDL_FRect& a, const SDL_FRect& b)
     {
+        
         return (
             a.x < b.x + b.w &&
             a.x + a.w > b.x &&
             a.y < b.y + b.h &&
             a.y + a.h > b.y
         );
+        
+        //return SDL_HasRectIntersectionFloat(&a, &b);
     }
 
     bool shouldCheckCollision(const BoxCollider& a, const BoxCollider& b)
@@ -177,55 +180,52 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
 {
     std::vector<CollisionEvent> collisions;
 
-    auto& colliders = registry.all<BoxCollider>();
+    // Get dense view of all BoxColliders
+    auto colliders = registry.all<BoxCollider>();
+    const size_t n = colliders.entities.size();
 
-    for (auto itA = colliders.begin(); itA != colliders.end(); ++itA)
+    for (size_t i = 0; i < n; ++i)
     {
-        Entity entityA = itA -> first;
-        BoxCollider& colliderA = itA -> second;
-
+        Entity entityA = colliders.entities[i];
+        BoxCollider& colliderA = colliders.components[i];
         Transform* transformA = registry.get<Transform>(entityA);
-
-        if (transformA == nullptr)
+        
+        if (!transformA)
         {
             continue;
         }
-
-        for (auto itB = std::next(itA); itB != colliders.end(); ++itB)
+        
+        for (size_t j = i + 1; j < n; ++j)
         {
-            Entity entityB = itB -> first;
-            BoxCollider& colliderB = itB -> second;
-
+            Entity entityB = colliders.entities[j];
+            BoxCollider& colliderB = colliders.components[j];
             Transform* transformB = registry.get<Transform>(entityB);
-
-            if (transformB == nullptr)
+            
+            if (!transformB)
             {
                 continue;
             }
-
+            
             if (!shouldCheckCollision(colliderA, colliderB))
             {
                 continue;
             }
-
+            
             SDL_FRect rectA = makeWorldRect(*transformA, colliderA);
             SDL_FRect rectB = makeWorldRect(*transformB, colliderB);
-
+            
             if (!intersects(rectA, rectB))
             {
                 continue;
             }
-
             CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
-
             collisions.push_back(event);
-
+            
             if (resolveSolidCollisions)
             {
                 resolveCollision(registry, event, colliderA, colliderB);
             }
         }
     }
-
     return collisions;
 }

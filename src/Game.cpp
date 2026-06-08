@@ -13,6 +13,9 @@
 #include "ECS/Registry.hpp"
 #include "ECS/TileSystem.hpp"
 #include "ECS/Camera.hpp"
+#include "ECS/ProjectileSystem.hpp"
+#include "ECS/EnemyAI.hpp"
+#include "ECS/Components/Health.hpp"
 
 // Init ECS system
 
@@ -22,7 +25,12 @@ Registry registry;
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
+ProjectileSystem projectiles;
+EnemyAi enemies(player);
+bool fire = true;
 Camera2D camera(800.0f, 640.0f);
+
+
 
 
 Game::Game()
@@ -71,9 +79,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_DestroyWindow(WINDOW);
         SDL_Quit();
     }
-    
+    SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
+    START_TIME = SDL_GetTicks();
+    LAST_TIME = START_TIME;
+    
     
     RUNNING = true;
     
@@ -86,6 +97,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+    TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
+    TextureManager::loadTexture("Enemy", "Assets/Spaceship.png");
 
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -97,16 +110,18 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "blackhole"
     ));
     
-    
     registry.add(player, Sprite("player"));
     registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(player, Velocity());
+    registry.add(player, Velocity(150.0f));
     registry.add(player, PlayerControl());
     registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
     registry.add(player, Animation(DELTA_TIME, 3, 150));
+    registry.add(player, Health(100.0f));
 
     registry.add(level, Transform(0.0f, 0.0f));
 
+    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+    
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
         "Level1",
@@ -141,6 +156,7 @@ int Game::run()
         update();   // Handlers movemnts systems
         render();   // Handles any rendering
         //UpdateFPSCounter(DELTA_TIME);
+        //SDL_Delay(16);
     }
     
     clean();    // Called when program ends to close safley
@@ -198,13 +214,30 @@ void Game::update()
     }
     
     systems.movementSystem(registry, DELTA_TIME);
+    enemies.enemyAISystem(registry);
+    enemies.enemyCollisions(registry, collisions);
+    projectiles.projectilesCollisons(registry, collisions);
+    projectiles.projectileSystem(registry, DELTA_TIME);
+
+    
+   
     
     // camera systems
     
     Transform* player_transform = registry.get<Transform>(player);
+    Velocity* player_velocity = registry.get<Velocity>(player);
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
+    }
+    
+    Uint64 current_time = SDL_GetTicks();
+    
+    if (current_time - LAST_TIME >= RoF)
+    {
+        Vector2D pos = player_transform -> position;    // Add offset for better looking sprite
+        projectiles.createProjectile(registry, player, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
+        LAST_TIME = current_time;
     }
     
     TileMap* tilemap = registry.get<TileMap>(level);
@@ -228,7 +261,6 @@ void Game::render()
     //map -> drawMap();
     RenderTileMap(registry, camera);
     systems.renderSystem(registry, RENDERER, camera);
-
     SDL_RenderPresent(RENDERER);
 }
 

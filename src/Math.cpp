@@ -1,10 +1,3 @@
-//
-//  Math.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/21/26.
-//
-
 #include "Math.hpp"
 
 Vector2D::Vector2D()
@@ -67,6 +60,13 @@ Vector2D& Vector2D::normalize()
     this -> x /= l;
     this -> y /= l;
     
+    return *this;
+}
+
+Vector2D& Vector2D::zero()
+{
+    this -> x = 0;
+    this -> y = 0;
     return *this;
 }
 

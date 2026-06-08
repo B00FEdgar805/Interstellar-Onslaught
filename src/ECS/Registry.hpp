@@ -5,6 +5,8 @@
 #include "Types.hpp"
 
 #include <algorithm>
+#include <bitset> 
+#include <cstddef>
 #include <memory>
 #include <typeindex>
 #include <type_traits>
@@ -20,75 +22,134 @@ public:
 };
 
 template <typename T>
-class ComponentStorage final : public IComponentStorage // Makes sure new componets derive from bas component class and stores them in a map
+class ComponentStorage final : public IComponentStorage // Sparse set storage for components
 {
     static_assert(std::is_base_of_v<BaseComponent, T> && !std::is_same_v<BaseComponent, T>,
         "ComponentStorage<T>: T must inherit from BaseComponent.");
 
 public:
-    std::unordered_map<Entity, T> data;
+    std::vector<T> denseComponents;
+    std::vector<Entity> denseEntities;
+    std::vector<size_t> sparse; // Indexed by entity; SIZE_MAX if entity not present
 
     void erase(Entity entity) override
     {
-        data.erase(entity);
+        if (entity >= sparse.size() || sparse[entity] == SIZE_MAX) return;
+
+        size_t idx = sparse[entity];
+        size_t last = denseComponents.size() - 1;
+
+        if (idx != last)
+        {
+            denseComponents[idx] = std::move(denseComponents[last]);
+            denseEntities[idx] = denseEntities[last];
+            sparse[denseEntities[idx]] = idx;
+        }
+
+        denseComponents.pop_back();
+        denseEntities.pop_back();
+        sparse[entity] = SIZE_MAX;
     }
 };
 
 class Registry
 {
 private:
+    // Maximum number of unique component types supported
+    static constexpr size_t MAX_COMPONENTS = 64;
+
     Entity NEXT_ENTITY = 1;
 
     std::vector<Entity> ALIVE_ENTITES;
 
     std::unordered_map<std::type_index,std::unique_ptr<IComponentStorage>> COMPONENT_STORAGES;
+
+    using Signature = std::bitset<MAX_COMPONENTS>;
+
+    std::vector<Signature> ENTITY_SIGNATURES; // Signature by Entity ID
+
+    // Static method to get unique index for each component type T
+    template<typename T>
+    static size_t componentTypeIndex() {
+        static size_t index = nextComponentTypeIndex();
+        return index;
+    }
+
+    // Static method to generate next unique component type index
+    static size_t nextComponentTypeIndex() {
+        static size_t value = 0;
+        return value++;
+    }
+
 public:
     Entity create() // Adds new entities and puts them into the vector
     {
         Entity entity = NEXT_ENTITY++;
         ALIVE_ENTITES.push_back(entity);
+
+        // Ensure ENTITY_SIGNATURES vector is large enough, and reset the signature bitset for new entity
+        if (entity >= ENTITY_SIGNATURES.size()) ENTITY_SIGNATURES.resize(entity + 1);
+        ENTITY_SIGNATURES[entity].reset();
+
         return entity;
     }
 
-    void destroy(Entity entity) // Destorys entities and all of its components
+    void destroy(Entity entity) // Destroys entities and all of its components
     {
-        ALIVE_ENTITES.erase(std::remove(ALIVE_ENTITES.begin(), ALIVE_ENTITES.end(), entity),ALIVE_ENTITES.end());
+        ALIVE_ENTITES.erase(std::remove(ALIVE_ENTITES.begin(), ALIVE_ENTITES.end(), entity), ALIVE_ENTITES.end());
 
         for (auto& [type, storage] : COMPONENT_STORAGES)
         {
             (void)type;
-            storage -> erase(entity);
+            storage->erase(entity);
         }
+
+        // Reset signature for destroyed entity if within bounds
+        if (entity < ENTITY_SIGNATURES.size()) ENTITY_SIGNATURES[entity].reset();
     }
 
     template <typename T>
-    T& add(Entity entity, T component)  // Adds components to exisiting eneitiies and also checks if compoennts are valid
+    T& add(Entity entity, T component)  // Adds components to existing entities and checks if components are valid
     {
         static_assert(std::is_base_of_v<BaseComponent, T> && !std::is_same_v<BaseComponent, T>,
             "Registry::add<T>: T must inherit from BaseComponent.");
 
-        auto& components = getStorage<T>().data;
+        auto& storage = getStorage<T>();
 
-        auto [it, inserted] = components.insert_or_assign(entity, std::move(component));
+        if (entity >= storage.sparse.size())
+            storage.sparse.resize(entity + 1, SIZE_MAX);
 
-        (void)inserted;
+        if (storage.sparse[entity] != SIZE_MAX)
+        {
+            storage.denseComponents[storage.sparse[entity]] = std::move(component);
 
-        return it->second;
+            // Set component bit in entity signature after updating component
+            ENTITY_SIGNATURES[entity].set(componentTypeIndex<T>());
+
+            return storage.denseComponents[storage.sparse[entity]];
+        }
+        else
+        {
+            storage.sparse[entity] = storage.denseComponents.size();
+            storage.denseEntities.push_back(entity);
+            storage.denseComponents.push_back(std::move(component));
+
+            // Set component bit in entity signature after adding component
+            ENTITY_SIGNATURES[entity].set(componentTypeIndex<T>());
+
+            return storage.denseComponents.back();
+        }
     }
 
     template <typename T>
-    T* get(Entity entity)   // Returns entities compoenet
+    T* get(Entity entity)   // Returns entity's component pointer or nullptr
     {
-        auto& components = getStorage<T>().data;
+        auto& storage = getStorage<T>();
 
-        auto it = components.find(entity);
-
-        if (it == components.end())
-        {
+        if (entity >= storage.sparse.size() || storage.sparse[entity] == SIZE_MAX)
             return nullptr;
-        }
 
-        return &it->second;
+        return &storage.denseComponents[storage.sparse[entity]];
     }
 
     template <typename T>
@@ -100,13 +161,30 @@ public:
     template <typename T>
     void remove(Entity entity)
     {
-        getStorage<T>().data.erase(entity);
+        getStorage<T>().erase(entity);
+
+        // Clear component bit in entity signature after removal
+        if (entity < ENTITY_SIGNATURES.size())
+            ENTITY_SIGNATURES[entity].reset(componentTypeIndex<T>());
     }
 
     template <typename T>
-    std::unordered_map<Entity, T>& all() // Returns all entities compoentns
+    struct DenseView {
+        std::vector<Entity>& entities;
+        std::vector<T>& components;
+    };
+
+    // Returns all components and their associated entities in a dense view for iteration
+    template <typename T>
+    DenseView<T> all()
     {
-        return getStorage<T>().data;
+        auto& storage = getStorage<T>();
+        return DenseView<T>{storage.denseEntities, storage.denseComponents};
+    }
+
+    // Public accessor for getting the signature bitset of an entity
+    const Signature& signature(Entity entity) const {
+        return ENTITY_SIGNATURES[entity];
     }
 
 private:
@@ -132,9 +210,7 @@ private:
 
         return static_cast<ComponentStorage<T>&>(*it->second);
     }
-
-
 };
 
-
 #endif /* Registry_hpp */
+

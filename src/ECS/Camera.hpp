@@ -1,10 +1,3 @@
-//
-//  Camera.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 5/29/26.
-//
-
 #ifndef Camera_hpp
 #define Camera_hpp
 

@@ -4,16 +4,16 @@
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
-
+#include "Components/Projectile.hpp"
 
 void Systems::playerInputSystem(Registry& registry)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
-
-    for (auto& [entity, controlled] : registry.all<PlayerControl>())
+    
+    auto view = registry.all<PlayerControl>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
-        (void)controlled;
-
+        Entity entity = view.entities[i];
         Velocity* velocity = registry.get<Velocity>(entity);
 
         if (!velocity)
@@ -21,7 +21,7 @@ void Systems::playerInputSystem(Registry& registry)
             continue;
         }
 
-        constexpr float speed = 220.0f;
+        //constexpr float speed = 220.0f;
 
         velocity -> value = Vector2D(0.0f, 0.0f);
 
@@ -70,8 +70,13 @@ void Systems::playerInputSystem(Registry& registry)
             }
         }
         
-        velocity -> value.scale(speed);
+        if (velocity -> value.y != 0 || velocity -> value.x != 0)   // used to store last direction of player
+        {
+            velocity -> direction = velocity -> value;
+        }
         
+        //velocity -> value.scale(speed);
+       
         //SDL_Log("X %f", velocity -> value.x);
         //SDL_Log("Y %f", velocity -> value.y);
 
@@ -81,29 +86,50 @@ void Systems::playerInputSystem(Registry& registry)
 
 
 
-void Systems::movementSystem(Registry& registry, float deltaTime)
+void Systems::movementSystem(Registry& registry, float delta_time)
 {
-    for (auto& [entity, velocity] : registry.all<Velocity>())
+    auto view = registry.all<Velocity>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
-        Transform* transform = registry.get<Transform>(entity);
+        Entity entity = view.entities[i];
+        Velocity& velocity = view.components[i];
 
+        Transform* transform = registry.get<Transform>(entity);
+        //velocity.value.scale(velocity.m_speed);
+        
         if (!transform)
         {
             continue;
         }
         
-        transform -> position += velocity.value.scale(deltaTime);
+        transform -> position += velocity.value.scale(delta_time * velocity.m_speed);
+        
+       // Vector2D delta = velocity.value;
+        //delta.scale(delta_time * velocity.m_speed);
+        //transform->position += delta;
+        
+        //SDL_Log("X: %f", velocity.value.x);
+        //SDL_Log("Y: %f", velocity.value.y);
+        
+        //SDL_Log("X: %f", transform -> position.x);
+        //SDL_Log("Y: %f", transform -> position.y);
+
         
     }
 }
 
 void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
 {
-    for (auto& [entity, sprite] : registry.all<Sprite>())
+    auto view = registry.all<Sprite>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        Sprite& sprite = view.components[i];
+
         Transform* transform = registry.get<Transform>(entity);
-        Animation* animation = registry.get<Animation>(entity);
-        PlayerControl* controlled = registry.get<PlayerControl>(entity);
+        //Animation* animation = registry.get<Animation>(entity);
+        //PlayerControl* controlled = registry.get<PlayerControl>(entity);
+        //Projectile* projectile = registry.get<Projectile>(entity);
         
         
         if (!transform)
@@ -131,15 +157,21 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
         
         
-        if (animation)
+        if (registry.has<Animation>(entity))
         {
+            Animation* animation = registry.get<Animation>(entity);
             sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
             //SDL_Log("Working");
         }
         
-        if(controlled)
+        if(registry.has<PlayerControl>(entity))
         {
             sprite.draw(angle);
+        }
+        else if (registry.has<Projectile>(entity))
+        {
+            Velocity* v = registry.get<Velocity>(entity);
+            sprite.draw(v -> directionToDegrees());
         }
         else
         {

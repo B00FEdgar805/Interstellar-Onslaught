@@ -25,7 +25,7 @@ public:
         DESTINATION.y = 0;
     }
     
-    Sprite(const std::string &textureID,const Vector2D& size)
+    Sprite(const std::string &textureID, const Vector2D& size)
     {
         TEXTURE_ID = textureID;
         SOURCE.x = 0;
@@ -96,7 +96,6 @@ public:
     void draw() // Called by Systems to draw sprite
     {
         TextureManager::draw(TEXTURE_ID, SOURCE, DESTINATION);
-       // SDL_Log("Sprite drawing");
     }
     
     void draw(float angle) // Called by Systems to draw sprite

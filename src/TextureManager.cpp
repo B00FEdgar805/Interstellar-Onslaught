@@ -77,6 +77,11 @@ void TextureManager::clear()    // Unloads all textures
     TEXTURES.clear();
 }
 
+void TextureManager::drawRect(SDL_FRect source, SDL_FRect destination)
+{
+    
+}
+
 void TextureManager::draw(const std::string& id, SDL_FRect source, SDL_FRect destination)
 {
     SDL_Texture* texture = getTexture(id);
