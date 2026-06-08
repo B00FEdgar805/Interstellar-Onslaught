@@ -18,27 +18,30 @@
 void EnemyAi::enemyAISystem(Registry &registry)
 {
     Transform* playerPos = registry.get<Transform>(PLAYER);
-    for(auto& [entity, enemy] : registry.all<Enemy>())
+    auto view = registry.all<Enemy>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        Enemy& enemy = view.components[i];
         (void)enemy;
         Velocity* enemyDir = registry.get<Velocity>(entity);
         Transform* enemyPos = registry.get<Transform>(entity);
-        
+
         if (!enemyDir)
         {
             continue;
         }
-        
+
         if (!enemyPos)
         {
             continue;
         }
         auto temp = playerPos -> position;
         enemyDir -> direction = temp - enemyPos -> position;
-        
+
         enemyDir -> value.zero();
         enemyDir -> value += enemyDir -> direction.normalize();
-        
+
     }
 }
 
@@ -65,7 +68,7 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
             continue;
         }
 
-        if (((a->tag == "player" && b->tag == "enemy") || (a->tag == "enemy" && b->tag == "player")))
+        if (((a -> tag == "player" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "player")))
         {
             Health* player_health = registry.get<Health>(PLAYER);
             //Enemy* enemy = registry.get<Enemy>();
@@ -79,3 +82,4 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
         }
     }
 }
+

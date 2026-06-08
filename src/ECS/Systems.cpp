@@ -9,11 +9,11 @@
 void Systems::playerInputSystem(Registry& registry)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
-
-    for (auto& [entity, controlled] : registry.all<PlayerControl>())
+    
+    auto view = registry.all<PlayerControl>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
-        (void)controlled;
-
+        Entity entity = view.entities[i];
         Velocity* velocity = registry.get<Velocity>(entity);
 
         if (!velocity)
@@ -88,8 +88,12 @@ void Systems::playerInputSystem(Registry& registry)
 
 void Systems::movementSystem(Registry& registry, float delta_time)
 {
-    for (auto& [entity, velocity] : registry.all<Velocity>())
+    auto view = registry.all<Velocity>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        Velocity& velocity = view.components[i];
+
         Transform* transform = registry.get<Transform>(entity);
         //velocity.value.scale(velocity.m_speed);
         
@@ -116,8 +120,12 @@ void Systems::movementSystem(Registry& registry, float delta_time)
 
 void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
 {
-    for (auto& [entity, sprite] : registry.all<Sprite>())
+    auto view = registry.all<Sprite>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        Sprite& sprite = view.components[i];
+
         Transform* transform = registry.get<Transform>(entity);
         //Animation* animation = registry.get<Animation>(entity);
         //PlayerControl* controlled = registry.get<PlayerControl>(entity);

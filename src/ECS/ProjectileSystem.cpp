@@ -4,6 +4,7 @@
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/Health.hpp"
 
 #include <vector>
 
@@ -11,8 +12,12 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
 {
     std::vector<Entity> deadEntities;
     
-    for(auto& [entity, projectile] : registry.all<Projectile>())
+    auto view = registry.all<Projectile>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        Projectile& projectile = view.components[i];
+
         projectile.addDistance(delta_time); // Keeps track of distance of projectile
         Velocity* velocity = registry.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
         velocity -> value.zero();
@@ -23,7 +28,6 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
             //SDL_Log("Dead");
             deadEntities.push_back(entity);
         }
-        
     }
     
     for(Entity entity : deadEntities)   // Destroy all projectiles that have expired
@@ -89,6 +93,7 @@ void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<Coll
         {
             destroyQueue.push_back(projectileEntity);
         }
+        
         
         // Add check if it destroy on hit
         

@@ -9,8 +9,11 @@
 
 void RenderTileMap(Registry& registry, const Camera2D& camera)
 {
-    for (auto& [entity, tileMap] : registry.all<TileMap>())
+    auto view = registry.all<TileMap>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
     {
+        Entity entity = view.entities[i];
+        TileMap& tileMap = view.components[i];
         if (!tileMap.isValid())
         {
             continue;
