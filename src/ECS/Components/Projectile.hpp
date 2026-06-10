@@ -9,17 +9,19 @@ class Projectile final : public BaseComponent
 private:
     float RANGE;
     float SPEED;
-    float DISTANCE = 0.0f;
+    float DISTANCE = 0;
+    float DAMAGE;
     float RATE_OF_FIRE;
     
 public:
     Entity OWNER;
 
     Projectile() = default;
-    Projectile(int range, float speed, float RoF, Entity owner)
+    Projectile(int range, float speed, float RoF, float damage, Entity owner)
     :   RANGE(range),
         SPEED(speed),
         RATE_OF_FIRE(RoF),
+        DAMAGE(damage),
         OWNER(owner)
     {}
     
@@ -32,6 +34,11 @@ public:
     bool hasExpired()
     {
         return DISTANCE >= RANGE;
+    }
+    
+    float getDamage()
+    {
+        return DAMAGE;
     }
     
     

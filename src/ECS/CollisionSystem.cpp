@@ -9,6 +9,10 @@
 #include <algorithm>
 #include <iterator>
 
+#include <unordered_map>
+#include <set>
+#include <utility>
+
 namespace
 {
     SDL_FRect makeWorldRect(const Transform& transform, const BoxCollider& collider)
@@ -136,6 +140,11 @@ namespace
 
     void resolveCollision(Registry& registry, const CollisionEvent& event, const BoxCollider& colliderA, const BoxCollider& colliderB)
     {
+        if (colliderA.tag == "enemy" && colliderB.tag == "enemy")
+        {
+            return;
+        }
+        
         if (event.isTrigger)
         {
             return;
@@ -174,56 +183,119 @@ namespace
         stopVelocityOnCollisionAxis(registry, event.a, event.normal);
         stopVelocityOnCollisionAxis(registry, event.b, event.normal);
     }
+
+    // Grid cell size for partitioning
+    constexpr float GRID_CELL_SIZE = 128.0f;
+
+    struct GridCell
+    {
+        int x, y;
+        bool operator==(const GridCell& o) const { return x == o.x && y == o.y; }
+    };
+
+}
+
+namespace std
+{
+    template <>
+    struct hash<GridCell>
+    {
+        size_t operator()(const GridCell& cell) const
+        {
+            return hash<int>()(cell.x) ^ (hash<int>()(cell.y) << 1);
+        }
+    };
+}
+
+namespace
+{
+    static std::vector<GridCell> getCellsForRect(const SDL_FRect& rect)
+{
+        std::vector<GridCell> cells;
+        int x0 = (int)std::floor(rect.x / GRID_CELL_SIZE);
+        int y0 = (int)std::floor(rect.y / GRID_CELL_SIZE);
+        int x1 = (int)std::floor((rect.x + rect.w) / GRID_CELL_SIZE);
+        int y1 = (int)std::floor((rect.y + rect.h) / GRID_CELL_SIZE);
+        for (int x = x0; x <= x1; ++x)
+        {
+            for (int y = y0; y <= y1; ++y)
+            {
+                cells.push_back({x, y});
+            }
+        }
+        return cells;
+    }
 }
 
 std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSolidCollisions)
 {
     std::vector<CollisionEvent> collisions;
-
-    // Get dense view of all BoxColliders
     auto colliders = registry.all<BoxCollider>();
     const size_t n = colliders.entities.size();
+    if (n <= 1) return collisions;
 
-    for (size_t i = 0; i < n; ++i)
-    {
-        Entity entityA = colliders.entities[i];
-        BoxCollider& colliderA = colliders.components[i];
-        Transform* transformA = registry.get<Transform>(entityA);
-        
-        if (!transformA)
-        {
-            continue;
+    // --- Spatial Hashing ---
+    std::unordered_map<GridCell, std::vector<size_t>> grid; // GridCell indices in colliders array
+    std::vector<SDL_FRect> rects(n);
+    for (size_t i = 0; i < n; ++i) {
+        Entity entity = colliders.entities[i];
+        BoxCollider& collider = colliders.components[i];
+        Transform* transform = registry.get<Transform>(entity);
+        if (!transform) continue;
+        rects[i] = makeWorldRect(*transform, collider);
+        for (const auto& cell : getCellsForRect(rects[i])) {
+            grid[cell].push_back(i);
         }
-        
-        for (size_t j = i + 1; j < n; ++j)
+    }
+    // Used to avoid duplicate checks
+    std::set<std::pair<size_t, size_t>> checkedPairs;
+
+    for (const auto& [cell, indices] : grid)
+    {
+        for (size_t aIdx = 0; aIdx < indices.size(); ++aIdx)
         {
-            Entity entityB = colliders.entities[j];
-            BoxCollider& colliderB = colliders.components[j];
-            Transform* transformB = registry.get<Transform>(entityB);
-            
-            if (!transformB)
+            for (size_t bIdx = aIdx + 1; bIdx < indices.size(); ++bIdx)
             {
-                continue;
-            }
-            
-            if (!shouldCheckCollision(colliderA, colliderB))
-            {
-                continue;
-            }
-            
-            SDL_FRect rectA = makeWorldRect(*transformA, colliderA);
-            SDL_FRect rectB = makeWorldRect(*transformB, colliderB);
-            
-            if (!intersects(rectA, rectB))
-            {
-                continue;
-            }
-            CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
-            collisions.push_back(event);
-            
-            if (resolveSolidCollisions)
-            {
-                resolveCollision(registry, event, colliderA, colliderB);
+                size_t i = indices[aIdx];
+                size_t j = indices[bIdx];
+                if (i == j)
+                {
+                    continue;
+                }
+                
+                size_t minIdx = std::min(i, j), maxIdx = std::max(i, j);
+                auto pair = std::make_pair(minIdx, maxIdx);
+                if (checkedPairs.count(pair))
+                {
+                    continue;
+                }
+                
+                checkedPairs.insert(pair);
+
+                Entity entityA = colliders.entities[i];
+                Entity entityB = colliders.entities[j];
+                BoxCollider& colliderA = colliders.components[i];
+                BoxCollider& colliderB = colliders.components[j];
+                SDL_FRect& rectA = rects[i];
+                SDL_FRect& rectB = rects[j];
+
+                if (!shouldCheckCollision(colliderA, colliderB))
+                {
+                    continue;
+                }
+                if (!intersects(rectA, rectB))
+                {
+                    continue;
+                }
+                
+                CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
+                
+                collisions.push_back(event);
+                
+                if (resolveSolidCollisions)
+                {
+                    resolveCollision(registry, event, colliderA, colliderB);
+                }
             }
         }
     }

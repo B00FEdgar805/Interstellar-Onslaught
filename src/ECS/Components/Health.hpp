@@ -7,16 +7,10 @@ class Health final : public BaseComponent
 {
 private:
     float HEALTH = 0.0f;
-    float DAMAGE = 0.0f;
 public:
     Health() = default;
     Health(float health)
     :   HEALTH(health)
-    {}
-    
-    Health(float health, float damage)
-    :   HEALTH(health),
-        DAMAGE(damage)
     {}
     
     void takeDamage(float damage)

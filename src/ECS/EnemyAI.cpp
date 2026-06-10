@@ -48,12 +48,12 @@ void EnemyAi::enemyAISystem(Registry &registry)
 void EnemyAi::createEnemy(Registry &registry, const Vector2D& position, float speed)
 {
     Entity enemy = registry.create();
-    registry.add(enemy, Enemy());
+    registry.add(enemy, Enemy(10.0f));
     registry.add(enemy, Transform(position));
     registry.add(enemy, Velocity(speed));
     registry.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
     registry.add(enemy, Sprite("Enemy"));
-    registry.add(enemy, Health(5.0f, 10.0f));
+    registry.add(enemy, Health(5.0f));
 }
 
 void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& collisions)
@@ -67,12 +67,15 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
         {
             continue;
         }
-
-        if (((a -> tag == "player" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "player")))
+    
+        
+        if ((a -> tag == "player" && b -> tag == "enemy"))
         {
-            Health* player_health = registry.get<Health>(PLAYER);
-            //Enemy* enemy = registry.get<Enemy>();
-            player_health -> takeDamage(10.0f);
+            Health* player_health = registry.get<Health>(collision.a);
+            Enemy* enemy = registry.get<Enemy>(collision.b);
+            
+            player_health -> takeDamage(enemy -> getDamage());
+            
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
@@ -80,6 +83,20 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
                 // add damage to box collider instead
             }
         }
+        else if ((a -> tag == "enemy" && b -> tag == "player"))
+        {
+            Health* player_health = registry.get<Health>(collision.b);
+            Enemy* enemy = registry.get<Enemy>(collision.a);
+
+            player_health -> takeDamage(enemy -> getDamage());
+            
+            if (!player_health -> isAlive())
+            {
+               // SDL_Log("Dead");
+            }
+        }
+         
+        
     }
 }
 

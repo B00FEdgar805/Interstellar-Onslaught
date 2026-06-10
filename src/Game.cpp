@@ -29,8 +29,8 @@ ProjectileSystem projectiles;
 EnemyAi enemies(player);
 bool fire = true;
 Camera2D camera(800.0f, 640.0f);
-
-
+float timerAccumulator = 0.0f;
+float spawn_time = 5.0f;
 
 
 Game::Game()
@@ -212,6 +212,16 @@ void Game::update()
             SDL_Log("Player touched blackhole!");
         }
     }
+    
+    // Spawn enemies in
+            timerAccumulator += DELTA_TIME;
+            if (timerAccumulator >= spawn_time)
+            {
+                // add a way to spawn eneimies left/righ and up/down the viewport
+                enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+                spawn_time *= 0.95;
+                timerAccumulator = 0.0f;
+            }
     
     systems.movementSystem(registry, DELTA_TIME);
     enemies.enemyAISystem(registry);

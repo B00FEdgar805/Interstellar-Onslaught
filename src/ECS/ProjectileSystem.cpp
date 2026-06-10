@@ -25,7 +25,7 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
         //SDL_Log("%f", velocity -> directionToDegrees());
         if (projectile.hasExpired())
         {
-            //SDL_Log("Dead");
+            //SDL_Log("Projectile Dead");
             deadEntities.push_back(entity);
         }
     }
@@ -43,7 +43,7 @@ Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, cons
     
     registry.add(projectile, Transform(position));
     registry.add(projectile, Velocity(direction, speed));
-    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE, owner));
+    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE, 10.0f, owner));
     registry.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
     registry.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
     
@@ -57,12 +57,16 @@ Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, cons
 
 void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<CollisionEvent> &collisons)
 {
+    
     std::vector<Entity> destroyQueue;
     
     for(const CollisionEvent& collision : collisons)
     {
         Projectile* projectileA = registry.get<Projectile>(collision.a);
         Projectile* projectileB = registry.get<Projectile>(collision.b);
+        
+        BoxCollider* a = registry.get<BoxCollider>(collision.a);
+        BoxCollider* b = registry.get<BoxCollider>(collision.b);
         
         Entity projectileEntity = 0;
         Entity otherEntity = 0; // Any entity thats is not a projectile
@@ -87,14 +91,32 @@ void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<Coll
         
         if (otherEntity == projectile -> OWNER)
         {
+            //SDL_Log("hit self");
             continue;
         }
+        
+        else if (((a -> tag == "pProjectile" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "pProjectile")))
+        {
+            
+            // do damage to enemy
+            //SDL_Log("hit");
+            Health* enemy_health = registry.get<Health>(otherEntity);
+            //Projectile* p = registry.get<Projectile>(projectileEntity);
+            enemy_health -> takeDamage(projectile -> getDamage());
+            if (!enemy_health -> isAlive())
+            {
+                destroyQueue.push_back(otherEntity);
+            }
+            destroyQueue.push_back(projectileEntity);
+             
+        }
+         
         else
         {
             destroyQueue.push_back(projectileEntity);
         }
         
-        
+    
         // Add check if it destroy on hit
         
         
