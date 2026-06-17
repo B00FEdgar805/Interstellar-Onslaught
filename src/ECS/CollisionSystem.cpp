@@ -237,13 +237,20 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
     // --- Spatial Hashing ---
     std::unordered_map<GridCell, std::vector<size_t>> grid; // GridCell indices in colliders array
     std::vector<SDL_FRect> rects(n);
-    for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i)
+    {
         Entity entity = colliders.entities[i];
         BoxCollider& collider = colliders.components[i];
         Transform* transform = registry.get<Transform>(entity);
-        if (!transform) continue;
+        
+        if (!transform)
+        {
+            continue;
+        }
+        
         rects[i] = makeWorldRect(*transform, collider);
-        for (const auto& cell : getCellsForRect(rects[i])) {
+        for (const auto& cell : getCellsForRect(rects[i]))
+        {
             grid[cell].push_back(i);
         }
     }

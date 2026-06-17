@@ -98,8 +98,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy", "Assets/Spaceship.png");
-
+    TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
+    
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -120,7 +120,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 
     registry.add(level, Transform(0.0f, 0.0f));
 
-    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
     
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
@@ -218,7 +218,7 @@ void Game::update()
             if (timerAccumulator >= spawn_time)
             {
                 // add a way to spawn eneimies left/righ and up/down the viewport
-                enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+                enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
                 spawn_time *= 0.95;
                 timerAccumulator = 0.0f;
             }

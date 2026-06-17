@@ -12,6 +12,7 @@
 #include "Components/Sprite.hpp"
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Animation.hpp"
 
 
 
@@ -45,15 +46,17 @@ void EnemyAi::enemyAISystem(Registry &registry)
     }
 }
 
-void EnemyAi::createEnemy(Registry &registry, const Vector2D& position, float speed)
+void EnemyAi::createEnemy(Registry &registry, const Vector2D& position, float speed, float delta_time)
 {
     Entity enemy = registry.create();
     registry.add(enemy, Enemy(10.0f));
     registry.add(enemy, Transform(position));
     registry.add(enemy, Velocity(speed));
-    registry.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
-    registry.add(enemy, Sprite("Enemy"));
+    registry.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
+    registry.add(enemy, Sprite("Enemy", Vector2D(16.0f, 16.0f)));
+    registry.add(enemy, Animation(delta_time, 2, 150));
     registry.add(enemy, Health(5.0f));
+    
 }
 
 void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& collisions)

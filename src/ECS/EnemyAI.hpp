@@ -22,7 +22,7 @@ public:
     {}
     
     void enemyAISystem(Registry& registry);
-    void createEnemy(Registry& registry, const Vector2D& spawn, float speed);
+    void createEnemy(Registry& registry, const Vector2D& spawn, float speed, float delta_time);
     void enemyCollisions(Registry& registry, std::vector<CollisionEvent>& collisions);
 };
 #endif /* EnemyAI_hpp */
