@@ -6,6 +6,7 @@
 #include <random>
 #include <chrono>
 
+
 class Game
 {
 private:
@@ -19,8 +20,10 @@ private:
     Uint64 START_TIME = 0;
     Uint64 LAST_TIME = 0;
     Uint64 RoF = 1000;
-   
+    SDL_Event e;
+
     
+
 public:
     Game();
     ~Game();
@@ -34,6 +37,15 @@ public:
     static void UpdateFPSCounter(float deltaTime);
     static SDL_Renderer *RENDERER;
     
+    enum GameState
+    {
+        STATE_MAIN_MENU,
+        STATE_GAMEPLAY,
+        STATE_PAUSED,
+        STATE_EXIT
+    };
+
+    inline static GameState CURRENT_STATE = STATE_MAIN_MENU;
 };
 
 #endif /* Game_hpp */
