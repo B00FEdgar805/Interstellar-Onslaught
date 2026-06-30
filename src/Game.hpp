@@ -7,6 +7,7 @@
 #include <chrono>
 
 
+
 class Game
 {
 private:
@@ -37,15 +38,6 @@ public:
     static void UpdateFPSCounter(float deltaTime);
     static SDL_Renderer *RENDERER;
     
-    enum GameState
-    {
-        STATE_MAIN_MENU,
-        STATE_GAMEPLAY,
-        STATE_PAUSED,
-        STATE_EXIT
-    };
-
-    inline static GameState CURRENT_STATE = STATE_MAIN_MENU;
 };
 
 #endif /* Game_hpp */

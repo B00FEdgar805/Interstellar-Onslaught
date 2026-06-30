@@ -1,14 +1,8 @@
-//
-//  Button.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 6/18/26.
-//
-
 #ifndef Button_hpp
 #define Button_hpp
 
 #include "Component.hpp"
+#include "../../Globals.hpp"
 #include "../../TextureManager.hpp"
 
 class Button final : public BaseComponent
@@ -16,6 +10,7 @@ class Button final : public BaseComponent
 private:
     std::string TEXTURE_ID;
     SDL_FRect SOURCE, DESTINATION;
+    Globals::GameState BUTTON_STATE;
 
 public:
     Button() = default;
@@ -32,19 +27,26 @@ public:
         DESTINATION.y = destination.y;
     }
     
+    std::function<void()> onClick;
+    
+    void setState(Globals::GameState state)
+    {
+        BUTTON_STATE = state;
+    }
+    
+    Globals::GameState getState()
+    {
+        return BUTTON_STATE;
+    }
+    
     void setButton(int row)
     {
-        SOURCE.y = SOURCE.w * row;
+        SOURCE.y = SOURCE.h * (row - 1);
     }
     
-    void hovering()
+    void hovering(bool hover)
     {
-        SOURCE.x += SOURCE.w;
-    }
-    
-    void reset()
-    {
-        SOURCE.x = 0;
+        SOURCE.x = SOURCE.w * hover;
     }
     
     int x()

@@ -1,10 +1,3 @@
-//
-//  MenuSystem.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 6/22/26.
-//
-
 #ifndef MenuSystem_hpp
 #define MenuSystem_hpp
 
@@ -15,11 +8,17 @@
 class Menu
 {
 private:
-    
+    Registry UI;
+    Entity START = UI.create();
+    Entity OPTIONS = UI.create();
+    Entity QUIT = UI.create();
+
+
+
 public:
-    void buttonSystem(Registry& menu_registry, SDL_Event& e);
-    
-    void renderSystem(Registry& menu_registry, SDL_Renderer* renderer);
+    Menu();
+    void buttonSystem(SDL_Event& e);
+    void renderSystem(SDL_Renderer* renderer);
     
 };
 #endif /* MenuSystem_hpp */

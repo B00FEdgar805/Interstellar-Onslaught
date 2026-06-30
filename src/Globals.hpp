@@ -1,13 +1,16 @@
-//
-//  Globals.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 6/29/26.
-//
-
 #ifndef Globals_hpp
 #define Globals_hpp
 
-#include <stdio.h>
-
+struct Globals
+{
+    enum GameState
+    {
+        STATE_MAIN_MENU,
+        STATE_GAMEPLAY,
+        STATE_PAUSED,
+        STATE_EXIT
+    };
+    
+    inline static GameState CURRENT_STATE = STATE_MAIN_MENU;
+};
 #endif /* Globals_hpp */

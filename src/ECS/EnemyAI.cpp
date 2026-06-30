@@ -1,10 +1,3 @@
-//
-//  EnemyAI.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 6/5/26.
-//
-
 #include "EnemyAI.hpp"
 #include "Components/Enemy.hpp"
 #include "Components/Velocity.hpp"

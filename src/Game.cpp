@@ -17,14 +17,14 @@
 #include "ECS/EnemyAI.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
+#include "Globals.hpp"
 
 // Init ECS system
 
 SDL_Renderer* Game::RENDERER = nullptr;
 Map* map;
 Registry registry;
-Registry menu;
-Entity start_button = menu.create();
+
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
@@ -103,7 +103,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
     TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
-    TextureManager::loadTexture("Start", "Assets/StartButton.png");
+    TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -125,7 +125,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     registry.add(level, Transform(0.0f, 0.0f));
 
     enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
-    menu.add(start_button, Button("Start", Vector2D(400, 320), Vector2D(200, 150)));
     
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
@@ -157,24 +156,26 @@ int Game::run()
             DELTA_TIME = 0.05f;
         }
         
-        switch (CURRENT_STATE)
+        switch (Globals::CURRENT_STATE)
         {
-            case STATE_MAIN_MENU:
-                main_menu.buttonSystem(menu, e);
-                main_menu.renderSystem(menu, RENDERER);
+            case Globals::STATE_MAIN_MENU:
+                main_menu.buttonSystem(e);
+                main_menu.renderSystem(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
-            case STATE_GAMEPLAY:
+            case Globals::STATE_GAMEPLAY:
+                //SDL_Log("Gameplay");
                 handleEvents(); // Handles user inputes
                 update();   // Handlers movemnts systems
                 render();   // Handles any rendering
                 //UpdateFPSCounter(DELTA_TIME);
                 //SDL_Delay(16);
                 break;
-            case STATE_PAUSED:
+            case Globals::STATE_PAUSED:
                 //handlePauseMenuInput(event);
                 break;
-            case STATE_EXIT:
+            case Globals::STATE_EXIT:
+                //SDL_Log("Exited");
                 RUNNING = false;
                 break;
         }
@@ -192,13 +193,13 @@ void Game::handleEvents()
     switch (e.type)     // Handles ending the program
     {
         case SDL_EVENT_QUIT:
-            CURRENT_STATE = STATE_EXIT;
+            Globals::CURRENT_STATE = Globals::STATE_EXIT;
             //RUNNING = false;
             break;
         case SDL_EVENT_KEY_DOWN:
             if (e.key.key == SDLK_ESCAPE)
             {
-                CURRENT_STATE = STATE_EXIT;
+                Globals::CURRENT_STATE = Globals::STATE_EXIT;
                 //RUNNING = false;
             }
             break;
@@ -206,7 +207,7 @@ void Game::handleEvents()
             break;
             
     }
-    if(CURRENT_STATE == STATE_GAMEPLAY)
+    if (Globals::CURRENT_STATE == Globals::STATE_GAMEPLAY)
     {
         systems.playerInputSystem(registry);
     }

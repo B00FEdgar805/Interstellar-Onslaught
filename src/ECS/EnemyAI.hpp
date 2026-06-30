@@ -1,10 +1,3 @@
-//
-//  EnemyAI.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 6/5/26.
-//
-
 #ifndef EnemyAI_hpp
 #define EnemyAI_hpp
 
