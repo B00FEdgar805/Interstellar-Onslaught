@@ -18,28 +18,19 @@
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
 #include "Globals.hpp"
-
 // Init ECS system
 
-SDL_Renderer* Game::RENDERER = nullptr;
-Map* map;
 Registry registry;
-
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
 EnemyAi enemies(player);
-Menu main_menu;
-bool fire = true;
-Camera2D camera(800.0f, 640.0f);
-float timerAccumulator = 0.0f;
-float spawn_time = 5.0f;
-
+Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
 
 Game::Game()
 {
-    init("SDL Game", 800, 640, false);
+    init("SDL Game", GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT, false);
 }
 
 Game::~Game()
@@ -93,9 +84,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     RUNNING = true;
     
     // Inits player and map
-    
-    map = new Map();
-    
+        
     Entity blackhole = registry.create();
     
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
@@ -142,7 +131,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
+    Menu main_menu;
 
+    
     while (isRunning()) // Main game loop
     {
         auto currentTime = std::chrono::steady_clock::now();
@@ -156,14 +147,14 @@ int Game::run()
             DELTA_TIME = 0.05f;
         }
         
-        switch (Globals::CURRENT_STATE)
+        switch (GLOBALS::CURRENT_STATE)
         {
-            case Globals::STATE_MAIN_MENU:
+            case GLOBALS::STATE_MAIN_MENU:
                 main_menu.buttonSystem(e);
                 main_menu.renderSystem(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
-            case Globals::STATE_GAMEPLAY:
+            case GLOBALS::STATE_GAMEPLAY:
                 //SDL_Log("Gameplay");
                 handleEvents(); // Handles user inputes
                 update();   // Handlers movemnts systems
@@ -171,10 +162,10 @@ int Game::run()
                 //UpdateFPSCounter(DELTA_TIME);
                 //SDL_Delay(16);
                 break;
-            case Globals::STATE_PAUSED:
+            case GLOBALS::STATE_PAUSED:
                 //handlePauseMenuInput(event);
                 break;
-            case Globals::STATE_EXIT:
+            case GLOBALS::STATE_EXIT:
                 //SDL_Log("Exited");
                 RUNNING = false;
                 break;
@@ -193,13 +184,13 @@ void Game::handleEvents()
     switch (e.type)     // Handles ending the program
     {
         case SDL_EVENT_QUIT:
-            Globals::CURRENT_STATE = Globals::STATE_EXIT;
+            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
             //RUNNING = false;
             break;
         case SDL_EVENT_KEY_DOWN:
             if (e.key.key == SDLK_ESCAPE)
             {
-                Globals::CURRENT_STATE = Globals::STATE_EXIT;
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
                 //RUNNING = false;
             }
             break;
@@ -207,7 +198,7 @@ void Game::handleEvents()
             break;
             
     }
-    if (Globals::CURRENT_STATE == Globals::STATE_GAMEPLAY)
+    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
         systems.playerInputSystem(registry);
     }
@@ -240,17 +231,9 @@ void Game::update()
         }
     }
     
-    // Spawn enemies in
-            timerAccumulator += DELTA_TIME;
-            if (timerAccumulator >= spawn_time)
-            {
-                // add a way to spawn eneimies left/righ and up/down the viewport
-                enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
-                spawn_time *= 0.95;
-                timerAccumulator = 0.0f;
-            }
     
     systems.movementSystem(registry, DELTA_TIME);
+    enemies.enemySpawnSystem(registry, DELTA_TIME);
     enemies.enemyAISystem(registry);
     enemies.enemyCollisions(registry, collisions);
     projectiles.projectilesCollisons(registry, collisions);

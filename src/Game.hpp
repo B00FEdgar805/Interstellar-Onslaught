@@ -36,7 +36,7 @@ public:
     void clean();
     bool isRunning();
     static void UpdateFPSCounter(float deltaTime);
-    static SDL_Renderer *RENDERER;
+    static inline SDL_Renderer *RENDERER = nullptr;
     
 };
 

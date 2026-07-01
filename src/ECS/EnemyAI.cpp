@@ -96,3 +96,14 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
     }
 }
 
+void EnemyAi::enemySpawnSystem(Registry &registry, float delta)
+{
+    TIMMER_ACCUMELATOR += delta;
+    if (TIMMER_ACCUMELATOR >= SPAWN_TIME)
+    {
+        // add a way to spawn eneimies left/righ and up/down the viewport
+        createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, delta);
+        SPAWN_TIME *= 0.95;
+        TIMMER_ACCUMELATOR = 0.0f;
+    }
+}

@@ -7,7 +7,7 @@ Menu::Menu()
     Button* start = UI.get<Button>(START);
     start -> onClick = []()
     {
-        Globals::CURRENT_STATE = Globals::STATE_GAMEPLAY;
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
     UI.add(OPTIONS, Button("Buttons", Vector2D(300, 300), Vector2D(200, 120)));
@@ -19,7 +19,7 @@ Menu::Menu()
     quit -> setButton(3);
     quit -> onClick = []()
     {
-        Globals::CURRENT_STATE = Globals::STATE_EXIT;
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
     //START_BUTTON = UI.get<Button>(START);
 }

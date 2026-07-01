@@ -2,7 +2,7 @@
 #define Button_hpp
 
 #include "Component.hpp"
-#include "../../Globals.hpp"
+#include "../../GLOBALS.hpp"
 #include "../../TextureManager.hpp"
 
 class Button final : public BaseComponent
@@ -10,7 +10,7 @@ class Button final : public BaseComponent
 private:
     std::string TEXTURE_ID;
     SDL_FRect SOURCE, DESTINATION;
-    Globals::GameState BUTTON_STATE;
+    GLOBALS::GameState BUTTON_STATE;
 
 public:
     Button() = default;
@@ -29,12 +29,12 @@ public:
     
     std::function<void()> onClick;
     
-    void setState(Globals::GameState state)
+    void setState(GLOBALS::GameState state)
     {
         BUTTON_STATE = state;
     }
     
-    Globals::GameState getState()
+    GLOBALS::GameState getState()
     {
         return BUTTON_STATE;
     }
