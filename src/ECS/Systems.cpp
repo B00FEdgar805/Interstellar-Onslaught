@@ -5,6 +5,7 @@
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
 #include "Components/Projectile.hpp"
+#include "Components/Enemy.hpp"
 
 void Systems::playerInputSystem(Registry& registry)
 {
@@ -168,7 +169,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         {
             sprite.draw(angle);
         }
-        else if (registry.has<Projectile>(entity))
+        else if (registry.has<Projectile>(entity) || registry.has<Enemy>(entity))
         {
             Velocity* v = registry.get<Velocity>(entity);
             sprite.draw(v -> directionToDegrees());

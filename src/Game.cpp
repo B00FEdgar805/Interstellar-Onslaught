@@ -16,26 +16,21 @@
 #include "ECS/ProjectileSystem.hpp"
 #include "ECS/EnemyAI.hpp"
 #include "ECS/Components/Health.hpp"
-
+#include "ECS/MenuSystem.hpp"
+#include "Globals.hpp"
 // Init ECS system
 
-SDL_Renderer* Game::RENDERER = nullptr;
-Map* map;
 Registry registry;
 Entity player = registry.create();
 Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
 EnemyAi enemies(player);
-bool fire = true;
-Camera2D camera(800.0f, 640.0f);
-
-
-
+Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
 
 Game::Game()
 {
-    init("SDL Game", 800, 640, false);
+    init("SDL Game", GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT, false);
 }
 
 Game::~Game()
@@ -89,17 +84,15 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     RUNNING = true;
     
     // Inits player and map
-    
-    map = new Map();
-    
+        
     Entity blackhole = registry.create();
     
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy", "Assets/Spaceship.png");
-
+    TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
+    TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -120,7 +113,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 
     registry.add(level, Transform(0.0f, 0.0f));
 
-    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f);
+    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
     
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
@@ -138,7 +131,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
+    Menu main_menu;
 
+    
     while (isRunning()) // Main game loop
     {
         auto currentTime = std::chrono::steady_clock::now();
@@ -151,12 +146,34 @@ int Game::run()
         {
             DELTA_TIME = 0.05f;
         }
-
-        handleEvents(); // Handles user inputes
-        update();   // Handlers movemnts systems
-        render();   // Handles any rendering
-        //UpdateFPSCounter(DELTA_TIME);
-        //SDL_Delay(16);
+        
+        switch (GLOBALS::CURRENT_STATE)
+        {
+            case GLOBALS::STATE_MAIN_MENU:
+                main_menu.buttonSystem(e);
+                main_menu.renderSystem(RENDERER);
+                handleEvents(); // Handles user inputes
+                break;
+            case GLOBALS::STATE_GAMEPLAY:
+                //SDL_Log("Gameplay");
+                handleEvents(); // Handles user inputes
+                update();   // Handlers movemnts systems
+                render();   // Handles any rendering
+                //UpdateFPSCounter(DELTA_TIME);
+                //SDL_Delay(16);
+                break;
+            case GLOBALS::STATE_PAUSED:
+                //DELTA_TIME = 0.0f;
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
+                //handlePauseMenuInput(event);
+                break;
+            case GLOBALS::STATE_EXIT:
+                //SDL_Log("Exited");
+                RUNNING = false;
+                break;
+        }
+    
     }
     
     clean();    // Called when program ends to close safley
@@ -166,24 +183,43 @@ int Game::run()
 
 void Game::handleEvents()
 {
-    SDL_Event e;
     SDL_PollEvent(&e);
     switch (e.type)     // Handles ending the program
     {
         case SDL_EVENT_QUIT:
-            RUNNING = false;
+            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+            //RUNNING = false;
             break;
         case SDL_EVENT_KEY_DOWN:
             if (e.key.key == SDLK_ESCAPE)
             {
-                RUNNING = false;
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                //RUNNING = false;
+            }
+            else if (e.key.key == SDLK_TAB)
+            {
+                if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                {
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+
+                }
+                else
+                {
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                }
+                //SDL_Log("Paued");
             }
             break;
         default:
             break;
             
     }
-    systems.playerInputSystem(registry);    // player inputs
+    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
+    {
+        systems.playerInputSystem(registry);
+    }
 }
 
 void Game::update()
@@ -213,7 +249,9 @@ void Game::update()
         }
     }
     
+    
     systems.movementSystem(registry, DELTA_TIME);
+    enemies.enemySpawnSystem(registry, DELTA_TIME);
     enemies.enemyAISystem(registry);
     enemies.enemyCollisions(registry, collisions);
     projectiles.projectilesCollisons(registry, collisions);

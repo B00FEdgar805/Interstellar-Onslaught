@@ -6,6 +6,8 @@
 #include <random>
 #include <chrono>
 
+
+
 class Game
 {
 private:
@@ -19,8 +21,10 @@ private:
     Uint64 START_TIME = 0;
     Uint64 LAST_TIME = 0;
     Uint64 RoF = 1000;
-   
+    SDL_Event e;
+
     
+
 public:
     Game();
     ~Game();
@@ -32,7 +36,7 @@ public:
     void clean();
     bool isRunning();
     static void UpdateFPSCounter(float deltaTime);
-    static SDL_Renderer *RENDERER;
+    static inline SDL_Renderer *RENDERER = nullptr;
     
 };
 
