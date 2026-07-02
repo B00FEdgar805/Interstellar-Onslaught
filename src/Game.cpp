@@ -163,6 +163,9 @@ int Game::run()
                 //SDL_Delay(16);
                 break;
             case GLOBALS::STATE_PAUSED:
+                //DELTA_TIME = 0.0f;
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
                 //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_EXIT:
@@ -192,6 +195,21 @@ void Game::handleEvents()
             {
                 GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
                 //RUNNING = false;
+            }
+            else if (e.key.key == SDLK_TAB)
+            {
+                if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                {
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+
+                }
+                else
+                {
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                }
+                //SDL_Log("Paued");
             }
             break;
         default:
