@@ -21,12 +21,14 @@
 // Init ECS system
 
 Registry registry;
-Entity player = registry.create();
+Entity PLAYER = registry.create();
 Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
-EnemyAi enemies(player);
+EnemyAi enemies(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
+Menu UI;
+
 
 Game::Game()
 {
@@ -103,13 +105,13 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "blackhole"
     ));
     
-    registry.add(player, Sprite("player"));
-    registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(player, Velocity(150.0f));
-    registry.add(player, PlayerControl());
-    registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
-    registry.add(player, Animation(DELTA_TIME, 3, 150));
-    registry.add(player, Health(100.0f));
+    registry.add(PLAYER, Sprite("player"));
+    registry.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
+    registry.add(PLAYER, Velocity(150.0f));
+    registry.add(PLAYER, PlayerControl());
+    registry.add(PLAYER, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    registry.add(PLAYER, Animation(DELTA_TIME, 3, 150));
+    registry.add(PLAYER, Health(100.0f));
 
     registry.add(level, Transform(0.0f, 0.0f));
 
@@ -131,7 +133,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
-    Menu main_menu;
 
     
     while (isRunning()) // Main game loop
@@ -150,8 +151,8 @@ int Game::run()
         switch (GLOBALS::CURRENT_STATE)
         {
             case GLOBALS::STATE_MAIN_MENU:
-                main_menu.buttonSystem(e);
-                main_menu.renderSystem(RENDERER);
+                UI.buttonSystem(e);
+                UI.renderSystemMain(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
             case GLOBALS::STATE_GAMEPLAY:
@@ -164,6 +165,7 @@ int Game::run()
                 break;
             case GLOBALS::STATE_PAUSED:
                 //DELTA_TIME = 0.0f;
+                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 //handlePauseMenuInput(event);
@@ -262,8 +264,8 @@ void Game::update()
     
     // camera systems
     
-    Transform* player_transform = registry.get<Transform>(player);
-    Velocity* player_velocity = registry.get<Velocity>(player);
+    Transform* player_transform = registry.get<Transform>(PLAYER);
+    Velocity* player_velocity = registry.get<Velocity>(PLAYER);
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
@@ -274,7 +276,7 @@ void Game::update()
     if (current_time - LAST_TIME >= RoF)
     {
         Vector2D pos = player_transform -> position;    // Add offset for better looking sprite
-        projectiles.createProjectile(registry, player, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
+        projectiles.createProjectile(registry, PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
         LAST_TIME = current_time;
     }
     
@@ -287,18 +289,27 @@ void Game::update()
 
 void Game::render()
 {
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
-    {
-        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
-    }
     if (!SDL_RenderClear(RENDERER))
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
-    //map -> drawMap();
     RenderTileMap(registry, camera);
     systems.renderSystem(registry, RENDERER, camera);
+    
+    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+    {
+        UI.renderSystemPause(RENDERER);
+    }
+    
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
+    
+    
+    //map -> drawMap();
+    
     SDL_RenderPresent(RENDERER);
 }
 

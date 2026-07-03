@@ -8,17 +8,20 @@
 class Menu
 {
 private:
-    Registry UI;
-    Entity START = UI.create();
-    Entity OPTIONS = UI.create();
-    Entity QUIT = UI.create();
+    Registry MAIN_MENU;
+    Registry PAUSE_MENU;
+    Entity START_MAIN = MAIN_MENU.create();
+    Entity OPTIONS_MAIN = MAIN_MENU.create();
+    Entity QUIT_MAIN = MAIN_MENU.create();
+    SDL_FRect PAUSE_BACKGROUND;
 
 
 
 public:
     Menu();
     void buttonSystem(SDL_Event& e);
-    void renderSystem(SDL_Renderer* renderer);
+    void renderSystemMain(SDL_Renderer* renderer);
+    void renderSystemPause(SDL_Renderer* renderer);
     
 };
 #endif /* MenuSystem_hpp */

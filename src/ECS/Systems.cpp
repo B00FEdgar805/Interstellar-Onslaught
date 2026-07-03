@@ -6,7 +6,7 @@
 #include "Components/Animation.hpp"
 #include "Components/Projectile.hpp"
 #include "Components/Enemy.hpp"
-
+#include "../Globals.hpp"
 void Systems::playerInputSystem(Registry& registry)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
@@ -161,7 +161,14 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         if (registry.has<Animation>(entity))
         {
             Animation* animation = registry.get<Animation>(entity);
-            sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
+            if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+            {
+                sprite.Animate(0, animation -> speed, animation -> frames);
+            }
+            else
+            {
+                sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
+            }
             //SDL_Log("Working");
         }
         
