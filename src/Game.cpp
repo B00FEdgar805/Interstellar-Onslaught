@@ -18,6 +18,11 @@
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
 #include "Globals.hpp"
+
+#include "imgui.h"
+#include "imgui_impl_sdl3.h"
+#include "imgui_impl_sdlrenderer3.h"
+
 // Init ECS system
 
 Registry registry;
@@ -52,6 +57,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     {
         flags = SDL_WINDOW_RESIZABLE;
     }
+    
+    SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
+    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1"); // or proper DPI hints depending on your rendering backend
     
     // Initialize SDL (video + events)
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -98,7 +106,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
-        Vector2D(320.0f, 180.0f).scale(2),
+        Vector2D(320.0f, 180.0f).scale(1),
         Vector2D(0.0f, 0.0f),
         false,     // isTrigger
         true,     // isStatic
@@ -127,6 +135,11 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     );
 
     registry.add(level, levelMap);
+    
+    if (true)
+    {
+        initIMGUI();
+    }
 
 }
 
@@ -147,6 +160,14 @@ int Game::run()
         {
             DELTA_TIME = 0.05f;
         }
+        
+        ImGui_ImplSDLRenderer3_NewFrame();
+            ImGui_ImplSDL3_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::ShowDemoWindow();
+
+            ImGui::Render();
         
         switch (GLOBALS::CURRENT_STATE)
         {
@@ -186,8 +207,10 @@ int Game::run()
 void Game::handleEvents()
 {
     SDL_PollEvent(&e);
+    ImGui_ImplSDL3_ProcessEvent(&e);
     switch (e.type)     // Handles ending the program
     {
+
         case SDL_EVENT_QUIT:
             GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
             //RUNNING = false;
@@ -275,7 +298,7 @@ void Game::update()
     
     if (current_time - LAST_TIME >= RoF)
     {
-        Vector2D pos = player_transform -> position;    // Add offset for better looking sprite
+        Vector2D pos = player_transform -> position;
         projectiles.createProjectile(registry, PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
         LAST_TIME = current_time;
     }
@@ -309,7 +332,7 @@ void Game::render()
     
     
     //map -> drawMap();
-    
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), RENDERER);
     SDL_RenderPresent(RENDERER);
 }
 
@@ -342,4 +365,32 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
         frames = 0;
         accumulator = 0.0f;
     }
+}
+
+void Game::initIMGUI()
+{
+    IMGUI_CHECKVERSION();
+      ImGui::CreateContext();
+
+      ImGuiIO &io = ImGui::GetIO();
+      (void)io;
+      io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+      io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+      // Setup scaling
+      float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+      ImGuiStyle &style = ImGui::GetStyle();
+      style.ScaleAllSizes(
+          main_scale); // Bake a fixed style scale. (until we have a
+                       // solution for dynamic style scaling, changing this
+                       // requires resetting Style + calling this again)
+                       // makes this unnecessary. We leave both here for
+                       // documentation purpose)
+      style.FontScaleDpi = main_scale;
+
+      style.FontSizeBase = 20.f;
+      io.Fonts->AddFontDefault();
+
+      ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
+      ImGui_ImplSDLRenderer3_Init(RENDERER);
 }

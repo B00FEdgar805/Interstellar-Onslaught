@@ -35,8 +35,10 @@ public:
     void render();
     void clean();
     bool isRunning();
+    void initIMGUI();
     static void UpdateFPSCounter(float deltaTime);
     static inline SDL_Renderer *RENDERER = nullptr;
+    
     
 };
 
