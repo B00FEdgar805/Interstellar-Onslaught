@@ -48,14 +48,15 @@ Game::~Game()
 void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
     int flags = 0;
-    
+    //SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+
     if(fullscreen)
     {
         flags = SDL_WINDOW_FULLSCREEN;
     }
     else
     {
-        flags = SDL_WINDOW_RESIZABLE;
+        flags = SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
@@ -162,12 +163,17 @@ int Game::run()
         }
         
         ImGui_ImplSDLRenderer3_NewFrame();
-            ImGui_ImplSDL3_NewFrame();
-            ImGui::NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
 
-            ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
 
-            ImGui::Render();
+        if (ImGui::Button("Function"))
+        {
+            SDL_Log("Clicked");
+        }
+        
+        ImGui::Render();
         
         switch (GLOBALS::CURRENT_STATE)
         {
@@ -370,27 +376,33 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
 void Game::initIMGUI()
 {
     IMGUI_CHECKVERSION();
-      ImGui::CreateContext();
+    ImGui::CreateContext();
 
-      ImGuiIO &io = ImGui::GetIO();
-      (void)io;
-      io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-      io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
-      // Setup scaling
-      float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-      ImGuiStyle &style = ImGui::GetStyle();
-      style.ScaleAllSizes(
-          main_scale); // Bake a fixed style scale. (until we have a
+    // Setup scaling
+    //float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    ImGuiStyle &style = ImGui::GetStyle();
+    //style.ScaleAllSizes(main_scale); // Bake a fixed style scale. (until we have a
                        // solution for dynamic style scaling, changing this
                        // requires resetting Style + calling this again)
                        // makes this unnecessary. We leave both here for
                        // documentation purpose)
-      style.FontScaleDpi = main_scale;
+    //style.FontScaleDpi = main_scale;
 
-      style.FontSizeBase = 20.f;
-      io.Fonts->AddFontDefault();
+    style.FontSizeBase = 15.0f;
+    style.Colors[ImGuiCol_Button] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(200.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_Border] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
 
-      ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
-      ImGui_ImplSDLRenderer3_Init(RENDERER);
+    style.Colors[ImGuiCol_Text] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    //io.Fonts->AddFontDefault();
+//235, 82, 30
+    ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
+    ImGui_ImplSDLRenderer3_Init(RENDERER);
 }
