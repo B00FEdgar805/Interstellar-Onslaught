@@ -12,6 +12,7 @@ class Game
 {
 private:
     bool RUNNING;
+    bool IMGUI = false;
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;

@@ -162,18 +162,7 @@ int Game::run()
             DELTA_TIME = 0.05f;
         }
         
-        ImGui_ImplSDLRenderer3_NewFrame();
-        ImGui_ImplSDL3_NewFrame();
-        ImGui::NewFrame();
-
-        //ImGui::ShowDemoWindow();
-
-        if (ImGui::Button("Function"))
-        {
-            SDL_Log("Clicked");
-        }
         
-        ImGui::Render();
         
         switch (GLOBALS::CURRENT_STATE)
         {
@@ -242,7 +231,19 @@ void Game::handleEvents()
                 }
                 //SDL_Log("Paued");
             }
+            else if (e.key.key == SDLK_1)
+            {
+                if (IMGUI)
+                {
+                    IMGUI = false;
+                }
+                else
+                {
+                    IMGUI = true;
+                }
+            }
             break;
+        
         default:
             break;
             
@@ -338,6 +339,28 @@ void Game::render()
     
     
     //map -> drawMap();
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
+//    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport() -> ID);
+   //ImGui::ShowDemoWindow();
+    if (IMGUI)
+    {
+        ImGui::Begin("Debug Functions");
+        
+        if (ImGui::Button("Function"))
+        {
+            SDL_Log("Clicked");
+        }
+        ImGui::End();
+        
+       
+    }
+    
+    ImGui::Render();
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), RENDERER);
     SDL_RenderPresent(RENDERER);
 }
@@ -380,9 +403,11 @@ void Game::initIMGUI()
 
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    
     // Setup scaling
     //float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
     ImGuiStyle &style = ImGui::GetStyle();
@@ -399,10 +424,16 @@ void Game::initIMGUI()
     style.Colors[ImGuiCol_Border] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
     style.Colors[ImGuiCol_TitleBgActive] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
     style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_Tab] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TabSelected] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TabDimmed] = ImVec4(200.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
 
-    style.Colors[ImGuiCol_Text] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+
+    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
     //io.Fonts->AddFontDefault();
 //235, 82, 30
     ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
     ImGui_ImplSDLRenderer3_Init(RENDERER);
 }
+
