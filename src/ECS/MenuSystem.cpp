@@ -1,5 +1,6 @@
 #include "MenuSystem.hpp"
 #include "../Globals.hpp"
+#include "../Game.hpp"
 
 Menu::Menu()
 {
@@ -47,11 +48,38 @@ Menu::Menu()
 
 void Menu::buttonSystem(SDL_Event &e)
 {
-    
-    float x = 0.0f;
-    float y = 0.0f;
-    
-    SDL_GetMouseState(&x, &y);
+    float windowX = 0.0f;
+    float windowY = 0.0f;
+
+    // Get mouse in window coordinates
+    SDL_GetMouseState(&windowX, &windowY);
+
+    // Convert window coordinates to logical render coordinates (account for letterboxing)
+    float logicalX = windowX;
+    float logicalY = windowY;
+
+    SDL_Window* window = SDL_GetRenderWindow(Game::RENDERER);
+    if (window)
+    {
+        int winW = 0;
+        int winH = 0;
+        SDL_GetWindowSize(window, &winW, &winH);
+
+        const float logicalW = static_cast<float>(GLOBALS::SCREEN_WIDTH);
+        const float logicalH = static_cast<float>(GLOBALS::SCREEN_HEIGHT);
+
+        // Compute scale used by SDL_LOGICAL_PRESENTATION_LETTERBOX
+        const float scaleX = (logicalW > 0.0f) ? (static_cast<float>(winW) / logicalW) : 1.0f;
+        const float scaleY = (logicalH > 0.0f) ? (static_cast<float>(winH) / logicalH) : 1.0f;
+        const float scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+        const float offsetX = (static_cast<float>(winW) - logicalW * scale) * 0.5f;
+        const float offsetY = (static_cast<float>(winH) - logicalH * scale) * 0.5f;
+
+        logicalX = (windowX - offsetX) / scale;
+        logicalY = (windowY - offsetY) / scale;
+    }
+
     auto view = MAIN_MENU.all<Button>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
@@ -61,7 +89,7 @@ void Menu::buttonSystem(SDL_Event &e)
         const float bw = button.w();
         const float bh = button.h();
         
-        const bool inside = (x >= bx) && (x <= bx + bw) && (y >= by) && (y <= by + bh); // Check if mouse is over button
+        const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh); // Check if mouse is over button
         
         if (inside)
         {
@@ -127,3 +155,4 @@ void Menu::renderSystemPause(SDL_Renderer *renderer)
         //SDL_Log("Working");
     }
 }
+

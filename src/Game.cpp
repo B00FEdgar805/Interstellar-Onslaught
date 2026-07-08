@@ -355,9 +355,13 @@ void Game::render()
         {
             SDL_Log("Clicked");
         }
+        
+        if (ImGui::Button("close"))
+        {
+            IMGUI = false;
+        }
         ImGui::End();
         
-       
     }
     
     ImGui::Render();
@@ -406,7 +410,7 @@ void Game::initIMGUI()
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     
     // Setup scaling
     //float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
