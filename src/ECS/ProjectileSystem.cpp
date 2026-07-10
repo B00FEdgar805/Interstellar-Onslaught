@@ -36,14 +36,14 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
     }
 }
 
-Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed)
+Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage)
 {
     Entity projectile = registry.create();
     //DIRECTION = direction;
     
     registry.add(projectile, Transform(position));
     registry.add(projectile, Velocity(direction, speed));
-    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE, 10.0f, owner));
+    registry.add(projectile, Projectile(500.0f, speed, damage, owner));
     registry.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
     registry.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
     

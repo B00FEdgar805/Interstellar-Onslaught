@@ -17,6 +17,7 @@
 #include "ECS/EnemyAI.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
+#include "ECS/PlayerSystems.hpp"
 #include "Globals.hpp"
 
 #include "imgui.h"
@@ -31,6 +32,7 @@ Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
 EnemyAi enemies(PLAYER);
+PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
 Menu UI;
 
@@ -259,6 +261,7 @@ void Game::update()
    // need to make function for game logic
     std::vector<CollisionEvent> collisions = collisionSystem(registry);
     // Collisions events
+    /*
     for (const CollisionEvent& collision : collisions)
     {
         BoxCollider* a = registry.get<BoxCollider>(collision.a);
@@ -280,6 +283,7 @@ void Game::update()
             SDL_Log("Player touched blackhole!");
         }
     }
+    */
     
     
     systems.movementSystem(registry, DELTA_TIME);
@@ -288,27 +292,20 @@ void Game::update()
     enemies.enemyCollisions(registry, collisions);
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
-
+    playerSystem.fireSystem(projectiles, registry);
     
    
     
     // camera systems
     
     Transform* player_transform = registry.get<Transform>(PLAYER);
-    Velocity* player_velocity = registry.get<Velocity>(PLAYER);
+
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
     }
     
-    Uint64 current_time = SDL_GetTicks();
     
-    if (current_time - LAST_TIME >= RoF)
-    {
-        Vector2D pos = player_transform -> position;
-        projectiles.createProjectile(registry, PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
-        LAST_TIME = current_time;
-    }
     
     TileMap* tilemap = registry.get<TileMap>(level);
     if(tilemap)
@@ -351,9 +348,14 @@ void Game::render()
     {
         ImGui::Begin("Debug Functions");
         
-        if (ImGui::Button("Function"))
+        if (ImGui::Button("Rate of Fire"))
         {
-            SDL_Log("Clicked");
+            playerSystem.upgradeROF(1.1f);
+        }
+        
+        if (ImGui::Button("Speed"))
+        {
+            playerSystem.upgradeSpeed(1.1f, registry);
         }
         
         if (ImGui::Button("close"))

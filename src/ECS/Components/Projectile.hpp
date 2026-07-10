@@ -11,16 +11,14 @@ private:
     float SPEED;
     float DISTANCE = 0;
     float DAMAGE;
-    float RATE_OF_FIRE;
     
 public:
     Entity OWNER;
 
     Projectile() = default;
-    Projectile(int range, float speed, float RoF, float damage, Entity owner)
+    Projectile(int range, float speed, float damage, Entity owner)
     :   RANGE(range),
         SPEED(speed),
-        RATE_OF_FIRE(RoF),
         DAMAGE(damage),
         OWNER(owner)
     {}
@@ -40,7 +38,6 @@ public:
     {
         return DAMAGE;
     }
-    
     
 };
 
