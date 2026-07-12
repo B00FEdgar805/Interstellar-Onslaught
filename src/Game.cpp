@@ -106,6 +106,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
     TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
     TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
+    TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -133,7 +134,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "Level1",
         32,     // tile size in the tileset image
         2,      // how many columns the tileset has
-        2.0f,   // scale: 32px tiles become 64px on screen
+        1.0f,   // scale: 32px tiles become 64px on screen
         0      // empty tile value
     );
 

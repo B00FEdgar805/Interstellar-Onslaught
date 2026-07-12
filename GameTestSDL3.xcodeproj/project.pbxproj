@@ -11,6 +11,8 @@
 		EB1F9BFF2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		EB40CE642F4E62EB00F8FF32 /* libSDL3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */; };
 		EB40CE652F4E62EB00F8FF32 /* libSDL3.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EBF0386D3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EBF0386C3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib */; };
+		EBF0386E3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EBF0386C3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,6 +32,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				EB1F9BFF2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Embed Libraries */,
+				EBF0386E3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib in Embed Libraries */,
 				EB40CE652F4E62EB00F8FF32 /* libSDL3.0.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
@@ -41,6 +44,7 @@
 		EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3_image.0.4.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3_image/3.4.0/lib/libSDL3_image.0.4.0.dylib; sourceTree = "<group>"; };
 		EB40CE582F4E624D00F8FF32 /* GameTestSDL3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GameTestSDL3; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3/3.4.2/lib/libSDL3.0.dylib; sourceTree = "<group>"; };
+		EBF0386C3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3_ttf.0.2.2.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib/libSDL3_ttf.0.2.2.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -62,6 +66,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB1F9BFE2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib in Frameworks */,
+				EBF0386D3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib in Frameworks */,
 				EB40CE642F4E62EB00F8FF32 /* libSDL3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +95,7 @@
 		EB40CE622F4E62EB00F8FF32 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EBF0386C3003D77B00DDDCCA /* libSDL3_ttf.0.2.2.dylib */,
 				EB1F9BFD2F5D06BA0057CC3A /* libSDL3_image.0.4.0.dylib */,
 				EB40CE632F4E62EB00F8FF32 /* libSDL3.0.dylib */,
 			);
@@ -291,11 +297,13 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/Cellar/sdl3/3.4.2/include,
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/include,
+					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/homebrew/Cellar/sdl3/3.4.2/lib,
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
+					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -311,11 +319,13 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/Cellar/sdl3/3.4.2/include,
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/include,
+					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/homebrew/Cellar/sdl3/3.4.2/lib,
 					/opt/homebrew/Cellar/sdl3_image/3.4.0/lib,
+					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;

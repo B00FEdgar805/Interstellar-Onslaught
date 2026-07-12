@@ -4,18 +4,18 @@
 
 Menu::Menu()
 {
-    MAIN_MENU.add(START_MAIN, Button("Buttons", Vector2D(300, 100), Vector2D(200, 120)));
+    MAIN_MENU.add(START_MAIN, Button("MenuButtons", Vector2D(280, 100), SIZE));
     Button* start_main = MAIN_MENU.get<Button>(START_MAIN);
     start_main -> onClick = []()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
-    MAIN_MENU.add(OPTIONS_MAIN, Button("Buttons", Vector2D(300, 300), Vector2D(200, 120)));
+    MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(280, 164), SIZE));
     Button* options_main = MAIN_MENU.get<Button>(OPTIONS_MAIN);
     options_main -> setButton(2);
     
-    MAIN_MENU.add(QUIT_MAIN, Button("Buttons", Vector2D(300, 500), Vector2D(200, 120)));
+    MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(280, 228), SIZE));
     Button* quit_main = MAIN_MENU.get<Button>(QUIT_MAIN);
     quit_main -> setButton(3);
     quit_main -> onClick = []()
@@ -96,6 +96,7 @@ void Menu::buttonSystem(SDL_Event &e)
             button.hovering(inside);
             if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)  // On button press
             {
+                //button.hovering(2);
                 button.onClick();
                 //CURRENT_STATE = STATE_GAMEPLAY;
                 //std::cout << CURRENT_STATE << std::endl;

@@ -4,6 +4,7 @@
 #include "Registry.hpp"
 #include "Components/Button.hpp"
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 class Menu
 {
@@ -14,6 +15,7 @@ private:
     Entity OPTIONS_MAIN = MAIN_MENU.create();
     Entity QUIT_MAIN = MAIN_MENU.create();
     SDL_FRect PAUSE_BACKGROUND;
+    const Vector2D SIZE = {80,32};
 
 
 

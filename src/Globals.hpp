@@ -12,9 +12,9 @@ struct GLOBALS
     };
     
     inline static GameState CURRENT_STATE = STATE_MAIN_MENU;
-    static const int SCREEN_HEIGHT = 640;
-    static const int SCREEN_WIDTH = 800;
-    //static float DELTA_TIME;
+    // 640 by 360
+    static const int SCREEN_HEIGHT = 360; //640;
+    static const int SCREEN_WIDTH = 640; //800;
     
 };
 #endif /* Globals_hpp */
