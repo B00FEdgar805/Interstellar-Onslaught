@@ -17,10 +17,9 @@ private:
     SDL_FRect PAUSE_BACKGROUND;
     const Vector2D SIZE = {80,32};
 
-
-
 public:
     Menu();
+    void initText();
     void buttonSystem(SDL_Event& e);
     void renderSystemMain(SDL_Renderer* renderer);
     void renderSystemPause(SDL_Renderer* renderer);

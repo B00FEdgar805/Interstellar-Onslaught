@@ -1,6 +1,7 @@
 #include "MenuSystem.hpp"
 #include "../Globals.hpp"
 #include "../Game.hpp"
+#include "../TextManager.hpp"
 
 Menu::Menu()
 {
@@ -22,29 +23,15 @@ Menu::Menu()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
-    //START_BUTTON = UI.get<Button>(START);
-    /*
-    PAUSE_MENU.add(START_MAIN, Button("Buttons", Vector2D(300, 100), Vector2D(200, 120)));
-    Button* start_pause = PAUSE_MENU.get<Button>(START_MAIN);
-    start_pause -> onClick = []()
-    {
-        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-    };
     
-    PAUSE_MENU.add(OPTIONS_MAIN, Button("Buttons", Vector2D(300, 300), Vector2D(200, 120)));
-    Button* options_pause = PAUSE_MENU.get<Button>(OPTIONS_MAIN);
-    options_pause -> setButton(2);
-    
-    PAUSE_MENU.add(QUIT_MAIN, Button("Buttons", Vector2D(300, 500), Vector2D(200, 120)));
-    Button* quit_pause = PAUSE_MENU.get<Button>(QUIT_MAIN);
-    quit_pause -> setButton(3);
-    quit_pause -> onClick = []()
-    {
-        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-    };
-    */
 }
 
+void Menu::initText()
+{
+    TextManager::createLabel("Start", "Default", "Start", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Options", "Default", "Options", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Quit", "Default", "Quit", SDL_Color(255,255,255,255));
+}
 
 void Menu::buttonSystem(SDL_Event &e)
 {
@@ -132,6 +119,10 @@ void Menu::renderSystemMain(SDL_Renderer *renderer)
         SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
     }
     
+    TextManager::drawLabel("Start", 290, 100);
+    TextManager::drawLabel("Options", 290, 164);
+    TextManager::drawLabel("Quit", 290, 228);
+    
     SDL_RenderPresent(renderer);
 
 }
@@ -155,5 +146,9 @@ void Menu::renderSystemPause(SDL_Renderer *renderer)
         button.draw();
         //SDL_Log("Working");
     }
+    
+    TextManager::drawLabel("Start", 290, 100);
+    TextManager::drawLabel("Options", 290, 164);
+    TextManager::drawLabel("Quit", 290, 228);
 }
 

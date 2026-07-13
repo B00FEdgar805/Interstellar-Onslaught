@@ -35,7 +35,7 @@ ProjectileSystem projectiles;
 EnemyAi enemies(PLAYER);
 PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
-TextManager text;
+//TextManager text;
 Menu UI;
 
 
@@ -89,6 +89,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_DestroyWindow(WINDOW);
         SDL_Quit();
     }
+    
+    TextManager::init(RENDERER);
+    TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
+    TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
+    UI.initText();
+    
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
@@ -96,7 +102,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     LAST_TIME = START_TIME;
     
     
-    RUNNING = true;
+    
     
     // Inits player and map
         
@@ -141,14 +147,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     );
 
     registry.add(level, levelMap);
-    text.init(RENDERER);
-    text.loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 12.0f);
-    text.createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
+    
     
     if (true)
     {
         initIMGUI();
     }
+    
+    RUNNING = true;
 
 }
 
@@ -347,7 +353,7 @@ void Game::render()
     ImGui::NewFrame();
     //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-    text.drawLabel("Testing", 100, 100);
+    //TextManager::drawLabel("Testing", 100, 100);
 //    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport() -> ID);
    //ImGui::ShowDemoWindow();
     if (IMGUI)
@@ -381,7 +387,7 @@ void Game::clean()
 {
     // Cleanup
     TextureManager::clear();
-    text.shutdown();
+    TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();

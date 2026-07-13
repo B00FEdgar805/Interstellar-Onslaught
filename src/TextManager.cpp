@@ -7,8 +7,14 @@
 
 #include "TextManager.hpp"
 
+TTF_TextEngine* TextManager::TEXT_ENGINE;
+bool TextManager::TTF_STARTED = false;
+std::unordered_map<std::string, TTF_Font*> TextManager::FONTS;
+std::unordered_map<std::string, TTF_Text*> TextManager::LABELS;
+
 bool TextManager::init(SDL_Renderer *renderer)
 {
+    //TTF_STARTED = false;
     if (!renderer)
     {
         SDL_Log("TextManager::init failed: renderer was null");
@@ -30,6 +36,8 @@ bool TextManager::init(SDL_Renderer *renderer)
         shutdown();
         return false;
     }
+    
+    //SDL_Log("Init");
 
     return true;
 }
