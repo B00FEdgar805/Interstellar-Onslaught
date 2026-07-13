@@ -15,6 +15,5 @@ struct GLOBALS
     // 640 by 360
     static const int SCREEN_HEIGHT = 360; //640;
     static const int SCREEN_WIDTH = 640; //800;
-    
 };
 #endif /* Globals_hpp */

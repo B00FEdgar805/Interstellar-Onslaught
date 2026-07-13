@@ -19,6 +19,7 @@
 #include "ECS/MenuSystem.hpp"
 #include "ECS/PlayerSystems.hpp"
 #include "Globals.hpp"
+#include "TextManager.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -34,6 +35,7 @@ ProjectileSystem projectiles;
 EnemyAi enemies(PLAYER);
 PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
+TextManager text;
 Menu UI;
 
 
@@ -139,6 +141,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     );
 
     registry.add(level, levelMap);
+    text.init(RENDERER);
+    text.loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 12.0f);
+    text.createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
     
     if (true)
     {
@@ -342,7 +347,7 @@ void Game::render()
     ImGui::NewFrame();
     //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-
+    text.drawLabel("Testing", 100, 100);
 //    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport() -> ID);
    //ImGui::ShowDemoWindow();
     if (IMGUI)
@@ -376,6 +381,7 @@ void Game::clean()
 {
     // Cleanup
     TextureManager::clear();
+    text.shutdown();
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();
