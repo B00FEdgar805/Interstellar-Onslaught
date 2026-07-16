@@ -59,4 +59,11 @@ private:
 
 };
 
+struct COLORS
+{
+    static constexpr SDL_Color WHITE = SDL_Color(255,255,255,255);
+    static constexpr SDL_Color BLACK = SDL_Color(0,0,0,255);
+
+};
+
 #endif /* TextManager_hpp */

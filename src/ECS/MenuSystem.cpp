@@ -5,18 +5,18 @@
 
 Menu::Menu()
 {
-    MAIN_MENU.add(START_MAIN, Button("MenuButtons", Vector2D(280, 100), SIZE));
+    MAIN_MENU.add(START_MAIN, Button("MenuButtons", Vector2D(280, 100), SIZE_MENU));
     Button* start_main = MAIN_MENU.get<Button>(START_MAIN);
     start_main -> onClick = []()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
-    MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(280, 164), SIZE));
+    MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(280, 164), SIZE_MENU));
     Button* options_main = MAIN_MENU.get<Button>(OPTIONS_MAIN);
     options_main -> setButton(2);
     
-    MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(280, 228), SIZE));
+    MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(280, 228), SIZE_MENU));
     Button* quit_main = MAIN_MENU.get<Button>(QUIT_MAIN);
     quit_main -> setButton(3);
     quit_main -> onClick = []()
@@ -24,13 +24,38 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
     
+    UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
+    Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
+    upgrade_l -> onClick = []()
+    {
+        SDL_Log("Left");
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    UPGRADE_MENU.add(UPGRADE_M, Button("UpgradeButton", Vector2D(220,80), SIZE_UPGRADE));
+    Button* upgrade_m = UPGRADE_MENU.get<Button>(UPGRADE_M);
+    upgrade_m -> onClick = []()
+    {
+        SDL_Log("Middle");
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    UPGRADE_MENU.add(UPGRADE_R, Button("UpgradeButton", Vector2D(430,80), SIZE_UPGRADE));
+    Button* upgrade_r = UPGRADE_MENU.get<Button>(UPGRADE_R);
+    upgrade_r -> onClick = []()
+    {
+        SDL_Log("Right");
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+
 }
 
 void Menu::initText()
 {
-    TextManager::createLabel("Start", "Default", "Start", SDL_Color(255,255,255,255));
-    TextManager::createLabel("Options", "Default", "Options", SDL_Color(255,255,255,255));
-    TextManager::createLabel("Quit", "Default", "Quit", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Start", "Default", "Start", COLORS::WHITE);
+    TextManager::createLabel("Continue", "Default", "Continue", COLORS::WHITE);
+    TextManager::createLabel("Options", "Default", "Options", COLORS::WHITE);
+    TextManager::createLabel("Quit", "Default", "Quit", COLORS::WHITE);
 }
 
 void Menu::buttonSystem(SDL_Event &e)
@@ -66,33 +91,93 @@ void Menu::buttonSystem(SDL_Event &e)
         logicalX = (windowX - offsetX) / scale;
         logicalY = (windowY - offsetY) / scale;
     }
-
-    auto view = MAIN_MENU.all<Button>();
-    for (size_t i = 0; i < view.entities.size(); ++i)
+    // Select and iterate the appropriate button view based on current state without copying DenseView
+    switch (GLOBALS::CURRENT_STATE)
     {
-        Button& button = view.components[i];    // Get mouse location
-        const float bx = button.x();
-        const float by = button.y();
-        const float bw = button.w();
-        const float bh = button.h();
-        
-        const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh); // Check if mouse is over button
-        
-        if (inside)
+        case GLOBALS::STATE_MAIN_MENU:
+        case GLOBALS::STATE_PAUSED:
         {
-            button.hovering(inside);
-            if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)  // On button press
+            auto view = MAIN_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
             {
-                //button.hovering(2);
-                button.onClick();
-                //CURRENT_STATE = STATE_GAMEPLAY;
-                //std::cout << CURRENT_STATE << std::endl;
-                
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    {
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside);
+                }
             }
+            break;
         }
-        else
+        case GLOBALS::STATE_UPGRADE:
         {
-            button.hovering(inside);
+            auto view = UPGRADE_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    {
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside);
+                }
+            }
+            break;
+        }
+        default:
+        {
+            auto view = MAIN_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    {
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside);
+                }
+            }
+            break;
         }
     }
 }
@@ -147,8 +232,44 @@ void Menu::renderSystemPause(SDL_Renderer *renderer)
         //SDL_Log("Working");
     }
     
-    TextManager::drawLabel("Start", 290, 100);
-    TextManager::drawLabel("Options", 290, 164);
-    TextManager::drawLabel("Quit", 290, 228);
+    TextManager::drawLabel("Continue", 285, 100);
+    TextManager::drawLabel("Options", 285, 164);
+    TextManager::drawLabel("Quit", 285, 228);
 }
+
+void Menu::renderSystemUpgrade(SDL_Renderer *renderer)
+{
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    
+    if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
+    
+    PAUSE_BACKGROUND = {0,0, GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT};
+    SDL_RenderFillRect(renderer, &PAUSE_BACKGROUND);
+    
+    auto view = UPGRADE_MENU.all<Button>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Button& button = view.components[i];
+        button.draw();
+        //SDL_Log("Working");
+    }
+}
+void Menu::renderUI(SDL_Renderer *renderer)
+{
+    switch (GLOBALS::CURRENT_STATE)
+    {
+        case GLOBALS::STATE_PAUSED:
+            renderSystemPause(renderer);
+            break;
+        case GLOBALS::STATE_UPGRADE:
+            renderSystemUpgrade(renderer);
+            break;
+        default:
+            break;
+    }
+}
+
 

@@ -115,6 +115,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
     TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
+    TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
+    TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -200,6 +202,11 @@ int Game::run()
                 render();   // Handles any rendering
                 //handlePauseMenuInput(event);
                 break;
+            case GLOBALS::STATE_UPGRADE:
+                UI.buttonSystem(e);
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
+                break;
             case GLOBALS::STATE_EXIT:
                 //SDL_Log("Exited");
                 RUNNING = false;
@@ -255,6 +262,10 @@ void Game::handleEvents()
                 {
                     IMGUI = true;
                 }
+            }
+            else if (e.key.key == SDLK_2)
+            {
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
             }
             break;
         
@@ -336,10 +347,7 @@ void Game::render()
     RenderTileMap(registry, camera);
     systems.renderSystem(registry, RENDERER, camera);
     
-    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
-    {
-        UI.renderSystemPause(RENDERER);
-    }
+    UI.renderUI(RENDERER);
     
     if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
     {

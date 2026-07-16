@@ -8,6 +8,7 @@ struct GLOBALS
         STATE_MAIN_MENU,
         STATE_GAMEPLAY,
         STATE_PAUSED,
+        STATE_UPGRADE,
         STATE_EXIT
     };
     
@@ -16,4 +17,7 @@ struct GLOBALS
     static const int SCREEN_HEIGHT = 360; //640;
     static const int SCREEN_WIDTH = 640; //800;
 };
+
+
+
 #endif /* Globals_hpp */
