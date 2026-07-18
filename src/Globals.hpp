@@ -16,6 +16,7 @@ struct GLOBALS
     // 640 by 360
     static const int SCREEN_HEIGHT = 360; //640;
     static const int SCREEN_WIDTH = 640; //800;
+    inline static bool COLLISION_BOXES = false;
 };
 
 

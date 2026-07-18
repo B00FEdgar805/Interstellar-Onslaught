@@ -232,47 +232,46 @@ void Game::handleEvents()
             //RUNNING = false;
             break;
         case SDL_EVENT_KEY_DOWN:
-            if (e.key.key == SDLK_ESCAPE)
+            switch (e.key.key)
             {
-                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                //RUNNING = false;
-            }
-            else if (e.key.key == SDLK_TAB)
-            {
-                if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
-                {
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                case SDLK_ESCAPE:
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                    break;
+                case SDLK_TAB:
+                    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                    {
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
 
-                }
-                else
-                {
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
-                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-                }
-                //SDL_Log("Paued");
+                    }
+                    else
+                    {
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                    }
+                    break;
+                case SDLK_1:
+                    if (IMGUI)
+                    {
+                        IMGUI = false;
+                    }
+                    else
+                    {
+                        IMGUI = true;
+                    }
+                    break;
+                case SDLK_2:
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+                    break;
+                default:
+                    break;
             }
-            else if (e.key.key == SDLK_1)
-            {
-                if (IMGUI)
-                {
-                    IMGUI = false;
-                }
-                else
-                {
-                    IMGUI = true;
-                }
-            }
-            else if (e.key.key == SDLK_2)
-            {
-                GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-            }
-            break;
-        
+            
         default:
             break;
             
     }
+    
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
         systems.playerInputSystem(registry);
@@ -382,6 +381,20 @@ void Game::render()
         {
             IMGUI = false;
         }
+        
+        if(ImGui::Button("BoxColliders"))
+        {
+            if (GLOBALS::COLLISION_BOXES)
+            {
+                GLOBALS::COLLISION_BOXES = false;
+            }
+            else
+            {
+                GLOBALS::COLLISION_BOXES = true;
+
+            }
+        }
+        
         ImGui::End();
         
     }

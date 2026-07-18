@@ -36,6 +36,18 @@ public:
           isStatic(isStatic),
           tag(std::move(tag))
     {}
+    
+    SDL_FRect getBoxCollider(const Vector2D& position)
+    {
+        SDL_FRect rect;
+
+        rect.x = position.x + offset.x;
+        rect.y = position.y + offset.y;
+        rect.w = size.x;
+        rect.h = size.y;
+
+        return rect;
+    }
 };
 
 

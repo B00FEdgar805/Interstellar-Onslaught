@@ -294,7 +294,7 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
                 {
                     continue;
                 }
-                
+                                
                 CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
                 
                 collisions.push_back(event);
@@ -308,3 +308,4 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
     }
     return collisions;
 }
+

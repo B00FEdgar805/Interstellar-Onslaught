@@ -28,7 +28,7 @@ Menu::Menu()
     Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
     upgrade_l -> onClick = []()
     {
-        SDL_Log("Left");
+        //SDL_Log("Left");
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
@@ -36,7 +36,7 @@ Menu::Menu()
     Button* upgrade_m = UPGRADE_MENU.get<Button>(UPGRADE_M);
     upgrade_m -> onClick = []()
     {
-        SDL_Log("Middle");
+        //SDL_Log("Middle");
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
@@ -44,7 +44,7 @@ Menu::Menu()
     Button* upgrade_r = UPGRADE_MENU.get<Button>(UPGRADE_R);
     upgrade_r -> onClick = []()
     {
-        SDL_Log("Right");
+        //SDL_Log("Right");
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
 

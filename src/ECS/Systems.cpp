@@ -6,7 +6,9 @@
 #include "Components/Animation.hpp"
 #include "Components/Projectile.hpp"
 #include "Components/Enemy.hpp"
+#include "Components/BoxCollider.hpp"
 #include "../Globals.hpp"
+
 void Systems::playerInputSystem(Registry& registry)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
@@ -151,6 +153,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
        // sprite.setPosition(transform -> position);
         
+        
         sprite.setRect(screenDestination);
         
         //SDL_Log("%f", transform -> x);
@@ -186,6 +189,19 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
             sprite.draw();
         }
         
+        if (GLOBALS::COLLISION_BOXES && registry.has<BoxCollider>(entity))
+        {
+            BoxCollider* b = registry.get<BoxCollider>(entity);
+            Vector2D position = {screenDestination.x , screenDestination.y};
+            SDL_FRect rect = b -> getBoxCollider(position);
+            
+            if (!SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255))
+            {
+                SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+            }
+            
+            SDL_RenderRect(renderer, &rect);
+        }
         //SDL_Log("Render system working");
         
     }

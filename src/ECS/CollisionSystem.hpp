@@ -4,6 +4,7 @@
 #include "Registry.hpp"
 #include "Types.hpp"
 #include "Math.hpp"
+#include "SDL3/SDL.h"
 
 struct CollisionEvent
 {
@@ -20,6 +21,5 @@ struct CollisionEvent
 };
 
 std::vector<CollisionEvent> collisionSystem(Registry& registry,bool resolveSolidCollisions = true);
-
 
 #endif /* CollisionSystem_hpp */
