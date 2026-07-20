@@ -22,4 +22,11 @@ struct CollisionEvent
 
 std::vector<CollisionEvent> collisionSystem(Registry& registry,bool resolveSolidCollisions = true);
 
+inline std::vector<Entity>& deadEntities()
+{
+    static std::vector<Entity> deadEntities;
+    return deadEntities;
+}
+
+
 #endif /* CollisionSystem_hpp */

@@ -91,8 +91,6 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
                // SDL_Log("Dead");
             }
         }
-         
-        
     }
 }
 

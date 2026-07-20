@@ -20,6 +20,7 @@
 #include "ECS/PlayerSystems.hpp"
 #include "Globals.hpp"
 #include "TextManager.hpp"
+#include "ECS/XPSystem.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -35,6 +36,8 @@ ProjectileSystem projectiles;
 EnemyAi enemies(PLAYER);
 PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
+XPSystem xp;
+
 //TextManager text;
 Menu UI;
 
@@ -117,6 +120,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
     TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
     TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
+    TextureManager::loadTexture("XP", "Assets/XPDrop.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
@@ -281,7 +285,6 @@ void Game::handleEvents()
 void Game::update()
 {
    // need to make function for game logic
-    std::vector<CollisionEvent> collisions = collisionSystem(registry);
     // Collisions events
     /*
     for (const CollisionEvent& collision : collisions)
@@ -311,7 +314,11 @@ void Game::update()
     systems.movementSystem(registry, DELTA_TIME);
     enemies.enemySpawnSystem(registry, DELTA_TIME);
     enemies.enemyAISystem(registry);
+    
+    std::vector<CollisionEvent> collisions = collisionSystem(registry);
+
     enemies.enemyCollisions(registry, collisions);
+    xp.XPCollisions(registry, collisions);
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
     playerSystem.fireSystem(projectiles, registry);
@@ -327,12 +334,16 @@ void Game::update()
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
     }
     
-    
-    
     TileMap* tilemap = registry.get<TileMap>(level);
     if(tilemap)
     {
         camera.clampToWorld(tilemap -> mapWidth * tilemap -> worldTileSize(), tilemap -> mapHeight * tilemap -> worldTileSize());
+    }
+    
+    for(Entity entity: deadEntities())    // Destroys any projectiles that have had collsions
+    {
+        //SDL_Log("called");
+        registry.destroy(entity);
     }
 }
 
