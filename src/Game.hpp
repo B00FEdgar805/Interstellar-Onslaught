@@ -12,6 +12,7 @@ class Game
 {
 private:
     bool RUNNING;
+    bool IMGUI = false;
     Uint64 FRAME_START;
     int FRAME_TIME;
     SDL_Window *WINDOW;
@@ -20,7 +21,7 @@ private:
     // Timer
     Uint64 START_TIME = 0;
     Uint64 LAST_TIME = 0;
-    Uint64 RoF = 1000;
+    //Uint64 RoF = 1000;
     SDL_Event e;
 
     
@@ -35,8 +36,10 @@ public:
     void render();
     void clean();
     bool isRunning();
+    void initIMGUI();
     static void UpdateFPSCounter(float deltaTime);
     static inline SDL_Renderer *RENDERER = nullptr;
+    
     
 };
 

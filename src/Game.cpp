@@ -17,16 +17,30 @@
 #include "ECS/EnemyAI.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
+#include "ECS/PlayerSystems.hpp"
 #include "Globals.hpp"
+#include "TextManager.hpp"
+#include "ECS/XPSystem.hpp"
+
+#include "imgui.h"
+#include "imgui_impl_sdl3.h"
+#include "imgui_impl_sdlrenderer3.h"
+
 // Init ECS system
 
 Registry registry;
-Entity player = registry.create();
+Entity PLAYER = registry.create();
 Entity level = registry.create();
 Systems systems;
 ProjectileSystem projectiles;
-EnemyAi enemies(player);
+EnemyAi enemies(PLAYER);
+PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
+XPSystem xp;
+
+//TextManager text;
+Menu UI;
+
 
 Game::Game()
 {
@@ -41,15 +55,19 @@ Game::~Game()
 void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
     int flags = 0;
-    
+    //SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+
     if(fullscreen)
     {
         flags = SDL_WINDOW_FULLSCREEN;
     }
     else
     {
-        flags = SDL_WINDOW_RESIZABLE;
+        flags = SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     }
+    
+    SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
+    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1"); // or proper DPI hints depending on your rendering backend
     
     // Initialize SDL (video + events)
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -74,6 +92,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_DestroyWindow(WINDOW);
         SDL_Quit();
     }
+    
+    TextManager::init(RENDERER);
+    TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
+    TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
+    UI.initText(registry, playerSystem);
+    
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
@@ -81,7 +105,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     LAST_TIME = START_TIME;
     
     
-    RUNNING = true;
+    
     
     // Inits player and map
         
@@ -93,23 +117,27 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
     TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
     TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
+    TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
+    TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
+    TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
+    TextureManager::loadTexture("XP", "Assets/XPDrop.png");
     registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     registry.add(blackhole, BoxCollider(
-        Vector2D(320.0f, 180.0f).scale(2),
+        Vector2D(320.0f, 180.0f).scale(1),
         Vector2D(0.0f, 0.0f),
         false,     // isTrigger
         true,     // isStatic
         "blackhole"
     ));
     
-    registry.add(player, Sprite("player"));
-    registry.add(player, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(player, Velocity(150.0f));
-    registry.add(player, PlayerControl());
-    registry.add(player, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
-    registry.add(player, Animation(DELTA_TIME, 3, 150));
-    registry.add(player, Health(100.0f));
+    registry.add(PLAYER, Sprite("player"));
+    registry.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
+    registry.add(PLAYER, Velocity(150.0f));
+    registry.add(PLAYER, PlayerControl());
+    registry.add(PLAYER, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    registry.add(PLAYER, Animation(DELTA_TIME, 3, 150));
+    registry.add(PLAYER, Health(100.0f));
 
     registry.add(level, Transform(0.0f, 0.0f));
 
@@ -120,18 +148,25 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "Level1",
         32,     // tile size in the tileset image
         2,      // how many columns the tileset has
-        2.0f,   // scale: 32px tiles become 64px on screen
+        1.0f,   // scale: 32px tiles become 64px on screen
         0      // empty tile value
     );
 
     registry.add(level, levelMap);
+    
+    
+    if (true)
+    {
+        initIMGUI();
+    }
+    
+    RUNNING = true;
 
 }
 
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
-    Menu main_menu;
 
     
     while (isRunning()) // Main game loop
@@ -147,11 +182,13 @@ int Game::run()
             DELTA_TIME = 0.05f;
         }
         
+        
+        
         switch (GLOBALS::CURRENT_STATE)
         {
             case GLOBALS::STATE_MAIN_MENU:
-                main_menu.buttonSystem(e);
-                main_menu.renderSystem(RENDERER);
+                UI.buttonSystem(e);
+                UI.renderSystemMain(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
             case GLOBALS::STATE_GAMEPLAY:
@@ -164,9 +201,15 @@ int Game::run()
                 break;
             case GLOBALS::STATE_PAUSED:
                 //DELTA_TIME = 0.0f;
+                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 //handlePauseMenuInput(event);
+                break;
+            case GLOBALS::STATE_UPGRADE:
+                UI.buttonSystem(e);
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
                 break;
             case GLOBALS::STATE_EXIT:
                 //SDL_Log("Exited");
@@ -184,38 +227,55 @@ int Game::run()
 void Game::handleEvents()
 {
     SDL_PollEvent(&e);
+    ImGui_ImplSDL3_ProcessEvent(&e);
     switch (e.type)     // Handles ending the program
     {
+
         case SDL_EVENT_QUIT:
             GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
             //RUNNING = false;
             break;
         case SDL_EVENT_KEY_DOWN:
-            if (e.key.key == SDLK_ESCAPE)
+            switch (e.key.key)
             {
-                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                //RUNNING = false;
-            }
-            else if (e.key.key == SDLK_TAB)
-            {
-                if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
-                {
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                case SDLK_ESCAPE:
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                    break;
+                case SDLK_TAB:
+                    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                    {
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
 
-                }
-                else
-                {
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
-                    //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-                }
-                //SDL_Log("Paued");
+                    }
+                    else
+                    {
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
+                    }
+                    break;
+                case SDLK_1:
+                    if (IMGUI)
+                    {
+                        IMGUI = false;
+                    }
+                    else
+                    {
+                        IMGUI = true;
+                    }
+                    break;
+                case SDLK_2:
+                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+                    break;
+                default:
+                    break;
             }
-            break;
+            
         default:
             break;
             
     }
+    
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
         systems.playerInputSystem(registry);
@@ -225,8 +285,8 @@ void Game::handleEvents()
 void Game::update()
 {
    // need to make function for game logic
-    std::vector<CollisionEvent> collisions = collisionSystem(registry);
     // Collisions events
+    /*
     for (const CollisionEvent& collision : collisions)
     {
         BoxCollider* a = registry.get<BoxCollider>(collision.a);
@@ -248,34 +308,30 @@ void Game::update()
             SDL_Log("Player touched blackhole!");
         }
     }
+    */
     
     
     systems.movementSystem(registry, DELTA_TIME);
     enemies.enemySpawnSystem(registry, DELTA_TIME);
     enemies.enemyAISystem(registry);
+    
+    std::vector<CollisionEvent> collisions = collisionSystem(registry);
+
     enemies.enemyCollisions(registry, collisions);
+    xp.XPCollisions(registry, collisions, playerSystem);
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
-
+    playerSystem.fireSystem(projectiles, registry);
     
    
     
     // camera systems
     
-    Transform* player_transform = registry.get<Transform>(player);
-    Velocity* player_velocity = registry.get<Velocity>(player);
+    Transform* player_transform = registry.get<Transform>(PLAYER);
+
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
-    }
-    
-    Uint64 current_time = SDL_GetTicks();
-    
-    if (current_time - LAST_TIME >= RoF)
-    {
-        Vector2D pos = player_transform -> position;    // Add offset for better looking sprite
-        projectiles.createProjectile(registry, player, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f);
-        LAST_TIME = current_time;
     }
     
     TileMap* tilemap = registry.get<TileMap>(level);
@@ -283,22 +339,79 @@ void Game::update()
     {
         camera.clampToWorld(tilemap -> mapWidth * tilemap -> worldTileSize(), tilemap -> mapHeight * tilemap -> worldTileSize());
     }
+    
+    for(Entity entity: deadEntities())    // Destroys any projectiles that have had collsions
+    {
+        //SDL_Log("called");
+        registry.destroy(entity);
+    }
 }
 
 void Game::render()
 {
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
-    {
-        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
-    }
     if (!SDL_RenderClear(RENDERER))
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
-    //map -> drawMap();
     RenderTileMap(registry, camera);
     systems.renderSystem(registry, RENDERER, camera);
+    
+    UI.renderUI(RENDERER);
+    
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
+    
+    
+    //map -> drawMap();
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+    //TextManager::drawLabel("Testing", 100, 100);
+//    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport() -> ID);
+   //ImGui::ShowDemoWindow();
+    if (IMGUI)
+    {
+        ImGui::Begin("Debug Functions");
+        
+        if (ImGui::Button("Rate of Fire"))
+        {
+            playerSystem.upgradeROF(1.1f);
+        }
+        
+        if (ImGui::Button("Speed"))
+        {
+            playerSystem.upgradeSpeed(1.1f, registry);
+        }
+        
+        if (ImGui::Button("close"))
+        {
+            IMGUI = false;
+        }
+        
+        if(ImGui::Button("BoxColliders"))
+        {
+            if (GLOBALS::COLLISION_BOXES)
+            {
+                GLOBALS::COLLISION_BOXES = false;
+            }
+            else
+            {
+                GLOBALS::COLLISION_BOXES = true;
+
+            }
+        }
+        
+        ImGui::End();
+        
+    }
+    
+    ImGui::Render();
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), RENDERER);
     SDL_RenderPresent(RENDERER);
 }
 
@@ -306,6 +419,7 @@ void Game::clean()
 {
     // Cleanup
     TextureManager::clear();
+    TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();
@@ -332,3 +446,45 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
         accumulator = 0.0f;
     }
 }
+
+void Game::initIMGUI()
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    
+    // Setup scaling
+    //float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    ImGuiStyle &style = ImGui::GetStyle();
+    //style.ScaleAllSizes(main_scale); // Bake a fixed style scale. (until we have a
+                       // solution for dynamic style scaling, changing this
+                       // requires resetting Style + calling this again)
+                       // makes this unnecessary. We leave both here for
+                       // documentation purpose)
+    //style.FontScaleDpi = main_scale;
+
+    style.FontSizeBase = 15.0f;
+    style.Colors[ImGuiCol_Button] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(200.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_Border] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_Tab] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TabSelected] = ImVec4(235.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+    style.Colors[ImGuiCol_TabDimmed] = ImVec4(200.0f/255.0f, 82.0f/255.0f, 30.0f/255.0f, 1.0f);
+
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+
+    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    //io.Fonts->AddFontDefault();
+//235, 82, 30
+    ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
+    ImGui_ImplSDLRenderer3_Init(RENDERER);
+}
+

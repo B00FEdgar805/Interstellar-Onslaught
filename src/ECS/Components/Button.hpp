@@ -29,24 +29,14 @@ public:
     
     std::function<void()> onClick;
     
-    void setState(GLOBALS::GameState state)
-    {
-        BUTTON_STATE = state;
-    }
-    
-    GLOBALS::GameState getState()
-    {
-        return BUTTON_STATE;
-    }
-    
     void setButton(int row)
     {
         SOURCE.y = SOURCE.h * (row - 1);
     }
     
-    void hovering(bool hover)
+    void hovering(int hover)
     {
-        SOURCE.x = SOURCE.w * hover;
+        SOURCE.x = SOURCE.w * (hover + 1);
     }
     
     int x()

@@ -5,12 +5,14 @@
 #include "Components/Velocity.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Health.hpp"
+#include "Components/Transform.hpp"
+#include "XPSystem.hpp"
 
 #include <vector>
 
 void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
 {
-    std::vector<Entity> deadEntities;
+    //std::vector<Entity> deadEntities;
     
     auto view = registry.all<Projectile>();
     for (size_t i = 0; i < view.entities.size(); ++i)
@@ -26,24 +28,19 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
         if (projectile.hasExpired())
         {
             //SDL_Log("Projectile Dead");
-            deadEntities.push_back(entity);
+            deadEntities().push_back(entity);
         }
-    }
-    
-    for(Entity entity : deadEntities)   // Destroy all projectiles that have expired
-    {
-        registry.destroy(entity);
     }
 }
 
-Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed)
+Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage)
 {
     Entity projectile = registry.create();
     //DIRECTION = direction;
     
     registry.add(projectile, Transform(position));
     registry.add(projectile, Velocity(direction, speed));
-    registry.add(projectile, Projectile(500.0f, speed, RATE_OF_FIRE, 10.0f, owner));
+    registry.add(projectile, Projectile(500.0f, speed, damage, owner));
     registry.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
     registry.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
     
@@ -58,7 +55,7 @@ Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, cons
 void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<CollisionEvent> &collisons)
 {
     
-    std::vector<Entity> destroyQueue;
+    //std::vector<Entity> destroyQueue;
     
     for(const CollisionEvent& collision : collisons)
     {
@@ -105,25 +102,23 @@ void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<Coll
             enemy_health -> takeDamage(projectile -> getDamage());
             if (!enemy_health -> isAlive())
             {
-                destroyQueue.push_back(otherEntity);
+                Transform* enemy_position = registry.get<Transform>(otherEntity);
+                deadEntities().push_back(otherEntity);
+                XPSystem::spawnXPDrop(registry, enemy_position -> position);
+                // spawn xp pick up
             }
-            destroyQueue.push_back(projectileEntity);
+            deadEntities().push_back(projectileEntity);
              
         }
          
         else
         {
-            destroyQueue.push_back(projectileEntity);
+            deadEntities().push_back(projectileEntity);
         }
         
     
         // Add check if it destroy on hit
         
-        
-        for(Entity entity: destroyQueue)    // Destroys any projectiles that have had collsions
-        {
-            registry.destroy(entity);
-        }
 
     }
 }

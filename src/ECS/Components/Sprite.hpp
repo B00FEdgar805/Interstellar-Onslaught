@@ -11,7 +11,7 @@ private:
     SDL_FRect SOURCE, DESTINATION;
 public:
     Sprite() = default;
-   
+
     Sprite(const std::string &textureID)    // Initializes the sprite to be 32 by 32 and use the whole image and get texture id for lookup later
     {
         TEXTURE_ID = textureID;

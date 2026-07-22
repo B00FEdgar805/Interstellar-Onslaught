@@ -13,7 +13,6 @@
 
 struct Map
 {
-
     static TileMap loadFromFile(const std::string& filepath, const std::string& textureId,int tileSize, int tilesetColumns, float scale = 1.0f, int emptyTile = 0);
 };
 
