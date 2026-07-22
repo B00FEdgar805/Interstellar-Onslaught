@@ -9,15 +9,15 @@
 #include "Components/BoxCollider.hpp"
 #include "../Globals.hpp"
 
-void Systems::playerInputSystem(Registry& registry)
+void Systems::playerInputSystem()
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
     
-    auto view = registry.all<PlayerControl>();
+    auto view = GLOBALS::REGISTRY.all<PlayerControl>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Entity entity = view.entities[i];
-        Velocity* velocity = registry.get<Velocity>(entity);
+        Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(entity);
 
         if (!velocity)
         {
@@ -89,15 +89,15 @@ void Systems::playerInputSystem(Registry& registry)
 
 
 
-void Systems::movementSystem(Registry& registry, float delta_time)
+void Systems::movementSystem(float delta_time)
 {
-    auto view = registry.all<Velocity>();
+    auto view = GLOBALS::REGISTRY.all<Velocity>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Entity entity = view.entities[i];
         Velocity& velocity = view.components[i];
 
-        Transform* transform = registry.get<Transform>(entity);
+        Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
         //velocity.value.scale(velocity.m_speed);
         
         if (!transform)
@@ -121,18 +121,18 @@ void Systems::movementSystem(Registry& registry, float delta_time)
     }
 }
 
-void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
+void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // Renders every entity that has a sprite
 {
-    auto view = registry.all<Sprite>();
+    auto view = GLOBALS::REGISTRY.all<Sprite>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Entity entity = view.entities[i];
         Sprite& sprite = view.components[i];
 
-        Transform* transform = registry.get<Transform>(entity);
-        //Animation* animation = registry.get<Animation>(entity);
-        //PlayerControl* controlled = registry.get<PlayerControl>(entity);
-        //Projectile* projectile = registry.get<Projectile>(entity);
+        Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
+        //Animation* animation = GLOBALS::REGISTRY.get<Animation>(entity);
+        //PlayerControl* controlled = GLOBALS::REGISTRY.get<PlayerControl>(entity);
+        //Projectile* projectile = GLOBALS::REGISTRY.get<Projectile>(entity);
         
         
         if (!transform)
@@ -161,27 +161,32 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
         
         
-        if (registry.has<Animation>(entity))
+        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_UPGRADE)
         {
-            Animation* animation = registry.get<Animation>(entity);
-            if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_UPGRADE)
+            if (GLOBALS::REGISTRY.has<Animation>(entity))
             {
+                Animation* animation = GLOBALS::REGISTRY.get<Animation>(entity);
                 sprite.Animate(0, animation -> speed, animation -> frames);
             }
-            else
+        }
+        else
+        {
+            if (GLOBALS::REGISTRY.has<Animation>(entity))
             {
+                Animation* animation = GLOBALS::REGISTRY.get<Animation>(entity);
                 sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
             }
-            //SDL_Log("Working");
         }
         
-        if(registry.has<PlayerControl>(entity))
+        //SDL_Log("Working");
+        
+        if(GLOBALS::REGISTRY.has<PlayerControl>(entity))
         {
             sprite.draw(angle);
         }
-        else if (registry.has<Projectile>(entity) || registry.has<Enemy>(entity))
+        else if (GLOBALS::REGISTRY.has<Projectile>(entity) || GLOBALS::REGISTRY.has<Enemy>(entity))
         {
-            Velocity* v = registry.get<Velocity>(entity);
+            Velocity* v = GLOBALS::REGISTRY.get<Velocity>(entity);
             sprite.draw(v -> directionToDegrees());
         }
         else
@@ -189,9 +194,9 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
             sprite.draw();
         }
         
-        if (GLOBALS::COLLISION_BOXES && registry.has<BoxCollider>(entity))
+        if (GLOBALS::COLLISION_BOXES && GLOBALS::REGISTRY.has<BoxCollider>(entity))
         {
-            BoxCollider* b = registry.get<BoxCollider>(entity);
+            BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(entity);
             Vector2D position = {screenDestination.x , screenDestination.y};
             SDL_FRect rect = b -> getBoxCollider(position);
             
@@ -206,3 +211,4 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         
     }
 }
+

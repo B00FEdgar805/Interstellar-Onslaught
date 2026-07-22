@@ -23,7 +23,7 @@ private:
 public:
     void addXP(int xp, PlayerSystems& player);
     int getLevel();
-    void XPCollisions(Registry& registry, std::vector<CollisionEvent>& collisions, PlayerSystems& player);
-    static void spawnXPDrop(Registry& registry, const Vector2D& position);
+    void XPCollisions(std::vector<CollisionEvent>& collisions, PlayerSystems& player);
+    static void spawnXPDrop(const Vector2D& position);
 };
 #endif /* XPSystem_hpp */

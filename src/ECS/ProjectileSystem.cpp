@@ -7,21 +7,22 @@
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
 #include "XPSystem.hpp"
+#include "../Globals.hpp"
 
 #include <vector>
 
-void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
+void ProjectileSystem::projectileSystem(float delta_time)
 {
     //std::vector<Entity> deadEntities;
     
-    auto view = registry.all<Projectile>();
+    auto view = GLOBALS::REGISTRY.all<Projectile>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Entity entity = view.entities[i];
         Projectile& projectile = view.components[i];
 
         projectile.addDistance(delta_time); // Keeps track of distance of projectile
-        Velocity* velocity = registry.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
+        Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
         velocity -> value.zero();
         velocity -> value += velocity -> direction.normalize();
         //SDL_Log("%f", velocity -> directionToDegrees());
@@ -33,37 +34,37 @@ void ProjectileSystem::projectileSystem(Registry& registry, float delta_time)
     }
 }
 
-Entity ProjectileSystem::createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage)
+Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage)
 {
-    Entity projectile = registry.create();
+    Entity projectile = GLOBALS::REGISTRY.create();
     //DIRECTION = direction;
     
-    registry.add(projectile, Transform(position));
-    registry.add(projectile, Velocity(direction, speed));
-    registry.add(projectile, Projectile(500.0f, speed, damage, owner));
-    registry.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
-    registry.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
+    GLOBALS::REGISTRY.add(projectile, Transform(position));
+    GLOBALS::REGISTRY.add(projectile, Velocity(direction, speed));
+    GLOBALS::REGISTRY.add(projectile, Projectile(500.0f, speed, damage, owner));
+    GLOBALS::REGISTRY.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
+    GLOBALS::REGISTRY.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
     
     //SDL_Log("created projectile");
-    Velocity* velocity = registry.get<Velocity>(projectile);
+    Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(projectile);
     velocity -> direction = direction;
     velocity -> value = direction;
     
     return projectile;
 }
 
-void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<CollisionEvent> &collisons)
+void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &collisons)
 {
     
     //std::vector<Entity> destroyQueue;
     
     for(const CollisionEvent& collision : collisons)
     {
-        Projectile* projectileA = registry.get<Projectile>(collision.a);
-        Projectile* projectileB = registry.get<Projectile>(collision.b);
+        Projectile* projectileA = GLOBALS::REGISTRY.get<Projectile>(collision.a);
+        Projectile* projectileB = GLOBALS::REGISTRY.get<Projectile>(collision.b);
         
-        BoxCollider* a = registry.get<BoxCollider>(collision.a);
-        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
+        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
         
         Entity projectileEntity = 0;
         Entity otherEntity = 0; // Any entity thats is not a projectile
@@ -97,14 +98,14 @@ void ProjectileSystem::projectilesCollisons(Registry &registry, std::vector<Coll
             
             // do damage to enemy
             //SDL_Log("hit");
-            Health* enemy_health = registry.get<Health>(otherEntity);
-            //Projectile* p = registry.get<Projectile>(projectileEntity);
+            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
+            //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
             if (!enemy_health -> isAlive())
             {
-                Transform* enemy_position = registry.get<Transform>(otherEntity);
+                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
-                XPSystem::spawnXPDrop(registry, enemy_position -> position);
+                XPSystem::spawnXPDrop(enemy_position -> position);
                 // spawn xp pick up
             }
             deadEntities().push_back(projectileEntity);

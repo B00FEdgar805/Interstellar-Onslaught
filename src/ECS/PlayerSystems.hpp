@@ -25,12 +25,12 @@ private:
 public:
     
     PlayerSystems(Entity player);
-    void fireSystem(ProjectileSystem projectiles, Registry &REGISTRY);
+    void fireSystem(ProjectileSystem projectiles);
     bool shoot(float time);
     void upgradeROF(float value);
-    void upgradeHealth(float value, Registry &REGISTRY);
+    void upgradeHealth(float value);
     void upgradeDamage(float value);
-    void upgradeSpeed(float value, Registry &REGISTRY);
+    void upgradeSpeed(float value);
     
     enum UpgradeType
     {
@@ -44,9 +44,10 @@ public:
     inline static UpgradeType middle;
     inline static UpgradeType right;
     
-    void upgrade(UpgradeType button, Registry& registry);
+    void upgrade(UpgradeType button);
     UpgradeType randomUpgrade();
     static std::string getLabel(UpgradeType button);
 
 };
 #endif /* PlayerSystems_hpp */
+

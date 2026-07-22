@@ -1,4 +1,5 @@
 #include "EnemyAI.hpp"
+#include "../Globals.hpp"
 #include "Components/Enemy.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/BoxCollider.hpp"
@@ -9,17 +10,17 @@
 
 
 
-void EnemyAi::enemyAISystem(Registry &registry)
+void EnemyAi::enemyAISystem()
 {
-    Transform* playerPos = registry.get<Transform>(PLAYER);
-    auto view = registry.all<Enemy>();
+    Transform* playerPos = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+    auto view = GLOBALS::REGISTRY.all<Enemy>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Entity entity = view.entities[i];
         Enemy& enemy = view.components[i];
         (void)enemy;
-        Velocity* enemyDir = registry.get<Velocity>(entity);
-        Transform* enemyPos = registry.get<Transform>(entity);
+        Velocity* enemyDir = GLOBALS::REGISTRY.get<Velocity>(entity);
+        Transform* enemyPos = GLOBALS::REGISTRY.get<Transform>(entity);
 
         if (!enemyDir)
         {
@@ -39,25 +40,25 @@ void EnemyAi::enemyAISystem(Registry &registry)
     }
 }
 
-void EnemyAi::createEnemy(Registry &registry, const Vector2D& position, float speed, float delta_time)
+void EnemyAi::createEnemy(const Vector2D& position, float speed, float delta_time)
 {
-    Entity enemy = registry.create();
-    registry.add(enemy, Enemy(10.0f));
-    registry.add(enemy, Transform(position));
-    registry.add(enemy, Velocity(speed));
-    registry.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
-    registry.add(enemy, Sprite("Enemy", Vector2D(16.0f, 16.0f)));
-    registry.add(enemy, Animation(delta_time, 2, 150));
-    registry.add(enemy, Health(5.0f));
+    Entity enemy = GLOBALS::REGISTRY.create();
+    GLOBALS::REGISTRY.add(enemy, Enemy(10.0f));
+    GLOBALS::REGISTRY.add(enemy, Transform(position));
+    GLOBALS::REGISTRY.add(enemy, Velocity(speed));
+    GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
+    GLOBALS::REGISTRY.add(enemy, Sprite("Enemy", Vector2D(16.0f, 16.0f)));
+    GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
+    GLOBALS::REGISTRY.add(enemy, Health(5.0f));
     
 }
 
-void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& collisions)
+void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions)
 {
     for (const CollisionEvent& collision : collisions)
     {
-        BoxCollider* a = registry.get<BoxCollider>(collision.a);
-        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
+        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
 
         if (a == nullptr || b == nullptr)
         {
@@ -67,22 +68,22 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
         
         if ((a -> tag == "player" && b -> tag == "enemy"))
         {
-            Health* player_health = registry.get<Health>(collision.a);
-            Enemy* enemy = registry.get<Enemy>(collision.b);
+            Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.a);
+            Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
             
             player_health -> takeDamage(enemy -> getDamage());
             
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
-                //registry.destroy(PLAYER);
+                //GLOBALS::REGISTRY.destroy(PLAYER);
                 // add damage to box collider instead
             }
         }
         else if ((a -> tag == "enemy" && b -> tag == "player"))
         {
-            Health* player_health = registry.get<Health>(collision.b);
-            Enemy* enemy = registry.get<Enemy>(collision.a);
+            Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.b);
+            Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
 
             player_health -> takeDamage(enemy -> getDamage());
             
@@ -94,14 +95,15 @@ void EnemyAi::enemyCollisions(Registry& registry, std::vector<CollisionEvent>& c
     }
 }
 
-void EnemyAi::enemySpawnSystem(Registry &registry, float delta)
+void EnemyAi::enemySpawnSystem(float delta)
 {
     TIMMER_ACCUMELATOR += delta;
     if (TIMMER_ACCUMELATOR >= SPAWN_TIME)
     {
         // add a way to spawn eneimies left/righ and up/down the viewport
-        createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, delta);
+        createEnemy(Vector2D(10.0f, 10.0f), 100.0f, delta);
         SPAWN_TIME *= 0.95;
         TIMMER_ACCUMELATOR = 0.0f;
     }
 }
+

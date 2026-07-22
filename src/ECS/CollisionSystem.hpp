@@ -20,7 +20,7 @@ struct CollisionEvent
     bool isTrigger = false;
 };
 
-std::vector<CollisionEvent> collisionSystem(Registry& registry,bool resolveSolidCollisions = true);
+std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions = true);
 
 inline std::vector<Entity>& deadEntities()
 {
