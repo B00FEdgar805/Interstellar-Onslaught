@@ -2,6 +2,7 @@
 #include "../Globals.hpp"
 #include "../Game.hpp"
 #include "../TextManager.hpp"
+#include "XPSystem.hpp"
 
 Menu::Menu()
 {
@@ -24,38 +25,49 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
     
-    UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
-    Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
-    upgrade_l -> onClick = []()
-    {
-        //SDL_Log("Left");
-        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-    };
     
-    UPGRADE_MENU.add(UPGRADE_M, Button("UpgradeButton", Vector2D(220,80), SIZE_UPGRADE));
-    Button* upgrade_m = UPGRADE_MENU.get<Button>(UPGRADE_M);
-    upgrade_m -> onClick = []()
-    {
-        //SDL_Log("Middle");
-        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-    };
-    
-    UPGRADE_MENU.add(UPGRADE_R, Button("UpgradeButton", Vector2D(430,80), SIZE_UPGRADE));
-    Button* upgrade_r = UPGRADE_MENU.get<Button>(UPGRADE_R);
-    upgrade_r -> onClick = []()
-    {
-        //SDL_Log("Right");
-        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-    };
 
 }
 
-void Menu::initText()
+void Menu::initText(Registry& registry, PlayerSystems& player)
 {
     TextManager::createLabel("Start", "Default", "Start", COLORS::WHITE);
     TextManager::createLabel("Continue", "Default", "Continue", COLORS::WHITE);
     TextManager::createLabel("Options", "Default", "Options", COLORS::WHITE);
     TextManager::createLabel("Quit", "Default", "Quit", COLORS::WHITE);
+    
+    TextManager::createLabel("ROF", "Default", "Increase Rate of Fire by 10%", COLORS::WHITE);
+    TextManager::createLabel("Speed", "Default", "Increase Speed by 10%", COLORS::WHITE);
+    TextManager::createLabel("Damage", "Default", "Increase Damage by 10%", COLORS::WHITE);
+    TextManager::createLabel("Health", "Default", "Increase Health by 10%", COLORS::WHITE);
+
+    
+    UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
+    Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
+    upgrade_l -> onClick = [&player, &registry]()
+    {
+        //SDL_Log("Left");
+        player.upgrade(PlayerSystems::left, registry);
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    UPGRADE_MENU.add(UPGRADE_M, Button("UpgradeButton", Vector2D(220,80), SIZE_UPGRADE));
+    Button* upgrade_m = UPGRADE_MENU.get<Button>(UPGRADE_M);
+    upgrade_m -> onClick = [&player, &registry]()
+    {
+        //SDL_Log("Middle");
+        player.upgrade(PlayerSystems::middle, registry);
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    UPGRADE_MENU.add(UPGRADE_R, Button("UpgradeButton", Vector2D(430,80), SIZE_UPGRADE));
+    Button* upgrade_r = UPGRADE_MENU.get<Button>(UPGRADE_R);
+    upgrade_r -> onClick = [&player, &registry]()
+    {
+        //SDL_Log("Right");
+        player.upgrade(PlayerSystems::right, registry);
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
 }
 
 void Menu::buttonSystem(SDL_Event &e)
@@ -256,7 +268,12 @@ void Menu::renderSystemUpgrade(SDL_Renderer *renderer)
         button.draw();
         //SDL_Log("Working");
     }
+    
+    TextManager::drawLabel(PlayerSystems::getLabel(PlayerSystems::left), 10, 80);
+    TextManager::drawLabel(PlayerSystems::getLabel(PlayerSystems::middle), 220, 80);
+    TextManager::drawLabel(PlayerSystems::getLabel(PlayerSystems::right), 430, 80);
 }
+
 void Menu::renderUI(SDL_Renderer *renderer)
 {
     switch (GLOBALS::CURRENT_STATE)

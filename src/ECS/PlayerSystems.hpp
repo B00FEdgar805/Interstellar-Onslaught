@@ -31,5 +31,22 @@ public:
     void upgradeHealth(float value, Registry &REGISTRY);
     void upgradeDamage(float value);
     void upgradeSpeed(float value, Registry &REGISTRY);
+    
+    enum UpgradeType
+    {
+        UPGRADE_ROF,
+        UPGRADE_HEALTH,
+        UPGRADE_DAMAGE,
+        UPGRADE_SPEED
+    };
+    
+    inline static UpgradeType left;
+    inline static UpgradeType middle;
+    inline static UpgradeType right;
+    
+    void upgrade(UpgradeType button, Registry& registry);
+    UpgradeType randomUpgrade();
+    static std::string getLabel(UpgradeType button);
+
 };
 #endif /* PlayerSystems_hpp */

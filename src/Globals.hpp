@@ -1,6 +1,8 @@
 #ifndef Globals_hpp
 #define Globals_hpp
 
+#include "ECS/Types.hpp"
+
 struct GLOBALS
 {
     enum GameState
@@ -17,6 +19,8 @@ struct GLOBALS
     static const int SCREEN_HEIGHT = 360; //640;
     static const int SCREEN_WIDTH = 640; //800;
     inline static bool COLLISION_BOXES = false;
+    
+    //inline static Entity PLAYER;
 };
 
 

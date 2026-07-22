@@ -9,6 +9,7 @@
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/Health.hpp"
+#include <random>
 
 PlayerSystems::PlayerSystems(Entity player)
 {
@@ -63,6 +64,94 @@ void PlayerSystems::upgradeDamage(float value)
 
 void PlayerSystems::upgradeHealth(float value, Registry &REGISTRY)
 {
+    
     Health* player_health = REGISTRY.get<Health>(PLAYER);
     player_health -> upgradeHealth(value);
+}
+ 
+PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
+ {
+     std::random_device rd;
+     std::mt19937 gen(rd());
+     std::uniform_int_distribution<> distr(1, 4);
+     int num = distr(gen);
+     switch (num)
+     {
+         case 1:
+             //SDL_Log("R");
+             return UPGRADE_ROF;
+             break;
+         case 2:
+             //SDL_Log("S");
+             return UPGRADE_SPEED;
+             //std::cout << button;
+             break;
+         case 3:
+             //SDL_Log("D");
+             return UPGRADE_DAMAGE;
+             //std::cout << button;
+             break;
+         case 4:
+             //SDL_Log("H");
+             return UPGRADE_HEALTH;
+             //std::cout << button;
+             break;
+         default:
+             return UPGRADE_ROF;
+             break;
+     }
+     
+     //std::cout << button << " Upgrade" << std::endl;
+ }
+
+void PlayerSystems::upgrade(UpgradeType button, Registry& registry)
+{
+    //SDL_Log("Upgrade");
+    switch (button)
+    {
+        case UPGRADE_ROF:
+            upgradeROF(1.10f);
+            //SDL_Log("R");
+            break;
+        case UPGRADE_SPEED:
+            upgradeSpeed(1.10f, registry);
+            //SDL_Log("S");
+            break;
+        case UPGRADE_DAMAGE:
+            upgradeDamage(1.10f);
+            //SDL_Log("D");
+            break;
+        case UPGRADE_HEALTH:
+            upgradeHealth(1.10f, registry);
+            //SDL_Log("H");
+            break;
+        default:
+            break;
+    }
+}
+
+std::string PlayerSystems::getLabel(UpgradeType button)
+{
+    //std::cout << button << std::endl;
+    switch (button)
+    {
+        case UPGRADE_ROF:
+            return "ROF";
+            break;
+        case UPGRADE_SPEED:
+            //SDL_Log("Return");
+            return "Speed";
+            break;
+        case UPGRADE_DAMAGE:
+            //SDL_Log("Return");
+            return "Damage";
+            break;
+        case UPGRADE_HEALTH:
+            //SDL_Log("Return");
+            return "Health";
+            break;
+        default:
+            return "";
+            break;
+    }
 }

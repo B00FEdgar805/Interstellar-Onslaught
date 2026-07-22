@@ -5,6 +5,7 @@
 #include "Components/Button.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include "PlayerSystems.hpp"
 
 class Menu
 {
@@ -25,7 +26,7 @@ private:
 
 public:
     Menu();
-    void initText();
+    void initText(Registry& registry, PlayerSystems& player);
     void buttonSystem(SDL_Event& e);
     void renderSystemMain(SDL_Renderer* renderer);
     void renderSystemPause(SDL_Renderer* renderer);

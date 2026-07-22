@@ -11,6 +11,7 @@
 
 #include "Registry.hpp"
 #include "CollisionSystem.hpp"
+#include "PlayerSystems.hpp"
 
 
 class XPSystem
@@ -20,9 +21,9 @@ private:
     unsigned int LEVEL_UP_XP = 10;
     unsigned int CURRENT_XP = 0;
 public:
-    void addXP(int xp);
+    void addXP(int xp, PlayerSystems& player);
     int getLevel();
-    void XPCollisions(Registry& registry, std::vector<CollisionEvent>& collisions);
+    void XPCollisions(Registry& registry, std::vector<CollisionEvent>& collisions, PlayerSystems& player);
     static void spawnXPDrop(Registry& registry, const Vector2D& position);
 };
 #endif /* XPSystem_hpp */

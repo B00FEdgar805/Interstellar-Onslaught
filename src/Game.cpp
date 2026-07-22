@@ -96,7 +96,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextManager::init(RENDERER);
     TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
-    UI.initText();
+    UI.initText(registry, playerSystem);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
@@ -318,7 +318,7 @@ void Game::update()
     std::vector<CollisionEvent> collisions = collisionSystem(registry);
 
     enemies.enemyCollisions(registry, collisions);
-    xp.XPCollisions(registry, collisions);
+    xp.XPCollisions(registry, collisions, playerSystem);
     projectiles.projectilesCollisons(registry, collisions);
     projectiles.projectileSystem(registry, DELTA_TIME);
     playerSystem.fireSystem(projectiles, registry);

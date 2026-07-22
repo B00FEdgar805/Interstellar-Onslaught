@@ -164,7 +164,7 @@ void Systems::renderSystem(Registry& registry, SDL_Renderer* renderer, const Cam
         if (registry.has<Animation>(entity))
         {
             Animation* animation = registry.get<Animation>(entity);
-            if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+            if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_UPGRADE)
             {
                 sprite.Animate(0, animation -> speed, animation -> frames);
             }
