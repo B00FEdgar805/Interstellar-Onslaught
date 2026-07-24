@@ -70,7 +70,7 @@ void XPSystem::spawnXPDrop(const Vector2D& position)
     GLOBALS::REGISTRY.add(xp, Transform(position));
     GLOBALS::REGISTRY.add(xp, Sprite("XP", Vector2D(5,5)));
     GLOBALS::REGISTRY.add(xp, BoxCollider(
-        Vector2D(5.0f, 5.0f).scale(1),
+        Vector2D(5.0f, 5.0f).scale(XP_GRAB_RANGE),
         Vector2D(0.0f, 0.0f),
         true,     // isTrigger
         false,     // isStatic

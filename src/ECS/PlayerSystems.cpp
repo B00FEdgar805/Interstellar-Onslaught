@@ -9,6 +9,7 @@
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/Health.hpp"
+#include "XPSystem.hpp"
 #include "../Globals.hpp"
 #include <random>
 
@@ -28,7 +29,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
     if(shoot(current_time - LAST_TIME))
     {
         Vector2D pos = player_transform -> position;
-        projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , 250.0f, DAMAGE);
+        projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE);
         LAST_TIME = current_time;
     }
     
@@ -70,11 +71,26 @@ void PlayerSystems::upgradeHealth(float value)
     player_health -> upgradeHealth(value);
 }
  
+void PlayerSystems::upgradeXPMutiplier(float value)
+{
+    XPSystem::XP_MULTIPLIER *= value;
+}
+
+void PlayerSystems::upgradeProjectileSpeed(float value)
+{
+    PROJECTILE_SPEED *= value;
+}
+
+void PlayerSystems::upgradeXPGrabRange(float value)
+{
+    XPSystem::XP_GRAB_RANGE *= value;
+}
+
 PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 4);
+     std::uniform_int_distribution<> distr(1, 7);
      int num = distr(gen);
      switch (num)
      {
@@ -96,6 +112,18 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
              //SDL_Log("H");
              return UPGRADE_HEALTH;
              //std::cout << button;
+             break;
+         case 5:
+             //SDL_Log("R");
+             return UPGRADE_PROJECTILE_SPEED;
+             break;
+         case 6:
+             //SDL_Log("R");
+             return UPGRADE_XP_MUTIPLIER;
+             break;
+         case 7:
+             //SDL_Log("R");
+             return UPGRADE_XP_RANGE;
              break;
          default:
              return UPGRADE_ROF;
@@ -126,6 +154,15 @@ void PlayerSystems::upgrade(UpgradeType button)
             upgradeHealth(1.10f);
             //SDL_Log("H");
             break;
+        case UPGRADE_PROJECTILE_SPEED:
+            upgradeProjectileSpeed(1.10f);
+            break;
+        case UPGRADE_XP_MUTIPLIER:
+            upgradeXPMutiplier(1.10f);
+            break;
+        case UPGRADE_XP_RANGE:
+            upgradeXPGrabRange(1.10f);
+            break;
         default:
             break;
     }
@@ -150,6 +187,15 @@ std::string PlayerSystems::getLabel(UpgradeType button)
         case UPGRADE_HEALTH:
             //SDL_Log("Return");
             return "Health";
+            break;
+        case UPGRADE_PROJECTILE_SPEED:
+            return "PSpeed";
+            break;
+        case UPGRADE_XP_MUTIPLIER:
+            return "XPMutiplier";
+            break;
+        case UPGRADE_XP_RANGE:
+            return "XPRange";
             break;
         default:
             return "";

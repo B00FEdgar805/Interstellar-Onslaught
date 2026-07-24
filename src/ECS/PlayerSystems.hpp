@@ -20,6 +20,7 @@ private:
     Uint64 LAST_TIME = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
     float DAMAGE = 10.0f;
+    float PROJECTILE_SPEED = 250.0f;
 
     //Registry REGISTRY;
 public:
@@ -31,13 +32,19 @@ public:
     void upgradeHealth(float value);
     void upgradeDamage(float value);
     void upgradeSpeed(float value);
+    void upgradeProjectileSpeed(float value);
+    void upgradeXPMutiplier(float value);
+    void upgradeXPGrabRange(float value);
     
     enum UpgradeType
     {
         UPGRADE_ROF,
         UPGRADE_HEALTH,
         UPGRADE_DAMAGE,
-        UPGRADE_SPEED
+        UPGRADE_SPEED,
+        UPGRADE_PROJECTILE_SPEED,
+        UPGRADE_XP_MUTIPLIER,
+        UPGRADE_XP_RANGE
     };
     
     inline static UpgradeType left;

@@ -387,11 +387,6 @@ void Game::render()
             playerSystem.upgradeSpeed(1.1f);
         }
         
-        if (ImGui::Button("close"))
-        {
-            IMGUI = false;
-        }
-        
         if(ImGui::Button("BoxColliders"))
         {
             if (GLOBALS::COLLISION_BOXES)
@@ -404,6 +399,13 @@ void Game::render()
 
             }
         }
+        
+        if (ImGui::Button("close"))
+        {
+            IMGUI = false;
+        }
+        
+        
         
         ImGui::End();
         

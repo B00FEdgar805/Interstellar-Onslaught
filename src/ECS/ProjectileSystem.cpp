@@ -92,7 +92,11 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             //SDL_Log("hit self");
             continue;
         }
-        
+        else if (((a -> tag == "pProjectile" && b -> tag == "xp") || (a -> tag == "xp" && b -> tag == "pProjectile")))
+        {
+            continue;
+        }
+    
         else if (((a -> tag == "pProjectile" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "pProjectile")))
         {
             
@@ -108,6 +112,7 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
                 XPSystem::spawnXPDrop(enemy_position -> position);
                 // spawn xp pick up
             }
+            
             deadEntities().push_back(projectileEntity);
              
         }

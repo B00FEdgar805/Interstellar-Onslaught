@@ -25,5 +25,8 @@ public:
     int getLevel();
     void XPCollisions(std::vector<CollisionEvent>& collisions, PlayerSystems& player);
     static void spawnXPDrop(const Vector2D& position);
+    
+    inline static float XP_MULTIPLIER = 1.0f;
+    inline static float XP_GRAB_RANGE = 1.0f;
 };
 #endif /* XPSystem_hpp */

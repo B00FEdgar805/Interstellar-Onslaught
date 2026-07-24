@@ -40,6 +40,9 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Speed", "Default", "Increase Speed by 10%", COLORS::WHITE);
     TextManager::createLabel("Damage", "Default", "Increase Damage by 10%", COLORS::WHITE);
     TextManager::createLabel("Health", "Default", "Increase Health by 10%", COLORS::WHITE);
+    TextManager::createLabel("PSpeed", "Default", "Increase Projectile Speed by 10%", COLORS::WHITE);
+    TextManager::createLabel("XPMutiplier", "Default", "Increase XP gains by 10%", COLORS::WHITE);
+    TextManager::createLabel("XPRange", "Default", "Increase XP pick up range by 10%", COLORS::WHITE);
 
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
