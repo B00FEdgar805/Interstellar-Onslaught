@@ -64,14 +64,18 @@ void XPSystem::XPCollisions(std::vector<CollisionEvent> &collisions, PlayerSyste
     }
 }
 
+
 void XPSystem::spawnXPDrop(const Vector2D& position)
 {
+    Vector2D v1 , v2 = {5.0f, 5.0f};
+    Vector2D offset = v1 - v2.scale(XP_GRAB_RANGE);
+    offset += Vector2D(5.0f, 5.0f);
     Entity xp = GLOBALS::REGISTRY.create();
     GLOBALS::REGISTRY.add(xp, Transform(position));
     GLOBALS::REGISTRY.add(xp, Sprite("XP", Vector2D(5,5)));
     GLOBALS::REGISTRY.add(xp, BoxCollider(
-        Vector2D(5.0f, 5.0f).scale(XP_GRAB_RANGE),
-        Vector2D(0.0f, 0.0f),
+        SIZE.scale(XP_GRAB_RANGE),
+        offset.scale(0.5f),
         true,     // isTrigger
         false,     // isStatic
         "xp"

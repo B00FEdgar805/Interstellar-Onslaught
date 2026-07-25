@@ -109,7 +109,8 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             {
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
-                XPSystem::spawnXPDrop(enemy_position -> position);
+                XPSystem xp;
+                xp.spawnXPDrop(enemy_position -> position);
                 // spawn xp pick up
             }
             

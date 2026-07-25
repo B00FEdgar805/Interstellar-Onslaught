@@ -387,6 +387,11 @@ void Game::render()
             playerSystem.upgradeSpeed(1.1f);
         }
         
+        if (ImGui::Button("XP Range"))
+        {
+            playerSystem.upgradeXPGrabRange(1.2f);
+        }
+        
         if(ImGui::Button("BoxColliders"))
         {
             if (GLOBALS::COLLISION_BOXES)
@@ -396,9 +401,10 @@ void Game::render()
             else
             {
                 GLOBALS::COLLISION_BOXES = true;
-
             }
         }
+        
+        
         
         if (ImGui::Button("close"))
         {

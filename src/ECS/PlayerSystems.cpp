@@ -161,7 +161,7 @@ void PlayerSystems::upgrade(UpgradeType button)
             upgradeXPMutiplier(1.10f);
             break;
         case UPGRADE_XP_RANGE:
-            upgradeXPGrabRange(1.10f);
+            upgradeXPGrabRange(1.20f);
             break;
         default:
             break;

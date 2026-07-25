@@ -29,7 +29,7 @@ public:
         size.y = height;
     }
 
-    BoxCollider(const Vector2D& size, const Vector2D& offset = Vector2D(0.0f, 0.0f), bool isTrigger = false, bool isStatic = false, std::string tag = "")
+    BoxCollider(const Vector2D& size, const Vector2D& offset, bool isTrigger = false, bool isStatic = false, std::string tag = "")
         : size(size),
           offset(offset),
           isTrigger(isTrigger),
