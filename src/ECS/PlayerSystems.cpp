@@ -126,12 +126,64 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
              return UPGRADE_XP_RANGE;
              break;
          default:
+             if (UNIQUE_UPGRADE >= 3)
+             {
+                 return randomUpgrade();
+             }
+             else
+             {
+                 // do thing 
+             }
              return UPGRADE_ROF;
              break;
      }
      
      //std::cout << button << " Upgrade" << std::endl;
- }
+}
+
+PlayerSystems::UpgradeType PlayerSystems::randomUpgradeUnique()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1, 7);
+    int num = distr(gen);
+    switch (num)
+    {
+        case 1:
+            //SDL_Log("R");
+            return UPGRADE_ROF;
+            break;
+        case 2:
+            //SDL_Log("S");
+            return UPGRADE_SPEED;
+            //std::cout << button;
+            break;
+        case 3:
+            //SDL_Log("D");
+            return UPGRADE_DAMAGE;
+            //std::cout << button;
+            break;
+        case 4:
+            //SDL_Log("H");
+            return UPGRADE_HEALTH;
+            //std::cout << button;
+            break;
+        case 5:
+            //SDL_Log("R");
+            return UPGRADE_PROJECTILE_SPEED;
+            break;
+        case 6:
+            //SDL_Log("R");
+            return UPGRADE_XP_MUTIPLIER;
+            break;
+        case 7:
+            //SDL_Log("R");
+            return UPGRADE_XP_RANGE;
+            break;
+        default:
+            return UPGRADE_ROF;
+    }
+}
 
 void PlayerSystems::upgrade(UpgradeType button)
 {

@@ -316,7 +316,7 @@ void Game::update()
     
     std::vector<CollisionEvent> collisions = collisionSystem();
 
-    enemies.enemyCollisions(collisions);
+    enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
     projectiles.projectilesCollisons(collisions);
     projectiles.projectileSystem(DELTA_TIME);

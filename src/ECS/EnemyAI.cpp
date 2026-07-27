@@ -8,7 +8,9 @@
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
 
+//static constexpr float PLAYER_DAMAGE_COOLDOWN = 0.5f;
 
+//float EnemyAi::playerDamageCooldownTimer = 0.0f;
 
 void EnemyAi::enemyAISystem()
 {
@@ -53,8 +55,11 @@ void EnemyAi::createEnemy(const Vector2D& position, float speed, float delta_tim
     
 }
 
-void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions)
+void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float delta)
 {
+    PLAYER_DAMAGE_COOLDOWN_TIMER -= delta;
+    if (PLAYER_DAMAGE_COOLDOWN_TIMER < 0.0f) PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
+
     for (const CollisionEvent& collision : collisions)
     {
         BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
@@ -70,8 +75,13 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions)
         {
             Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.a);
             Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
-            
-            player_health -> takeDamage(enemy -> getDamage());
+
+            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f)
+            {
+                player_health -> takeDamage(enemy -> getDamage());
+                PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                //SDL_Log("Hit");
+            }
             
             if (!player_health -> isAlive())
             {
@@ -85,7 +95,12 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions)
             Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.b);
             Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
 
-            player_health -> takeDamage(enemy -> getDamage());
+            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f)
+            {
+                player_health -> takeDamage(enemy -> getDamage());
+                PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                //SDL_Log("Hit");
+            }
             
             if (!player_health -> isAlive())
             {

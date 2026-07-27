@@ -17,9 +17,9 @@
 class XPSystem
 {
 private:
-    unsigned int LEVEL = 1;
-    unsigned int LEVEL_UP_XP = 10;
-    unsigned int CURRENT_XP = 0;
+    int LEVEL = 1;
+    int LEVEL_UP_XP = 10;
+    int CURRENT_XP = 0;
     Vector2D SIZE = {5.0f, 5.0f};
 public:
     void addXP(int xp, PlayerSystems& player);

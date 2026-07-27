@@ -21,6 +21,9 @@ private:
     float RATE_OF_FIRE = 1000.0f;
     float DAMAGE = 10.0f;
     float PROJECTILE_SPEED = 250.0f;
+    //int MAX = 8;
+    inline static int UNIQUE_UPGRADE = 0;
+
 
     //Registry REGISTRY;
 public:
@@ -47,12 +50,14 @@ public:
         UPGRADE_XP_RANGE
     };
     
+    
     inline static UpgradeType left;
     inline static UpgradeType middle;
     inline static UpgradeType right;
     
     void upgrade(UpgradeType button);
     UpgradeType randomUpgrade();
+    UpgradeType randomUpgradeUnique();
     static std::string getLabel(UpgradeType button);
 
 };
