@@ -25,26 +25,87 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
     Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
     Velocity* player_velocity = GLOBALS::REGISTRY.get<Velocity>(PLAYER);
    // if (current_time - LAST_TIME >= player_projectile -> RATE_OF_FIRE)
-    
-    if(shoot(current_time - LAST_TIME))
+    switch (CURRENT_WEAPON)
     {
-        Vector2D pos = player_transform -> position;
-        projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE);
-        LAST_TIME = current_time;
+        case WEAPON_NORMAL:
+            if(shoot(current_time - LAST_TIME))
+            {
+                Vector2D pos = player_transform -> position;
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE);
+                LAST_TIME = current_time;
+            }
+            break;
+        case WEAPON_SHOTGUN:
+            if(shoot(current_time - LAST_TIME))
+            {
+                Vector2D pos = player_transform -> position;
+                Vector2D mainDir = player_velocity->direction.normalize();
+                float angle = 20.0f * (M_PI / 180.0f); // Convert degrees to radians
+
+                // Left (+45 degrees)
+                float cosA = cos(angle);
+                float sinA = sin(angle);
+                Vector2D dirL(mainDir.x * cosA - mainDir.y * sinA, mainDir.x * sinA + mainDir.y * cosA);
+
+                // Right (-45 degrees)
+                float cosA_r = cos(-angle);
+                float sinA_r = sin(-angle);
+                Vector2D dirR(mainDir.x * cosA_r - mainDir.y * sinA_r, mainDir.x * sinA_r + mainDir.y * cosA_r);
+                
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 0.8f, DAMAGE);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirL , PROJECTILE_SPEED * 0.8f, DAMAGE);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirR , PROJECTILE_SPEED * 0.8f, DAMAGE);
+                LAST_TIME = current_time;
+            }
+            break;
+        case WEAPON_LASER:
+            break;
+        case WEAPON_RAILGUN:
+            break;
     }
+    
     
 }
 
 bool PlayerSystems::shoot(float time)
 {
-    if(time >= RATE_OF_FIRE)
+    switch (CURRENT_WEAPON)
     {
-        return true;
+        case WEAPON_NORMAL:
+            if(time >= RATE_OF_FIRE)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            break;
+        case WEAPON_SHOTGUN:
+            if(time >= (RATE_OF_FIRE * 1.30f))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            break;
+        case WEAPON_LASER:
+            return false;
+            break;
+        case WEAPON_RAILGUN:
+            if(time >= (RATE_OF_FIRE * 2.0f))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            break;
     }
-    else
-    {
-        return false;
-    }
+    
 }
 
 

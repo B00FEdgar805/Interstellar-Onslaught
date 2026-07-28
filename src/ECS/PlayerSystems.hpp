@@ -24,6 +24,15 @@ private:
     //int MAX = 8;
     inline static int UNIQUE_UPGRADE = 0;
 
+    enum WeaponType
+    {
+        WEAPON_NORMAL,
+        WEAPON_SHOTGUN,
+        WEAPON_LASER,
+        WEAPON_RAILGUN
+    };
+    
+    WeaponType CURRENT_WEAPON = WEAPON_SHOTGUN;
 
     //Registry REGISTRY;
 public:
@@ -50,10 +59,11 @@ public:
         UPGRADE_XP_RANGE
     };
     
-    
     inline static UpgradeType left;
     inline static UpgradeType middle;
     inline static UpgradeType right;
+    
+    
     
     void upgrade(UpgradeType button);
     UpgradeType randomUpgrade();

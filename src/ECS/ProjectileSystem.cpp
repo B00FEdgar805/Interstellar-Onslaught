@@ -92,7 +92,12 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             //SDL_Log("hit self");
             continue;
         }
-        else if (((a -> tag == "pProjectile" && b -> tag == "xp") || (a -> tag == "xp" && b -> tag == "pProjectile")))
+        else if (((a -> tag == "pProjectile" && b -> tag == "xp") || (a -> tag == "xp" && b -> tag == "pProjectile")))  // to stop collision with xp destroying projectile
+        {
+            continue;
+        }
+        
+        else if (((a -> tag == "pProjectile" && b -> tag == "pProjectile") || (a -> tag == "pProjectile" && b -> tag == "pProjectile")))  // To stop projectiles from destroying each other
         {
             continue;
         }
