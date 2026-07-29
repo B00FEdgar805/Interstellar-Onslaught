@@ -32,7 +32,7 @@ private:
         WEAPON_RAILGUN
     };
     
-    WeaponType CURRENT_WEAPON = WEAPON_SHOTGUN;
+    WeaponType CURRENT_WEAPON = WEAPON_RAILGUN;
 
     //Registry REGISTRY;
 public:

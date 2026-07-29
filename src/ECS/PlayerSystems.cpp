@@ -31,7 +31,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
             if(shoot(current_time - LAST_TIME))
             {
                 Vector2D pos = player_transform -> position;
-                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE, CURRENT_WEAPON);
                 LAST_TIME = current_time;
             }
             break;
@@ -52,15 +52,21 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
                 float sinA_r = sin(-angle);
                 Vector2D dirR(mainDir.x * cosA_r - mainDir.y * sinA_r, mainDir.x * sinA_r + mainDir.y * cosA_r);
                 
-                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 0.8f, DAMAGE);
-                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirL , PROJECTILE_SPEED * 0.8f, DAMAGE);
-                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirR , PROJECTILE_SPEED * 0.8f, DAMAGE);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 0.8f, DAMAGE, CURRENT_WEAPON);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirL , PROJECTILE_SPEED * 0.8f, DAMAGE, CURRENT_WEAPON);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), dirR , PROJECTILE_SPEED * 0.8f, DAMAGE, CURRENT_WEAPON);
                 LAST_TIME = current_time;
             }
             break;
         case WEAPON_LASER:
             break;
         case WEAPON_RAILGUN:
+            if(shoot(current_time - LAST_TIME))
+            {
+                Vector2D pos = player_transform -> position;
+                projectiles.createProjectile(PLAYER, pos + Vector2D(0.0f, 0.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 2.0f, DAMAGE * 2.0f, CURRENT_WEAPON);
+                LAST_TIME = current_time;
+            }
             break;
     }
     

@@ -34,16 +34,33 @@ void ProjectileSystem::projectileSystem(float delta_time)
     }
 }
 
-Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage)
+Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type)
 {
     Entity projectile = GLOBALS::REGISTRY.create();
     //DIRECTION = direction;
     
     GLOBALS::REGISTRY.add(projectile, Transform(position));
     GLOBALS::REGISTRY.add(projectile, Velocity(direction, speed));
-    GLOBALS::REGISTRY.add(projectile, Projectile(500.0f, speed, damage, owner));
-    GLOBALS::REGISTRY.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
-    GLOBALS::REGISTRY.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
+    if(type == 1)   // Shotgun
+    {
+        GLOBALS::REGISTRY.add(projectile, Projectile(300.0f, speed, damage, owner));
+    }
+    else
+    {
+        GLOBALS::REGISTRY.add(projectile, Projectile(600.0f, speed, damage, owner));
+    }
+    
+    if (type == 3) // Railgun
+    {
+        GLOBALS::REGISTRY.add(projectile, BoxCollider(Vector2D(32.0f, 18.0f), Vector2D(0.0f, 7.0f), true, false, "Railgun"));
+        GLOBALS::REGISTRY.add(projectile, Sprite("Railgun", Vector2D(32.0f, 32.0f)));
+
+    }
+    else
+    {
+        GLOBALS::REGISTRY.add(projectile, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), true, false, "pProjectile"));
+        GLOBALS::REGISTRY.add(projectile, Sprite("Projectile", Vector2D(16.0f, 16.0f)));
+    }
     
     //SDL_Log("created projectile");
     Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(projectile);
@@ -97,11 +114,16 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             continue;
         }
         
+        else if (((a -> tag == "Railgun" && b -> tag == "xp") || (a -> tag == "xp" && b -> tag == "Railgun")))  // to stop collision with xp destroying projectile
+        {
+            continue;
+        }
+        
         else if (((a -> tag == "pProjectile" && b -> tag == "pProjectile") || (a -> tag == "pProjectile" && b -> tag == "pProjectile")))  // To stop projectiles from destroying each other
         {
             continue;
         }
-    
+
         else if (((a -> tag == "pProjectile" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "pProjectile")))
         {
             
@@ -123,6 +145,25 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
              
         }
          
+        else if (((a -> tag == "Railgun" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "Railgun")))
+        {
+            
+            // do damage to enemy
+            //SDL_Log("hit");
+            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
+            //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
+            enemy_health -> takeDamage(projectile -> getDamage());
+            if (!enemy_health -> isAlive())
+            {
+                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
+                deadEntities().push_back(otherEntity);
+                XPSystem xp;
+                xp.spawnXPDrop(enemy_position -> position);
+                // spawn xp pick up
+            }
+            //deadEntities().push_back(projectileEntity);
+        }
+        
         else
         {
             deadEntities().push_back(projectileEntity);
