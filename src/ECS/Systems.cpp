@@ -184,7 +184,7 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         {
             sprite.draw(angle);
         }
-        else if (GLOBALS::REGISTRY.has<Projectile>(entity) || GLOBALS::REGISTRY.has<Enemy>(entity))
+        else if (GLOBALS::REGISTRY.has<Projectile>(entity) || GLOBALS::REGISTRY.has<Enemy>(entity) || sprite.getTextureID() == "Laser")
         {
             Velocity* v = GLOBALS::REGISTRY.get<Velocity>(entity);
             sprite.draw(v -> directionToDegrees());

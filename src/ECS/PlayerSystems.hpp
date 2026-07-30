@@ -23,6 +23,9 @@ private:
     float PROJECTILE_SPEED = 250.0f;
     //int MAX = 8;
     inline static int UNIQUE_UPGRADE = 0;
+    bool INIT_LASER = false;
+    Entity LASER; //= GLOBALS::REGISTRY.create();
+
 
     enum WeaponType
     {
@@ -32,7 +35,7 @@ private:
         WEAPON_RAILGUN
     };
     
-    WeaponType CURRENT_WEAPON = WEAPON_RAILGUN;
+    WeaponType CURRENT_WEAPON = WEAPON_LASER;
 
     //Registry REGISTRY;
 public:

@@ -9,6 +9,8 @@
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/Health.hpp"
+#include "Components/BoxCollider.hpp"
+#include "Components/Sprite.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
 #include <random>
@@ -59,6 +61,25 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
             }
             break;
         case WEAPON_LASER:
+            if(!INIT_LASER)
+            {
+                LASER = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(LASER, Transform(player_transform -> position));
+                GLOBALS::REGISTRY.add(LASER, Velocity(player_velocity -> value, 0.0f));
+                GLOBALS::REGISTRY.add(LASER, BoxCollider(Vector2D(16.0f, 640.0f), Vector2D(0.0f, 0.0f), true, false, "Laser"));
+                GLOBALS::REGISTRY.add(LASER, Sprite("Laser", Vector2D(16.0f, 640.0f)));
+                //SDL_Log("Called");
+                
+                INIT_LASER = true;
+            }
+            else
+            {
+                Velocity* v = GLOBALS::REGISTRY.get<Velocity>(LASER);
+                Transform* t = GLOBALS::REGISTRY.get<Transform>(LASER);
+                t -> position = player_transform -> position;
+                v -> direction = player_velocity -> direction;
+                v -> value = player_velocity -> value;
+            }
             break;
         case WEAPON_RAILGUN:
             if(shoot(current_time - LAST_TIME))

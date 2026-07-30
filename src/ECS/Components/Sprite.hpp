@@ -104,6 +104,11 @@ public:
         TextureManager::drawRotated(TEXTURE_ID, SOURCE, DESTINATION, angle);
        // SDL_Log("Sprite drawing");
     }
+    
+    std::string getTextureID()
+    {
+        return TEXTURE_ID;
+    }
 };
 
 #endif /* Sprite_hpp */
