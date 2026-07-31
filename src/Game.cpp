@@ -92,8 +92,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Quit();
     }
     
-    SDL_SetWindowProgressValue(WINDOW, 0.5f);
-    
+    SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
+
     TextManager::init(RENDERER);
     TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
@@ -360,8 +360,10 @@ void Game::render()
     systems.renderSystem(RENDERER, camera);
     
     UI.renderUI(RENDERER);
+    xp.renderXPBar(RENDERER);
+
     
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 255))
     {
         SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
     }

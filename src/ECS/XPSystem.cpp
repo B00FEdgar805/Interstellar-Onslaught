@@ -12,7 +12,7 @@
 
 void XPSystem::addXP(int xp, PlayerSystems& player)
 {
-    CURRENT_XP += xp;
+    CURRENT_XP += (xp * XP_MULTIPLIER);
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
@@ -82,3 +82,30 @@ void XPSystem::spawnXPDrop(const Vector2D& position)
     ));
 }
 
+void XPSystem::renderXPBar(SDL_Renderer *renderer)
+{
+    float x = 20.0f;
+    float y = 340.0f;
+    float w = 600.0f;
+    //SDL_Log("%f", w);
+    float h = 6.0f;
+    SDL_FRect bgRect = { x, y, w, h };
+    SDL_SetRenderDrawColor(renderer, 179, 185, 209, 100);
+    SDL_RenderFillRect(renderer, &bgRect);
+    
+    
+    float percentage = CURRENT_XP / LEVEL_UP_XP;
+    //std::cout << percentage << std::endl;
+    percentage = std::max(0.0f, std::min(percentage, 1.0f));
+    //std::cout << percentage;
+    float fgWidth = w * percentage;
+
+    SDL_FRect fgRect = { x + 1, y + 1, fgWidth - 2, h - 2};
+    if (fgRect.w < 0) fgRect.w = 0;
+    
+    
+    SDL_SetRenderDrawColor(renderer, 32, 214, 199, 255);
+  //  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    SDL_RenderFillRect(renderer, &fgRect);
+}

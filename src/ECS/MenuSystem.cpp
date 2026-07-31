@@ -233,7 +233,6 @@ void Menu::renderSystemMain(SDL_Renderer *renderer)
 
 void Menu::renderSystemPause(SDL_Renderer *renderer)
 {
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
     if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100))
     {
