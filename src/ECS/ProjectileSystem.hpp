@@ -13,8 +13,8 @@ private:
     //float SPEED = 220.0f;
     Vector2D DIRECTION;
 public:
-    void projectileSystem(Registry& registry, float delta_time);
-    Entity createProjectile(Registry& registry, Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage);
-    void projectilesCollisons(Registry& registry, std::vector<CollisionEvent>& collisons);
+    void projectileSystem(float delta_time);
+    Entity createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type);
+    void projectilesCollisons(std::vector<CollisionEvent>& collisons);
 };
 #endif /* ProjectileSystem_hpp */

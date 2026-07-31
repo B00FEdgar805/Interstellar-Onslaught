@@ -20,33 +20,63 @@ private:
     Uint64 LAST_TIME = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
     float DAMAGE = 10.0f;
+    float PROJECTILE_SPEED = 250.0f;
+    //int MAX = 8;
+    inline static int UNIQUE_UPGRADE = 0;
+
+
+    enum WeaponType
+    {
+        WEAPON_NORMAL,
+        WEAPON_SHOTGUN,
+        WEAPON_SMG,
+        WEAPON_RAILGUN
+    };
+    
+    WeaponType CURRENT_WEAPON = WEAPON_NORMAL;
 
     //Registry REGISTRY;
 public:
     
     PlayerSystems(Entity player);
-    void fireSystem(ProjectileSystem projectiles, Registry &REGISTRY);
+    void fireSystem(ProjectileSystem projectiles);
     bool shoot(float time);
     void upgradeROF(float value);
-    void upgradeHealth(float value, Registry &REGISTRY);
+    void upgradeHealth(float value);
     void upgradeDamage(float value);
-    void upgradeSpeed(float value, Registry &REGISTRY);
+    void upgradeSpeed(float value);
+    void upgradeProjectileSpeed(float value);
+    void upgradeXPMutiplier(float value);
+    void upgradeXPGrabRange(float value);
     
     enum UpgradeType
     {
         UPGRADE_ROF,
         UPGRADE_HEALTH,
         UPGRADE_DAMAGE,
-        UPGRADE_SPEED
+        UPGRADE_SPEED,
+        UPGRADE_PROJECTILE_SPEED,
+        UPGRADE_XP_MUTIPLIER,
+        UPGRADE_XP_RANGE,
+        UPGRADE_WEAPON_NORMAL,
+        UPGRADE_WEAPON_SHOTGUN,
+        UPGRADE_WEAPON_SMG,
+        UPGRADE_WEAPON_RAILGUN
+        
     };
     
     inline static UpgradeType left;
     inline static UpgradeType middle;
     inline static UpgradeType right;
     
-    void upgrade(UpgradeType button, Registry& registry);
+    
+    
+    void upgrade(UpgradeType button);
     UpgradeType randomUpgrade();
+    UpgradeType randomUpgradeUnique();
+    UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
 
 };
 #endif /* PlayerSystems_hpp */
+

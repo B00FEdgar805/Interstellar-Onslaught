@@ -88,7 +88,7 @@ void TextureManager::draw(const std::string& id, SDL_FRect source, SDL_FRect des
 
     if (texture == nullptr)
     {
-        SDL_Log("Texture not found");
+        SDL_Log("Texture not found id:%s", id.c_str());
         return;
     }
 

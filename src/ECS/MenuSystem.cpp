@@ -29,7 +29,7 @@ Menu::Menu()
 
 }
 
-void Menu::initText(Registry& registry, PlayerSystems& player)
+void Menu::initText(PlayerSystems& player)
 {
     TextManager::createLabel("Start", "Default", "Start", COLORS::WHITE);
     TextManager::createLabel("Continue", "Default", "Continue", COLORS::WHITE);
@@ -40,32 +40,39 @@ void Menu::initText(Registry& registry, PlayerSystems& player)
     TextManager::createLabel("Speed", "Default", "Increase Speed by 10%", COLORS::WHITE);
     TextManager::createLabel("Damage", "Default", "Increase Damage by 10%", COLORS::WHITE);
     TextManager::createLabel("Health", "Default", "Increase Health by 10%", COLORS::WHITE);
+    TextManager::createLabel("PSpeed", "Default", "Increase Projectile Speed by 10%", COLORS::WHITE);
+    TextManager::createLabel("XPMutiplier", "Default", "Increase XP gains by 10%", COLORS::WHITE);
+    TextManager::createLabel("XPRange", "Default", "Increase XP pick up range by 20%", COLORS::WHITE);
+    TextManager::createLabel("Normal", "Default", "Returns weapon back to normal. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Shotgun", "Default", "Weapon becomes a shotgun. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("SMG", "Default", "Weapon becomes a SMG. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Railgun", "Default", "Weapon becomes a Railgun. Raises weapon stats by 10%", COLORS::WHITE);
 
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
     Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
-    upgrade_l -> onClick = [&player, &registry]()
+    upgrade_l -> onClick = [&player]()
     {
         //SDL_Log("Left");
-        player.upgrade(PlayerSystems::left, registry);
+        player.upgrade(PlayerSystems::left);
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
     UPGRADE_MENU.add(UPGRADE_M, Button("UpgradeButton", Vector2D(220,80), SIZE_UPGRADE));
     Button* upgrade_m = UPGRADE_MENU.get<Button>(UPGRADE_M);
-    upgrade_m -> onClick = [&player, &registry]()
+    upgrade_m -> onClick = [&player]()
     {
         //SDL_Log("Middle");
-        player.upgrade(PlayerSystems::middle, registry);
+        player.upgrade(PlayerSystems::middle);
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
     UPGRADE_MENU.add(UPGRADE_R, Button("UpgradeButton", Vector2D(430,80), SIZE_UPGRADE));
     Button* upgrade_r = UPGRADE_MENU.get<Button>(UPGRADE_R);
-    upgrade_r -> onClick = [&player, &registry]()
+    upgrade_r -> onClick = [&player]()
     {
         //SDL_Log("Right");
-        player.upgrade(PlayerSystems::right, registry);
+        player.upgrade(PlayerSystems::right);
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
 }
@@ -288,5 +295,4 @@ void Menu::renderUI(SDL_Renderer *renderer)
             break;
     }
 }
-
 

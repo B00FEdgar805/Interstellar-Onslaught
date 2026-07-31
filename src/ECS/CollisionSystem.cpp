@@ -1,5 +1,5 @@
 #include "CollisionSystem.hpp"
-
+#include "../Globals.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
@@ -105,9 +105,9 @@ namespace
         return event;
     }
 
-    void moveEntity(Registry& registry, Entity entity, const Vector2D& amount)
+    void moveEntity(Entity entity, const Vector2D& amount)
     {
-        Transform* transform = registry.get<Transform>(entity);
+        Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
 
         if (transform == nullptr)
         {
@@ -118,9 +118,9 @@ namespace
         transform -> position.y += amount.y;
     }
 
-    void stopVelocityOnCollisionAxis(Registry& registry, Entity entity, const Vector2D& normal)
+    void stopVelocityOnCollisionAxis(Entity entity, const Vector2D& normal)
     {
-        Velocity* velocity = registry.get<Velocity>(entity);
+        Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(entity);
 
         if (velocity == nullptr)
         {
@@ -138,12 +138,13 @@ namespace
         }
     }
 
-    void resolveCollision(Registry& registry, const CollisionEvent& event, const BoxCollider& colliderA, const BoxCollider& colliderB)
+    void resolveCollision(const CollisionEvent& event, const BoxCollider& colliderA, const BoxCollider& colliderB)
     {
         if (colliderA.tag == "enemy" && colliderB.tag == "enemy")
         {
             return;
         }
+        
         
         if (event.isTrigger)
         {
@@ -161,15 +162,15 @@ namespace
 
         if (!colliderA.isStatic && colliderB.isStatic)
         {
-            moveEntity(registry, event.a, correctionA);
-            stopVelocityOnCollisionAxis(registry, event.a, event.normal);
+            moveEntity(event.a, correctionA);
+            stopVelocityOnCollisionAxis(event.a, event.normal);
             return;
         }
 
         if (colliderA.isStatic && !colliderB.isStatic)
         {
-            moveEntity(registry, event.b, correctionB);
-            stopVelocityOnCollisionAxis(registry, event.b, event.normal);
+            moveEntity(event.b, correctionB);
+            stopVelocityOnCollisionAxis(event.b, event.normal);
             return;
         }
 
@@ -177,11 +178,11 @@ namespace
 
         Vector2D halfCorrectionB(correctionB.x * 0.5f, correctionB.y * 0.5f);
 
-        moveEntity(registry, event.a, halfCorrectionA);
-        moveEntity(registry, event.b, halfCorrectionB);
+        moveEntity(event.a, halfCorrectionA);
+        moveEntity(event.b, halfCorrectionB);
 
-        stopVelocityOnCollisionAxis(registry, event.a, event.normal);
-        stopVelocityOnCollisionAxis(registry, event.b, event.normal);
+        stopVelocityOnCollisionAxis(event.a, event.normal);
+        stopVelocityOnCollisionAxis(event.b, event.normal);
     }
 
     // Grid cell size for partitioning
@@ -210,7 +211,7 @@ namespace std
 namespace
 {
     static std::vector<GridCell> getCellsForRect(const SDL_FRect& rect)
-{
+    {
         std::vector<GridCell> cells;
         int x0 = (int)std::floor(rect.x / GRID_CELL_SIZE);
         int y0 = (int)std::floor(rect.y / GRID_CELL_SIZE);
@@ -227,10 +228,10 @@ namespace
     }
 }
 
-std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSolidCollisions)
+std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
 {
     std::vector<CollisionEvent> collisions;
-    auto colliders = registry.all<BoxCollider>();
+    auto colliders = GLOBALS::REGISTRY.all<BoxCollider>();
     const size_t n = colliders.entities.size();
     if (n <= 1) return collisions;
 
@@ -241,7 +242,7 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
     {
         Entity entity = colliders.entities[i];
         BoxCollider& collider = colliders.components[i];
-        Transform* transform = registry.get<Transform>(entity);
+        Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
         
         if (!transform)
         {
@@ -301,7 +302,7 @@ std::vector<CollisionEvent> collisionSystem(Registry& registry, bool resolveSoli
                 
                 if (resolveSolidCollisions)
                 {
-                    resolveCollision(registry, event, colliderA, colliderB);
+                    resolveCollision(event, colliderA, colliderB);
                 }
             }
         }

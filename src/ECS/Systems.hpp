@@ -14,11 +14,11 @@ private:
     //float speed = 220.0f;
     
 public:
-    void playerInputSystem(Registry& registry);
+    void playerInputSystem();
         
-    void movementSystem(Registry& registry, float delta_time);
+    void movementSystem(float delta_time);
     
-    void renderSystem(Registry& registry, SDL_Renderer* renderer, const Camera2D& camera);
+    void renderSystem(SDL_Renderer* renderer, const Camera2D& camera);
     
 };
 #endif /* Systems_hpp */

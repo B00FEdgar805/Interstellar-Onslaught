@@ -38,12 +38,12 @@ int XPSystem::getLevel()
     return LEVEL;
 }
 
-void XPSystem::XPCollisions(Registry &registry, std::vector<CollisionEvent> &collisions, PlayerSystems& player)
+void XPSystem::XPCollisions(std::vector<CollisionEvent> &collisions, PlayerSystems& player)
 {
     for (const CollisionEvent& collision : collisions)
     {
-        BoxCollider* a = registry.get<BoxCollider>(collision.a);
-        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
+        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
 
         if (a == nullptr || b == nullptr)
         {
@@ -64,16 +64,21 @@ void XPSystem::XPCollisions(Registry &registry, std::vector<CollisionEvent> &col
     }
 }
 
-void XPSystem::spawnXPDrop(Registry &registry, const Vector2D& position)
+
+void XPSystem::spawnXPDrop(const Vector2D& position)
 {
-    Entity xp = registry.create();
-    registry.add(xp, Transform(position));
-    registry.add(xp, Sprite("XP", Vector2D(5,5)));
-    registry.add(xp, BoxCollider(
-        Vector2D(5.0f, 5.0f).scale(1),
-        Vector2D(0.0f, 0.0f),
+    Vector2D v1 , v2 = {5.0f, 5.0f};
+    Vector2D offset = v1 - v2.scale(XP_GRAB_RANGE);
+    offset += Vector2D(5.0f, 5.0f);
+    Entity xp = GLOBALS::REGISTRY.create();
+    GLOBALS::REGISTRY.add(xp, Transform(position));
+    GLOBALS::REGISTRY.add(xp, Sprite("XP", Vector2D(5,5)));
+    GLOBALS::REGISTRY.add(xp, BoxCollider(
+        SIZE.scale(XP_GRAB_RANGE),
+        offset.scale(0.5f),
         true,     // isTrigger
         false,     // isStatic
         "xp"
     ));
 }
+

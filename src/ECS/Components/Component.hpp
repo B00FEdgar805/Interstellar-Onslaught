@@ -2,6 +2,7 @@
 #define Component_hpp
 
 #include "../../Math.hpp"
+//#include "../../Globals.hpp"
 
 class BaseComponent
 {

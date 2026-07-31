@@ -28,9 +28,8 @@
 
 // Init ECS system
 
-Registry registry;
-Entity PLAYER = registry.create();
-Entity level = registry.create();
+Entity PLAYER = GLOBALS::REGISTRY.create();
+Entity level = GLOBALS::REGISTRY.create();
 Systems systems;
 ProjectileSystem projectiles;
 EnemyAi enemies(PLAYER);
@@ -93,10 +92,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Quit();
     }
     
+    SDL_SetWindowProgressValue(WINDOW, 0.5f);
+    
     TextManager::init(RENDERER);
     TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
-    UI.initText(registry, playerSystem);
+    UI.initText(playerSystem);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
@@ -109,7 +110,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     // Inits player and map
         
-    Entity blackhole = registry.create();
+    Entity blackhole = GLOBALS::REGISTRY.create();
     
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
@@ -121,9 +122,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
     TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
     TextureManager::loadTexture("XP", "Assets/XPDrop.png");
-    registry.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
-    registry.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
-    registry.add(blackhole, BoxCollider(
+    TextureManager::loadTexture("Railgun", "Assets/Railgun.png");
+    GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
+    GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
+    GLOBALS::REGISTRY.add(blackhole, BoxCollider(
         Vector2D(320.0f, 180.0f).scale(1),
         Vector2D(0.0f, 0.0f),
         false,     // isTrigger
@@ -131,17 +133,17 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "blackhole"
     ));
     
-    registry.add(PLAYER, Sprite("player"));
-    registry.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
-    registry.add(PLAYER, Velocity(150.0f));
-    registry.add(PLAYER, PlayerControl());
-    registry.add(PLAYER, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
-    registry.add(PLAYER, Animation(DELTA_TIME, 3, 150));
-    registry.add(PLAYER, Health(100.0f));
+    GLOBALS::REGISTRY.add(PLAYER, Sprite("player"));
+    GLOBALS::REGISTRY.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
+    GLOBALS::REGISTRY.add(PLAYER, Velocity(150.0f));
+    GLOBALS::REGISTRY.add(PLAYER, PlayerControl());
+    GLOBALS::REGISTRY.add(PLAYER, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "player"));
+    GLOBALS::REGISTRY.add(PLAYER, Animation(DELTA_TIME, 3, 150));
+    GLOBALS::REGISTRY.add(PLAYER, Health(100.0f));
 
-    registry.add(level, Transform(0.0f, 0.0f));
+    GLOBALS::REGISTRY.add(level, Transform(0.0f, 0.0f));
 
-    enemies.createEnemy(registry, Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
+    enemies.createEnemy(Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
     
     TileMap levelMap = Map::loadFromFile(
         "Assets/Maps/Level1.txt",
@@ -152,7 +154,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         0      // empty tile value
     );
 
-    registry.add(level, levelMap);
+    GLOBALS::REGISTRY.add(level, levelMap);
     
     
     if (true)
@@ -278,7 +280,7 @@ void Game::handleEvents()
     
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
-        systems.playerInputSystem(registry);
+        systems.playerInputSystem();
     }
 }
 
@@ -289,8 +291,8 @@ void Game::update()
     /*
     for (const CollisionEvent& collision : collisions)
     {
-        BoxCollider* a = registry.get<BoxCollider>(collision.a);
-        BoxCollider* b = registry.get<BoxCollider>(collision.b);
+        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
+        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
 
         if (a == nullptr || b == nullptr)
         {
@@ -311,30 +313,30 @@ void Game::update()
     */
     
     
-    systems.movementSystem(registry, DELTA_TIME);
-    enemies.enemySpawnSystem(registry, DELTA_TIME);
-    enemies.enemyAISystem(registry);
+    systems.movementSystem(DELTA_TIME);
+    enemies.enemySpawnSystem(DELTA_TIME);
+    enemies.enemyAISystem();
     
-    std::vector<CollisionEvent> collisions = collisionSystem(registry);
+    std::vector<CollisionEvent> collisions = collisionSystem();
 
-    enemies.enemyCollisions(registry, collisions);
-    xp.XPCollisions(registry, collisions, playerSystem);
-    projectiles.projectilesCollisons(registry, collisions);
-    projectiles.projectileSystem(registry, DELTA_TIME);
-    playerSystem.fireSystem(projectiles, registry);
+    enemies.enemyCollisions(collisions, DELTA_TIME);
+    xp.XPCollisions(collisions, playerSystem);
+    projectiles.projectilesCollisons(collisions);
+    projectiles.projectileSystem(DELTA_TIME);
+    playerSystem.fireSystem(projectiles);
     
    
     
     // camera systems
     
-    Transform* player_transform = registry.get<Transform>(PLAYER);
+    Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
 
     if (player_transform)
     {
         camera.follow(player_transform -> position, 8.0f, DELTA_TIME);
     }
     
-    TileMap* tilemap = registry.get<TileMap>(level);
+    TileMap* tilemap = GLOBALS::REGISTRY.get<TileMap>(level);
     if(tilemap)
     {
         camera.clampToWorld(tilemap -> mapWidth * tilemap -> worldTileSize(), tilemap -> mapHeight * tilemap -> worldTileSize());
@@ -343,7 +345,7 @@ void Game::update()
     for(Entity entity: deadEntities())    // Destroys any projectiles that have had collsions
     {
         //SDL_Log("called");
-        registry.destroy(entity);
+        GLOBALS::REGISTRY.destroy(entity);
     }
 }
 
@@ -354,8 +356,8 @@ void Game::render()
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
-    RenderTileMap(registry, camera);
-    systems.renderSystem(registry, RENDERER, camera);
+    RenderTileMap(GLOBALS::REGISTRY, camera);
+    systems.renderSystem(RENDERER, camera);
     
     UI.renderUI(RENDERER);
     
@@ -385,12 +387,12 @@ void Game::render()
         
         if (ImGui::Button("Speed"))
         {
-            playerSystem.upgradeSpeed(1.1f, registry);
+            playerSystem.upgradeSpeed(1.1f);
         }
         
-        if (ImGui::Button("close"))
+        if (ImGui::Button("XP Range"))
         {
-            IMGUI = false;
+            playerSystem.upgradeXPGrabRange(1.2f);
         }
         
         if(ImGui::Button("BoxColliders"))
@@ -402,9 +404,17 @@ void Game::render()
             else
             {
                 GLOBALS::COLLISION_BOXES = true;
-
             }
         }
+        
+        
+        
+        if (ImGui::Button("close"))
+        {
+            IMGUI = false;
+        }
+        
+        
         
         ImGui::End();
         

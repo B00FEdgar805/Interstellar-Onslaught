@@ -26,7 +26,7 @@ private:
 
 public:
     Menu();
-    void initText(Registry& registry, PlayerSystems& player);
+    void initText(PlayerSystems& player);
     void buttonSystem(SDL_Event& e);
     void renderSystemMain(SDL_Renderer* renderer);
     void renderSystemPause(SDL_Renderer* renderer);

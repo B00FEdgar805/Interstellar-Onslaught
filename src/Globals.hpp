@@ -1,7 +1,7 @@
 #ifndef Globals_hpp
 #define Globals_hpp
 
-#include "ECS/Types.hpp"
+#include "ECS/Registry.hpp"
 
 struct GLOBALS
 {
@@ -20,9 +20,10 @@ struct GLOBALS
     static const int SCREEN_WIDTH = 640; //800;
     inline static bool COLLISION_BOXES = false;
     
+    inline static Registry REGISTRY;
     //inline static Entity PLAYER;
 };
 
 
-
 #endif /* Globals_hpp */
+
