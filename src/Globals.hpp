@@ -25,6 +25,5 @@ struct GLOBALS
 };
 
 
-
 #endif /* Globals_hpp */
 

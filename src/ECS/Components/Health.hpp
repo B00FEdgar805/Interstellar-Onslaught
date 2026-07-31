@@ -26,6 +26,16 @@ public:
         return HEALTH > 0.0f;
     }
     
+    float getHealth()
+    {
+        return HEALTH;
+    }
+    
+    float getMaxHealth()
+    {
+        return TOTAL_HEALTH;
+    }
+    
     void heal(float value)
     {
         if(HEALTH + value < TOTAL_HEALTH)

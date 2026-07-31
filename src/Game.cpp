@@ -92,6 +92,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Quit();
     }
     
+    SDL_SetWindowProgressValue(WINDOW, 0.5f);
+    
     TextManager::init(RENDERER);
     TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));

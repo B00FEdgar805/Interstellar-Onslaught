@@ -106,7 +106,7 @@ bool PlayerSystems::shoot(float time)
             }
             break;
         case WEAPON_SMG:
-            if(time >= RATE_OF_FIRE * 0.5f)
+            if(time >= RATE_OF_FIRE * 0.2f)
             {
                 return true;
             }

@@ -7,6 +7,7 @@
 #include "Components/Projectile.hpp"
 #include "Components/Enemy.hpp"
 #include "Components/BoxCollider.hpp"
+#include "Components/Health.hpp"
 #include "../Globals.hpp"
 
 void Systems::playerInputSystem()
@@ -192,6 +193,34 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         else
         {
             sprite.draw();
+        }
+        
+        if (GLOBALS::REGISTRY.has<Health>(entity))  // Render Health bars
+        {
+            Health* health = GLOBALS::REGISTRY.get<Health>(entity);
+            float x = screenDestination.x;
+            float y = screenDestination.y + sprite.h() + 4;
+            float w = sprite.w();
+            //SDL_Log("%f", w);
+            float h = 4.0f;
+            SDL_FRect bgRect = { x, y, w, h };
+            SDL_SetRenderDrawColor(renderer, 179, 185, 209, 255);
+            if (GLOBALS::REGISTRY.has<PlayerControl>(entity)) // Player has backgound for health bar
+            {
+                SDL_RenderFillRect(renderer, &bgRect);
+            }
+            
+            float percentage = health -> getHealth() / health -> getMaxHealth();
+            percentage = std::max(0.0f, std::min(percentage, 1.0f));
+
+            float fgWidth = w * percentage;
+
+            SDL_FRect fgRect = { x + 1, y + 1, fgWidth - 2, h - 2};
+            if (fgRect.w < 0) fgRect.w = 0;
+            
+            
+            SDL_SetRenderDrawColor(renderer, 180, 32, 42, 255);
+            SDL_RenderFillRect(renderer, &fgRect);
         }
         
         if (GLOBALS::COLLISION_BOXES && GLOBALS::REGISTRY.has<BoxCollider>(entity))
