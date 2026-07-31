@@ -23,19 +23,17 @@ private:
     float PROJECTILE_SPEED = 250.0f;
     //int MAX = 8;
     inline static int UNIQUE_UPGRADE = 0;
-    bool INIT_LASER = false;
-    Entity LASER; //= GLOBALS::REGISTRY.create();
 
 
     enum WeaponType
     {
         WEAPON_NORMAL,
         WEAPON_SHOTGUN,
-        WEAPON_LASER,
+        WEAPON_SMG,
         WEAPON_RAILGUN
     };
     
-    WeaponType CURRENT_WEAPON = WEAPON_LASER;
+    WeaponType CURRENT_WEAPON = WEAPON_NORMAL;
 
     //Registry REGISTRY;
 public:
@@ -59,7 +57,12 @@ public:
         UPGRADE_SPEED,
         UPGRADE_PROJECTILE_SPEED,
         UPGRADE_XP_MUTIPLIER,
-        UPGRADE_XP_RANGE
+        UPGRADE_XP_RANGE,
+        UPGRADE_WEAPON_NORMAL,
+        UPGRADE_WEAPON_SHOTGUN,
+        UPGRADE_WEAPON_SMG,
+        UPGRADE_WEAPON_RAILGUN
+        
     };
     
     inline static UpgradeType left;
@@ -71,6 +74,7 @@ public:
     void upgrade(UpgradeType button);
     UpgradeType randomUpgrade();
     UpgradeType randomUpgradeUnique();
+    UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
 
 };

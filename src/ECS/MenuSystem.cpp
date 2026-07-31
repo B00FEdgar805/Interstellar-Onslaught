@@ -43,6 +43,10 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("PSpeed", "Default", "Increase Projectile Speed by 10%", COLORS::WHITE);
     TextManager::createLabel("XPMutiplier", "Default", "Increase XP gains by 10%", COLORS::WHITE);
     TextManager::createLabel("XPRange", "Default", "Increase XP pick up range by 20%", COLORS::WHITE);
+    TextManager::createLabel("Normal", "Default", "Returns weapon back to normal. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Shotgun", "Default", "Weapon becomes a shotgun. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("SMG", "Default", "Weapon becomes a SMG. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Railgun", "Default", "Weapon becomes a Railgun. Raises weapon stats by 10%", COLORS::WHITE);
 
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));

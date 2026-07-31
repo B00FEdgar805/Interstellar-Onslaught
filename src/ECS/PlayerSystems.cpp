@@ -60,25 +60,12 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
                 LAST_TIME = current_time;
             }
             break;
-        case WEAPON_LASER:
-            if(!INIT_LASER)
+        case WEAPON_SMG:
+            if(shoot(current_time - LAST_TIME))
             {
-                LASER = GLOBALS::REGISTRY.create();
-                GLOBALS::REGISTRY.add(LASER, Transform(player_transform -> position));
-                GLOBALS::REGISTRY.add(LASER, Velocity(player_velocity -> value, 0.0f));
-                GLOBALS::REGISTRY.add(LASER, BoxCollider(Vector2D(16.0f, 640.0f), Vector2D(0.0f, 0.0f), true, false, "Laser"));
-                GLOBALS::REGISTRY.add(LASER, Sprite("Laser", Vector2D(16.0f, 640.0f)));
-                //SDL_Log("Called");
-                
-                INIT_LASER = true;
-            }
-            else
-            {
-                Velocity* v = GLOBALS::REGISTRY.get<Velocity>(LASER);
-                Transform* t = GLOBALS::REGISTRY.get<Transform>(LASER);
-                t -> position = player_transform -> position;
-                v -> direction = player_velocity -> direction;
-                v -> value = player_velocity -> value;
+                Vector2D pos = player_transform -> position;
+                projectiles.createProjectile(PLAYER, pos + Vector2D(8.0f, 8.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE * 0.5, CURRENT_WEAPON);
+                LAST_TIME = current_time;
             }
             break;
         case WEAPON_RAILGUN:
@@ -118,11 +105,18 @@ bool PlayerSystems::shoot(float time)
                 return false;
             }
             break;
-        case WEAPON_LASER:
-            return false;
+        case WEAPON_SMG:
+            if(time >= RATE_OF_FIRE * 0.5f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
             break;
         case WEAPON_RAILGUN:
-            if(time >= (RATE_OF_FIRE * 2.0f))
+            if(time >= (RATE_OF_FIRE * 3.0f))
             {
                 return true;
             }
@@ -178,7 +172,7 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 7);
+     std::uniform_int_distribution<> distr(1, 8);
      int num = distr(gen);
      switch (num)
      {
@@ -213,6 +207,10 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
              //SDL_Log("R");
              return UPGRADE_XP_RANGE;
              break;
+         case 8:
+             //SDL_Log("Weapon");
+             return randomUpgradeWeapon();
+             break;
          default:
              if (UNIQUE_UPGRADE >= 3)
              {
@@ -229,6 +227,8 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
      //std::cout << button << " Upgrade" << std::endl;
 }
 
+
+// need to redo this function for unique upgrades
 PlayerSystems::UpgradeType PlayerSystems::randomUpgradeUnique()
 {
     std::random_device rd;
@@ -303,6 +303,30 @@ void PlayerSystems::upgrade(UpgradeType button)
         case UPGRADE_XP_RANGE:
             upgradeXPGrabRange(1.20f);
             break;
+        case UPGRADE_WEAPON_NORMAL:
+            CURRENT_WEAPON = WEAPON_NORMAL;
+            upgradeROF(1.10f);
+            upgradeDamage(1.10f);
+            upgradeProjectileSpeed(1.10f);
+            break;
+        case UPGRADE_WEAPON_SHOTGUN:
+            CURRENT_WEAPON = WEAPON_SHOTGUN;
+            upgradeROF(1.10f);
+            upgradeDamage(1.10f);
+            upgradeProjectileSpeed(1.10f);
+            break;
+        case UPGRADE_WEAPON_SMG:
+            CURRENT_WEAPON = WEAPON_SMG;
+            upgradeROF(1.10f);
+            upgradeDamage(1.10f);
+            upgradeProjectileSpeed(1.10f);
+            break;
+        case UPGRADE_WEAPON_RAILGUN:
+            CURRENT_WEAPON = WEAPON_RAILGUN;
+            upgradeROF(1.10f);
+            upgradeDamage(1.10f);
+            upgradeProjectileSpeed(1.10f);
+            break;
         default:
             break;
     }
@@ -337,9 +361,45 @@ std::string PlayerSystems::getLabel(UpgradeType button)
         case UPGRADE_XP_RANGE:
             return "XPRange";
             break;
+        case UPGRADE_WEAPON_NORMAL:
+            return "Normal";
+            break;
+        case UPGRADE_WEAPON_SHOTGUN:
+            return "Shotgun";
+            break;
+        case UPGRADE_WEAPON_SMG:
+            return "SMG";
+            break;
+        case UPGRADE_WEAPON_RAILGUN:
+            return "Railgun";
         default:
             return "";
             break;
     }
 }
 
+PlayerSystems::UpgradeType PlayerSystems::randomUpgradeWeapon()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1, 4);
+    int num = distr(gen);
+    switch (num)
+    {
+        case 1:
+            return UPGRADE_WEAPON_NORMAL;
+            break;
+        case 2:
+            return UPGRADE_WEAPON_SHOTGUN;
+            break;
+        case 3:
+            return UPGRADE_WEAPON_SMG;
+            break;
+        case 4:
+            return UPGRADE_WEAPON_RAILGUN;
+            break;
+        default:
+            return UPGRADE_WEAPON_NORMAL;
+            break;
+    }
+}
