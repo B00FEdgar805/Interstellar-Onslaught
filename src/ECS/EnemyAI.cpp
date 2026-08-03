@@ -42,16 +42,49 @@ void EnemyAi::enemyAISystem()
     }
 }
 
-void EnemyAi::createEnemy(const Vector2D& position, float speed, float delta_time)
+void EnemyAi::createEnemy(const Vector2D& position, int type, float delta_time)
 {
-    Entity enemy = GLOBALS::REGISTRY.create();
-    GLOBALS::REGISTRY.add(enemy, Enemy(10.0f));
-    GLOBALS::REGISTRY.add(enemy, Transform(position));
-    GLOBALS::REGISTRY.add(enemy, Velocity(speed));
-    GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
-    GLOBALS::REGISTRY.add(enemy, Sprite("Enemy", Vector2D(16.0f, 16.0f)));
-    GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
-    GLOBALS::REGISTRY.add(enemy, Health(5.0f));
+    switch (type)
+    {
+        case 1: // Quick enemy
+        {
+            Entity enemy = GLOBALS::REGISTRY.create();
+            GLOBALS::REGISTRY.add(enemy, Enemy(10.0f));
+            GLOBALS::REGISTRY.add(enemy, Transform(position));
+            GLOBALS::REGISTRY.add(enemy, Velocity(SPEED * 2));
+            GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
+            GLOBALS::REGISTRY.add(enemy, Sprite("Enemy1", Vector2D(16.0f, 16.0f)));
+            GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
+            GLOBALS::REGISTRY.add(enemy, Health(5.0f));
+        }
+            break;
+        case 2: // Balanced
+        {
+            Entity enemy = GLOBALS::REGISTRY.create();
+            GLOBALS::REGISTRY.add(enemy, Enemy(20.0f));
+            GLOBALS::REGISTRY.add(enemy, Transform(position));
+            GLOBALS::REGISTRY.add(enemy, Velocity(SPEED));
+            GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
+            GLOBALS::REGISTRY.add(enemy, Sprite("Enemy2", Vector2D(32.0f, 32.0f)));
+            GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
+            GLOBALS::REGISTRY.add(enemy, Health(30.0f));
+        }
+            break;
+        case 3: // Slow
+        {
+            Entity enemy = GLOBALS::REGISTRY.create();
+            GLOBALS::REGISTRY.add(enemy, Enemy(40.0f));
+            GLOBALS::REGISTRY.add(enemy, Transform(position));
+            GLOBALS::REGISTRY.add(enemy, Velocity(SPEED * 0.5f));
+            GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
+            GLOBALS::REGISTRY.add(enemy, Sprite("Enemy3", Vector2D(32.0f, 32.0f)));
+            GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
+            GLOBALS::REGISTRY.add(enemy, Health(70.0f));
+        }
+            break;
+        default:
+            break;
+    }
     
 }
 
@@ -116,7 +149,10 @@ void EnemyAi::enemySpawnSystem(float delta)
     if (TIMMER_ACCUMELATOR >= SPAWN_TIME)
     {
         // add a way to spawn eneimies left/righ and up/down the viewport
-        createEnemy(Vector2D(10.0f, 10.0f), 100.0f, delta);
+        createEnemy(Vector2D(10.0f, 10.0f), 1, delta);
+        createEnemy(Vector2D(10.0f, 10.0f), 2, delta);
+        createEnemy(Vector2D(10.0f, 10.0f), 3, delta);
+
         SPAWN_TIME *= 0.95;
         TIMMER_ACCUMELATOR = 0.0f;
     }

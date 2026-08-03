@@ -13,6 +13,7 @@ private:
     float SPAWN_TIME = 5.0f;
     float PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
     float PLAYER_DAMAGE_COOLDOWN = 0.5f;
+    float SPEED = 100.0f;
     
 public:
     EnemyAi(Entity player)
@@ -20,7 +21,7 @@ public:
     {}
     
     void enemyAISystem();
-    void createEnemy(const Vector2D& spawn, float speed, float delta_time);
+    void createEnemy(const Vector2D& spawn, int type, float delta_time);
     void enemyCollisions(std::vector<CollisionEvent>& collisions, float delta);
     void enemySpawnSystem(float delta);
 };

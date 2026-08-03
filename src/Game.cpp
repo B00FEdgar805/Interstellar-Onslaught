@@ -116,7 +116,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
     TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
+    TextureManager::loadTexture("Enemy1", "Assets/Enemy1.png");
+    TextureManager::loadTexture("Enemy2", "Assets/Enemy2.png");
+    TextureManager::loadTexture("Enemy3", "Assets/Enemy3.png");
     TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
     TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
