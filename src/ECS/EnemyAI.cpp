@@ -148,13 +148,78 @@ void EnemyAi::enemySpawnSystem(float delta)
     TIMMER_ACCUMELATOR += delta;
     if (TIMMER_ACCUMELATOR >= SPAWN_TIME)
     {
-        // add a way to spawn eneimies left/righ and up/down the viewport
-        createEnemy(Vector2D(10.0f, 10.0f), 1, delta);
-        createEnemy(Vector2D(10.0f, 10.0f), 2, delta);
-        createEnemy(Vector2D(10.0f, 10.0f), 3, delta);
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distr(1, 4);
+        int num = distr(gen);
+        float x = 0.0f;
+        float y = 0.0f;
+        switch (num)
+        {
+            case 1:
+                // keep x and y 0
+                break;
+            case 2:
+                x = GLOBALS::SCREEN_WIDTH;
+                break;
+            case 3:
+                y = GLOBALS::SCREEN_HEIGHT;
+                break;
+            case 4:
+            {
+                x = GLOBALS::SCREEN_WIDTH;
+                y = GLOBALS::SCREEN_HEIGHT;
+            }
+                break;
+            default:
+                break;
+        }
+        
+        
+        for(int i = 0; i < MAX_FAST; i++)
+        {
+            createEnemy(Vector2D(x,y), 1, delta);
+        }
+        
+        for (int i = 0; i < MAX_NORMAL; i++)
+        {
+            createEnemy(Vector2D(x,y), 2, delta);
+        }
+        
+        for (int i = 0; i < MAX_SLOW; i++)
+        {
+            createEnemy(Vector2D(x,y), 3, delta);
+        }
 
-        SPAWN_TIME *= 0.95;
+        SPAWN_TIME -= 0.25f;
+        if (SPAWN_TIME <= 3.0f)
+        {
+            SPAWN_TIME = 3.0f;
+        }
+        
         TIMMER_ACCUMELATOR = 0.0f;
+        WAVE++;
+        if (WAVE < 30)
+        {
+            if(WAVE >= 10)
+            {
+                MAX_FAST++;
+                MAX_NORMAL++;
+                MAX_SLOW++;
+            }
+            if(WAVE >= 20)
+            {
+                MAX_NORMAL++;
+                MAX_SLOW++;
+            }
+        }
+        else
+        {
+            // Here would be the code for making enemies hardeer
+        }
+        
+        //SDL_Log("%f", SPAWN_TIME);
+        
     }
 }
 

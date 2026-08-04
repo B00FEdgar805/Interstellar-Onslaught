@@ -116,7 +116,7 @@ bool PlayerSystems::shoot(float time)
             }
             break;
         case WEAPON_RAILGUN:
-            if(time >= (RATE_OF_FIRE * 3.0f))
+            if(time >= (RATE_OF_FIRE * 4.0f))
             {
                 return true;
             }

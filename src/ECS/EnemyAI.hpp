@@ -9,8 +9,12 @@ class EnemyAi
 {
 private:
     Entity PLAYER;
-    float TIMMER_ACCUMELATOR = 0.0f;
-    float SPAWN_TIME = 5.0f;
+    float TIMMER_ACCUMELATOR = 7.0f;
+    float SPAWN_TIME = 10.0f;
+    int WAVE = 1;
+    int MAX_FAST = 3;
+    int MAX_NORMAL = 1;
+    int MAX_SLOW = 1;
     float PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
     float PLAYER_DAMAGE_COOLDOWN = 0.5f;
     float SPEED = 100.0f;

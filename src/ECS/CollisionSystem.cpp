@@ -142,11 +142,12 @@ namespace
 
     void resolveCollision(const CollisionEvent& event, const BoxCollider& colliderA, const BoxCollider& colliderB)
     {
+        /*
         if (colliderA.tag == "enemy" && colliderB.tag == "enemy")
         {
             return;
         }
-        
+        */
         
         if (event.isTrigger)
         {

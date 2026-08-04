@@ -19,7 +19,7 @@ private:
     Entity PLAYER;
     Uint64 LAST_TIME = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
-    float DAMAGE = 10.0f;
+    float DAMAGE = 5.0f;
     float PROJECTILE_SPEED = 250.0f;
     //int MAX = 8;
     inline static int UNIQUE_UPGRADE = 0;
