@@ -107,10 +107,10 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
         if ((a -> tag == "player" && b -> tag == "enemy"))
         {
             Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.a);
-            Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
 
-            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f)
+            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f && !GLOBALS::INVINCIBLE)
             {
+                Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
                 //SDL_Log("Hit");
@@ -122,14 +122,16 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 //GLOBALS::REGISTRY.destroy(PLAYER);
                 // add damage to box collider instead
             }
+           
+            GLOBALS::INVINCIBLE = false;
         }
         else if ((a -> tag == "enemy" && b -> tag == "player"))
         {
             Health* player_health = GLOBALS::REGISTRY.get<Health>(collision.b);
-            Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
 
-            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f)
+            if (PLAYER_DAMAGE_COOLDOWN_TIMER <= 0.0f && !GLOBALS::INVINCIBLE)
             {
+                Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
                 //SDL_Log("Hit");
@@ -139,6 +141,9 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             {
                // SDL_Log("Dead");
             }
+            
+            GLOBALS::INVINCIBLE = false;
+
         }
     }
 }

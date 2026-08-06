@@ -47,6 +47,9 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Shotgun", "Default", "Weapon becomes a shotgun. Raises weapon stats by 10%", COLORS::WHITE);
     TextManager::createLabel("SMG", "Default", "Weapon becomes a SMG. Raises weapon stats by 10%", COLORS::WHITE);
     TextManager::createLabel("Railgun", "Default", "Weapon becomes a Railgun. Raises weapon stats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Astroids", "Default", "Astroids will orbit the ship", COLORS::WHITE);
+    TextManager::createLabel("Shield", "Default", "Will give you a shield with a cooldown", COLORS::WHITE);
+    TextManager::createLabel("Gunner", "Default", "Gunner ship will be at your side", COLORS::WHITE);
 
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));

@@ -18,12 +18,23 @@
 PlayerSystems::PlayerSystems(Entity player)
 {
     PLAYER = player;
+    ASTROID_L = GLOBALS::REGISTRY.create();
+    GLOBALS::REGISTRY.add(ASTROID_L, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_L, Transform(Vector2D(100.0f, 100.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_L, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
+    ASTROID_R = GLOBALS::REGISTRY.create();
+    GLOBALS::REGISTRY.add(ASTROID_R, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_R, Transform(Vector2D(100.0f, 100.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_R, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
+    HAS_ASTROID = true;
 }
 
-void PlayerSystems::fireSystem(ProjectileSystem projectiles)
+void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
 {
     
     Uint64 current_time = SDL_GetTicks();
+    Uint64 start_time = SDL_GetTicks();
+
     Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
     Velocity* player_velocity = GLOBALS::REGISTRY.get<Velocity>(PLAYER);
    // if (current_time - LAST_TIME >= player_projectile -> RATE_OF_FIRE)
@@ -41,7 +52,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
             if(shoot(current_time - LAST_TIME))
             {
                 Vector2D pos = player_transform -> position;
-                Vector2D mainDir = player_velocity->direction.normalize();
+                Vector2D mainDir = player_velocity -> direction.normalize();
                 float angle = 20.0f * (M_PI / 180.0f); // Convert degrees to radians
 
                 // Left (+45 degrees)
@@ -78,6 +89,59 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles)
             break;
     }
     
+    if (HAS_SHEILD)
+    {
+        if(!GLOBALS::INVINCIBLE && ((start_time - LAST_TIME_SHIELD) >= SHIELD_TIME))
+        {
+            GLOBALS::INVINCIBLE = true;
+           // SDL_Log("Shield");
+            LAST_TIME_SHIELD = start_time;
+        }
+    }
+    
+    if (HAS_ASTROID)
+    {
+        //Velocity* v = GLOBALS::REGISTRY.get<Velocity>(ASTROID_L);
+
+        
+        float orbitX = player_transform -> position.x + 16.0f;
+        float orbitY = player_transform -> position.y + 16.0f;
+        float radius = 64.0f;
+        
+        angle += 3.0f * delta;
+        if (angle >= 2.0f * M_PI) angle -= 2.0f * M_PI;
+
+        float x = orbitX + cosf(angle) * radius;
+        float y = orbitY + sinf(angle) * radius;
+        
+        Vector2D posR = {x,y};
+        float xl = 2 * orbitX - x;
+        float yl = 2 * orbitY - y;
+        Vector2D posL = {xl,yl};
+        //posL.scale(-1);
+        
+        Transform* positionL = GLOBALS::REGISTRY.get<Transform>(ASTROID_L);
+        Transform* positionR = GLOBALS::REGISTRY.get<Transform>(ASTROID_R);
+        
+        if (!positionL)
+        {
+            SDL_Log("left is null");
+        }
+        
+        if (!positionR)
+        {
+            SDL_Log("right is null");
+        }
+        //std::cout << pos;
+        //v -> value = pos;
+        
+        positionL -> position = posL;
+        //std::cout << "Left" << posL;
+        positionR -> position = posR;
+        //std::cout << "Right: " << posR;
+
+
+    }
     
 }
 
@@ -172,7 +236,7 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 8);
+     std::uniform_int_distribution<> distr(1, 9);
      int num = distr(gen);
      switch (num)
      {
@@ -211,15 +275,10 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
              //SDL_Log("Weapon");
              return randomUpgradeWeapon();
              break;
+         case 9:
+             return randomUpgradeUnique();
+             break;
          default:
-             if (UNIQUE_UPGRADE >= 3)
-             {
-                 return randomUpgrade();
-             }
-             else
-             {
-                 // do thing 
-             }
              return UPGRADE_ROF;
              break;
      }
@@ -233,40 +292,23 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgradeUnique()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(1, 7);
+    std::uniform_int_distribution<> distr(1, 3);
     int num = distr(gen);
     switch (num)
     {
         case 1:
             //SDL_Log("R");
-            return UPGRADE_ROF;
+            return UPGRADE_SHEILD;
             break;
         case 2:
             //SDL_Log("S");
-            return UPGRADE_SPEED;
+            return UPGRADE_ASTROIDS;
             //std::cout << button;
             break;
         case 3:
             //SDL_Log("D");
-            return UPGRADE_DAMAGE;
+            return UPGRADE_GUNNER;
             //std::cout << button;
-            break;
-        case 4:
-            //SDL_Log("H");
-            return UPGRADE_HEALTH;
-            //std::cout << button;
-            break;
-        case 5:
-            //SDL_Log("R");
-            return UPGRADE_PROJECTILE_SPEED;
-            break;
-        case 6:
-            //SDL_Log("R");
-            return UPGRADE_XP_MUTIPLIER;
-            break;
-        case 7:
-            //SDL_Log("R");
-            return UPGRADE_XP_RANGE;
             break;
         default:
             return UPGRADE_ROF;
@@ -327,6 +369,55 @@ void PlayerSystems::upgrade(UpgradeType button)
             upgradeDamage(1.10f);
             upgradeProjectileSpeed(1.10f);
             break;
+        case UPGRADE_SHEILD:
+            if (HAS_SHEILD)
+            {
+                SHIELD_TIME /= 1.30f;
+            }
+            else
+            {
+                HAS_SHEILD = true;
+                // do function
+            }
+            break;
+        case UPGRADE_ASTROIDS:
+            if (HAS_ASTROID)
+            {
+                upgradeDamage(1.20f);
+            }
+            else
+            {
+                /*
+                GLOBALS::REGISTRY.add(ASTROID_L, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
+                GLOBALS::REGISTRY.add(ASTROID_L, Transform(Vector2D(100.0f, 100.0f)));
+                //GLOBALS::REGISTRY.add(ASTROID_L, Velocity(150.0f));
+                GLOBALS::REGISTRY.add(ASTROID_L, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
+                GLOBALS::REGISTRY.add(ASTROID_R, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
+                GLOBALS::REGISTRY.add(ASTROID_R, Transform(Vector2D(100.0f, 100.0f)));
+               // GLOBALS::REGISTRY.add(ASTROID_R, Velocity(150.0f));
+                GLOBALS::REGISTRY.add(ASTROID_R, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
+                */
+                 HAS_ASTROID = true;
+                // do function
+                 
+            }
+            break;
+        case UPGRADE_GUNNER:
+            if (HAS_GUNNER == 0)
+            {
+                // spawn left
+                HAS_GUNNER++;
+            }
+            else if (HAS_GUNNER == 1)
+            {
+                // spawn right
+                HAS_GUNNER++;
+            }
+            else
+            {
+                upgradeDamage(1.20f);
+            }
+            break;
         default:
             break;
     }
@@ -372,6 +463,16 @@ std::string PlayerSystems::getLabel(UpgradeType button)
             break;
         case UPGRADE_WEAPON_RAILGUN:
             return "Railgun";
+            break;
+        case UPGRADE_SHEILD:
+            return "Shield";
+            break;
+        case UPGRADE_ASTROIDS:
+            return "Astroids";
+            break;
+        case UPGRADE_GUNNER:
+            return "Gunner";
+            break;
         default:
             return "";
             break;
