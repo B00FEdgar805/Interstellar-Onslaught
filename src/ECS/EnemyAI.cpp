@@ -143,8 +143,10 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             }
             
             GLOBALS::INVINCIBLE = false;
-
         }
+        
+       
+
     }
 }
 

@@ -18,15 +18,15 @@
 PlayerSystems::PlayerSystems(Entity player)
 {
     PLAYER = player;
+    
     ASTROID_L = GLOBALS::REGISTRY.create();
     GLOBALS::REGISTRY.add(ASTROID_L, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
-    GLOBALS::REGISTRY.add(ASTROID_L, Transform(Vector2D(100.0f, 100.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_L, Transform(Vector2D(-100.0f, -100.0f)));
     GLOBALS::REGISTRY.add(ASTROID_L, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
     ASTROID_R = GLOBALS::REGISTRY.create();
     GLOBALS::REGISTRY.add(ASTROID_R, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
-    GLOBALS::REGISTRY.add(ASTROID_R, Transform(Vector2D(100.0f, 100.0f)));
+    GLOBALS::REGISTRY.add(ASTROID_R, Transform(Vector2D(-100.0f, -100.0f)));
     GLOBALS::REGISTRY.add(ASTROID_R, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
-    HAS_ASTROID = true;
 }
 
 void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
@@ -34,6 +34,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
     
     Uint64 current_time = SDL_GetTicks();
     Uint64 start_time = SDL_GetTicks();
+    Uint64 start_time_gunner = SDL_GetTicks();
 
     Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
     Velocity* player_velocity = GLOBALS::REGISTRY.get<Velocity>(PLAYER);
@@ -123,14 +124,17 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
         Transform* positionL = GLOBALS::REGISTRY.get<Transform>(ASTROID_L);
         Transform* positionR = GLOBALS::REGISTRY.get<Transform>(ASTROID_R);
         
+        
         if (!positionL)
         {
             SDL_Log("left is null");
+            return;
         }
         
         if (!positionR)
         {
             SDL_Log("right is null");
+            return;
         }
         //std::cout << pos;
         //v -> value = pos;
@@ -140,9 +144,117 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
         positionR -> position = posR;
         //std::cout << "Right: " << posR;
 
-
     }
-    
+
+    switch (HAS_GUNNER)
+    {
+        case 0:
+            break;
+        case 1:
+        {
+            Transform* pos = GLOBALS::REGISTRY.get<Transform>(GUNNER_L);
+            if (!pos)
+            {
+                SDL_Log("pos is null");
+                break;
+            }
+            /*
+            Vector2D mainDir = player_velocity -> direction.normalize();
+            Vector2D player_pos = player_transform -> position;
+            player_pos += Vector2D(16.0f, 16.0f);
+            float leftOffset = 16.0f; // distance to the left of the player
+            Vector2D leftDir(-mainDir.y, mainDir.x);
+            leftDir.normalize();
+            player_pos += leftDir.scale(leftOffset);
+            pos -> position = player_pos;
+             */
+            
+            float totalAngleDegrees = player_velocity -> directionToDegrees() + 180.0f;
+            float angleRadians = totalAngleDegrees * (M_PI / 180.0f);
+            Vector2D player_pos = player_transform -> position;
+            player_pos += Vector2D(16.0f, 16.0f);
+            
+            float orbitCenterX = player_pos.x + (16.0f * cosf(angleRadians));
+            float orbitCenterY = player_pos.y + (16.0f * sinf(angleRadians));
+            pos -> position = Vector2D(orbitCenterX - 16.0f, orbitCenterY - 16.0f);
+            
+            if((start_time_gunner - LAST_TIME_GUNNER) >= RATE_OF_FIRE)
+            {
+                projectiles.createProjectile(PLAYER, pos -> position, player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE, 0);
+
+                LAST_TIME_GUNNER = start_time_gunner;
+            }
+
+        }
+            break;
+        case 2:
+        {
+            Transform* posL = GLOBALS::REGISTRY.get<Transform>(GUNNER_L);
+            if (!posL)
+            {
+                SDL_Log("posL is null");
+                break;
+            }
+            Transform* posR = GLOBALS::REGISTRY.get<Transform>(GUNNER_R);
+            if (!posR)
+            {
+                SDL_Log("posR is null");
+                break;
+            }
+            
+            /*
+            Vector2D mainDir = player_velocity -> direction;
+            mainDir.normalize();
+            Vector2D player_pos = player_transform -> position;
+            player_pos += Vector2D(16.0f, 16.0f);
+            float leftOffset = 16.0f; // distance to the left of the player
+            float rightOffset = 16.0f; // distance to the right of the player
+            Vector2D leftDir(-mainDir.y, mainDir.x);
+            Vector2D rightDir(mainDir.y, -mainDir.x);
+            leftDir.normalize();
+            rightDir.normalize();
+            //player_pos += leftDir.scale(leftOffset);
+            Vector2D newPosL = player_pos;
+            newPosL.add(leftDir.scale(leftOffset));
+            
+            Vector2D newPosR = player_pos;
+            newPosR.add(rightDir.scale(rightOffset));
+            
+            posL -> position = newPosL;
+            posR -> position = newPosR;
+             */
+            float totalAngleDegreesL = player_velocity -> directionToDegrees() + 180.0f;
+            float angleRadiansL = totalAngleDegreesL * (M_PI / 180.0f);
+            Vector2D player_pos = player_transform -> position;
+            player_pos += Vector2D(16.0f, 16.0f);
+            
+            float orbitCenterXL = player_pos.x + (16.0f * cosf(angleRadiansL));
+            float orbitCenterYL = player_pos.y + (16.0f * sinf(angleRadiansL));
+            
+            float totalAngleDegreesR = player_velocity -> directionToDegrees();
+            float angleRadiansR = totalAngleDegreesR * (M_PI / 180.0f);
+            //Vector2D player_pos = player_transform -> position;
+            //player_pos += Vector2D(16.0f, 16.0f);
+            
+            float orbitCenterXR = player_pos.x + (16.0f * cosf(angleRadiansR));
+            float orbitCenterYR = player_pos.y + (16.0f * sinf(angleRadiansR));
+            
+            
+            posL -> position = Vector2D(orbitCenterXL - 16.0f, orbitCenterYL - 16.0f);
+            posR -> position = Vector2D(orbitCenterXR - 16.0f, orbitCenterYR - 16.0f);
+            
+            if((start_time_gunner - LAST_TIME_GUNNER) >= RATE_OF_FIRE)
+            {
+                projectiles.createProjectile(PLAYER, posL -> position, player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE, 0);
+                projectiles.createProjectile(PLAYER, posR -> position, player_velocity -> direction.normalize() , PROJECTILE_SPEED, DAMAGE, 0);
+
+                LAST_TIME_GUNNER = start_time_gunner;
+            }
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 bool PlayerSystems::shoot(float time)
@@ -237,7 +349,8 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
      std::random_device rd;
      std::mt19937 gen(rd());
      std::uniform_int_distribution<> distr(1, 9);
-     int num = distr(gen);
+     //int num = distr(gen);
+    int num = 9;
      switch (num)
      {
          case 1:
@@ -387,17 +500,9 @@ void PlayerSystems::upgrade(UpgradeType button)
             }
             else
             {
-                /*
-                GLOBALS::REGISTRY.add(ASTROID_L, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
-                GLOBALS::REGISTRY.add(ASTROID_L, Transform(Vector2D(100.0f, 100.0f)));
-                //GLOBALS::REGISTRY.add(ASTROID_L, Velocity(150.0f));
-                GLOBALS::REGISTRY.add(ASTROID_L, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
-                GLOBALS::REGISTRY.add(ASTROID_R, Sprite("Astroid", Vector2D(16.0f, 16.0f)));
-                GLOBALS::REGISTRY.add(ASTROID_R, Transform(Vector2D(100.0f, 100.0f)));
-               // GLOBALS::REGISTRY.add(ASTROID_R, Velocity(150.0f));
-                GLOBALS::REGISTRY.add(ASTROID_R, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "Astroid"));
-                */
-                 HAS_ASTROID = true;
+                //angle = 0.0f;
+                
+                HAS_ASTROID = true;
                 // do function
                  
             }
@@ -405,16 +510,21 @@ void PlayerSystems::upgrade(UpgradeType button)
         case UPGRADE_GUNNER:
             if (HAS_GUNNER == 0)
             {
-                // spawn left
+                GUNNER_L = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(GUNNER_L, Sprite("Gunner", Vector2D(16.0f, 16.0f)));
+                GLOBALS::REGISTRY.add(GUNNER_L, Transform(Vector2D(100.0f, 100.0f)));
                 HAS_GUNNER++;
             }
             else if (HAS_GUNNER == 1)
             {
-                // spawn right
+                GUNNER_R = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(GUNNER_R, Sprite("Gunner", Vector2D(16.0f, 16.0f)));
+                GLOBALS::REGISTRY.add(GUNNER_R, Transform(Vector2D(100.0f, 100.0f)));
                 HAS_GUNNER++;
             }
             else
             {
+                HAS_GUNNER = 2;
                 upgradeDamage(1.20f);
             }
             break;

@@ -19,8 +19,11 @@ private:
     Entity PLAYER;
     Entity ASTROID_L;
     Entity ASTROID_R;
+    Entity GUNNER_L;
+    Entity GUNNER_R;
     Uint64 LAST_TIME = 0.0f;
     Uint64 LAST_TIME_SHIELD = 0.0f;
+    Uint64 LAST_TIME_GUNNER = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
     float DAMAGE = 5.0f;
     float PROJECTILE_SPEED = 250.0f;
@@ -28,7 +31,7 @@ private:
     //int MAX = 8;
     //inline static int UNIQUE_UPGRADE = 0;
     bool HAS_SHEILD = false;
-    bool HAS_ASTROID = true;
+    bool HAS_ASTROID = false;
     float angle = 0.0f;
     int HAS_GUNNER = 0;
     

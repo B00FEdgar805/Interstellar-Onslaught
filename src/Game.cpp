@@ -126,6 +126,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("XP", "Assets/XPDrop.png");
     TextureManager::loadTexture("Railgun", "Assets/Railgun.png");
     TextureManager::loadTexture("Astroid", "Assets/Astroid.png");
+    TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     GLOBALS::REGISTRY.add(blackhole, BoxCollider(
