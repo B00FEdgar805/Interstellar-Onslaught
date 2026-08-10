@@ -114,7 +114,10 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
                 //SDL_Log("Hit");
+                //SDL_Log("%f", player_health -> getHealth());
+
             }
+            
             
             if (!player_health -> isAlive())
             {
@@ -135,7 +138,9 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
                 //SDL_Log("Hit");
+                //SDL_Log("%f", player_health -> getHealth());
             }
+            
             
             if (!player_health -> isAlive())
             {

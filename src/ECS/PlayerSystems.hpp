@@ -21,6 +21,7 @@ private:
     Entity ASTROID_R;
     Entity GUNNER_L;
     Entity GUNNER_R;
+    Entity SHIELD;
     Uint64 LAST_TIME = 0.0f;
     Uint64 LAST_TIME_SHIELD = 0.0f;
     Uint64 LAST_TIME_GUNNER = 0.0f;

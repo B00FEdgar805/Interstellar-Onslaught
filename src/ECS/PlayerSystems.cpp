@@ -95,8 +95,20 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
         if(!GLOBALS::INVINCIBLE && ((start_time - LAST_TIME_SHIELD) >= SHIELD_TIME))
         {
             GLOBALS::INVINCIBLE = true;
+           
            // SDL_Log("Shield");
             LAST_TIME_SHIELD = start_time;
+        }
+        
+        if (GLOBALS::INVINCIBLE)
+        {
+            Transform* pos = GLOBALS::REGISTRY.get<Transform>(SHIELD);
+            pos -> position = player_transform -> position;
+        }
+        else
+        {
+            Transform* pos = GLOBALS::REGISTRY.get<Transform>(SHIELD);
+            pos -> position = Vector2D(-200.0f, -200.0f);
         }
     }
     
@@ -489,6 +501,9 @@ void PlayerSystems::upgrade(UpgradeType button)
             }
             else
             {
+                SHIELD = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(SHIELD, Transform(-100.0f, -100.0f));
+                GLOBALS::REGISTRY.add(SHIELD, Sprite("Shield"));
                 HAS_SHEILD = true;
                 // do function
             }
