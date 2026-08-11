@@ -154,7 +154,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         "Assets/Maps/Level1.txt",
         "Level1",
         32,     // tile size in the tileset image
-        2,      // how many columns the tileset has
+        3,      // how many columns the tileset has
         1.0f,   // scale: 32px tiles become 64px on screen
         0      // empty tile value
     );
