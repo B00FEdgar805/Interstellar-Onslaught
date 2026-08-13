@@ -110,11 +110,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     // Inits player and map
         
-    Entity blackhole = GLOBALS::REGISTRY.create();
+    //Entity blackhole = GLOBALS::REGISTRY.create();
     
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
-    TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
     TextureManager::loadTexture("Enemy1", "Assets/Enemy1.png");
     TextureManager::loadTexture("Enemy2", "Assets/Enemy2.png");
@@ -128,6 +127,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Astroid", "Assets/Astroid.png");
     TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
     TextureManager::loadTexture("Shield", "Assets/Shield.png");
+    /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     GLOBALS::REGISTRY.add(blackhole, BoxCollider(
@@ -137,6 +137,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         true,     // isStatic
         "blackhole"
     ));
+     */
     
     GLOBALS::REGISTRY.add(PLAYER, Sprite("player"));
     GLOBALS::REGISTRY.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
@@ -150,16 +151,70 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 
     enemies.createEnemy(Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
     
-    TileMap levelMap = Map::loadFromFile(
-        "Assets/Maps/Level1.txt",
-        "Level1",
-        32,     // tile size in the tileset image
-        3,      // how many columns the tileset has
-        1.0f,   // scale: 32px tiles become 64px on screen
-        0      // empty tile value
-    );
+    
+    
+    
+    
+    // Chose a random map
+    
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1, 3);
+    int num = distr(gen);
+    switch (num)
+    {
+        case 1:
+        {
+            TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+            TileMap levelMap1 = Map::loadFromFile(
+                "Assets/Maps/Level1.txt",
+                "Level1",
+                32,     // tile size in the tileset image
+                3,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap1);
 
-    GLOBALS::REGISTRY.add(level, levelMap);
+        }
+            break;
+            
+        case 2:
+        {
+            TextureManager::loadTexture("Level2","Assets/TileSet2.png");
+            TileMap levelMap2 = Map::loadFromFile(
+                "Assets/Maps/Level2.txt",
+                "Level2",
+                32,     // tile size in the tileset image
+                4,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap2);
+
+        }
+
+            break;
+        
+        case 3:
+        {
+            TextureManager::loadTexture("Level3", "Assets/TileSet3.png");
+            TileMap levelMap3 = Map::loadFromFile(
+                "Assets/Maps/Level3.txt",
+                "Level3",
+                32,     // tile size in the tileset image
+                4,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap3);
+            
+        }
+            break;
+        default:
+            SDL_Log("Error failed to load a map");
+            break;
+    }
     
     
     if (true)

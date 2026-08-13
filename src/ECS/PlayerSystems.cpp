@@ -361,8 +361,8 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
      std::random_device rd;
      std::mt19937 gen(rd());
      std::uniform_int_distribution<> distr(1, 9);
-     //int num = distr(gen);
-    int num = 9;
+     int num = distr(gen);
+    //int num = 9;
      switch (num)
      {
          case 1:
