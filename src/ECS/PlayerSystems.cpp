@@ -267,6 +267,16 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
         default:
             break;
     }
+    if (POWER_UP)
+    {
+        Uint64 current_time_power_up = SDL_GetTicks();
+        Uint64 elampsed_power_up = current_time_power_up - POWER_UP_START;
+        if (elampsed_power_up > 15000)
+        {
+            POWER_UP = false;
+            powerUp();
+        }
+    }
 }
 
 bool PlayerSystems::shoot(float time)
@@ -627,5 +637,141 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgradeWeapon()
         default:
             return UPGRADE_WEAPON_NORMAL;
             break;
+    }
+}
+
+void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons)
+{
+    
+    for(const CollisionEvent& collision : collisons)
+    {
+        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
+        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
+        
+        if (a -> tag == "player" && b -> tag == "sattelite")
+        {
+            
+            
+        }
+        else if (a -> tag == "sattelite" && b -> tag == "player")
+        {
+           
+        }
+        
+        if (!HAS_ASTROID)
+        {
+            continue;
+        }
+        else if (a -> tag == "Astroid" && b -> tag == "enemy")
+        {
+            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
+            enemy_health -> takeDamage(DAMAGE * 2);
+            if (!enemy_health -> isAlive())
+            {
+                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
+                deadEntities().push_back(collision.b);
+                XPSystem xp;
+                xp.spawnXPDrop(enemy_position -> position);
+                // spawn xp pick up
+            }
+            continue;
+            
+        }
+        else if (a -> tag == "enemy" && b -> tag == "Astroid")
+        {
+            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.a);
+            enemy_health -> takeDamage(DAMAGE * 2);
+            if (!enemy_health -> isAlive())
+            {
+                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
+                deadEntities().push_back(collision.b);
+                XPSystem xp;
+                xp.spawnXPDrop(enemy_position -> position);
+                // spawn xp pick up
+            }
+            continue;
+        }
+        
+    }
+}
+
+void PlayerSystems::powerUp()
+{
+    if (POWER_UP)
+    {
+        switch (CURRENT_POWER_UP)
+        {
+            case POWER_UP_INVINCIBLE:
+                GLOBALS::INVINCIBLE_CONSTANT = false;
+                break;
+            case POWER_UP_GRAB_XP:
+                
+                break;
+            case POWER_UP_DOUBLE_XP:
+                upgradeXPMutiplier(0.5f);
+                break;
+            case POWER_UP_FREE_LEVEL:
+                break;
+            case POWER_UP_FREEZE_TIME:
+                // code to unfreeze time
+                break;
+            case POWER_UP_DOUBLE_DAMAGE:
+                upgradeDamage(0.5f);
+                break;
+         default:
+                break;
+        }
+        POWER_UP = false;
+    }
+    else
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distr(1, 6);
+        int num = distr(gen);
+        switch (num)
+        {
+            case 1:
+            {
+                CURRENT_POWER_UP = POWER_UP_INVINCIBLE;
+                GLOBALS::INVINCIBLE_CONSTANT = true;
+            }
+                break;
+            case 2:
+            {
+                CURRENT_POWER_UP = POWER_UP_GRAB_XP;
+                // code to drag all xp to player
+            }
+                break;
+            case 3:
+            {
+                CURRENT_POWER_UP = POWER_UP_DOUBLE_XP;
+                upgradeXPMutiplier(2.0f);
+            }
+                break;
+            case 4:
+            {
+                CURRENT_POWER_UP = POWER_UP_FREE_LEVEL;
+                XPSystem::free_level = true;
+            
+            }
+                break;
+            case 5:
+            {
+                CURRENT_POWER_UP = POWER_UP_FREEZE_TIME;
+                // code to stop updating ai movement
+            }
+                break;
+            case 6:
+            {
+                CURRENT_POWER_UP = POWER_UP_DOUBLE_DAMAGE;
+                upgradeDamage(2.0f);
+            }
+                break;
+            default:
+                break;
+        }
+        POWER_UP_START = SDL_GetTicks();
+        POWER_UP = true;
     }
 }

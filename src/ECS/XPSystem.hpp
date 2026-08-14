@@ -29,5 +29,7 @@ public:
     void renderXPBar(SDL_Renderer* renderer);
     inline static float XP_MULTIPLIER = 1.0f;
     inline static float XP_GRAB_RANGE = 1.0f;
+    float getLevelUpXP();
+    inline static bool free_level = false;
 };
 #endif /* XPSystem_hpp */

@@ -93,6 +93,11 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
     PLAYER_DAMAGE_COOLDOWN_TIMER -= delta;
     if (PLAYER_DAMAGE_COOLDOWN_TIMER < 0.0f) PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
 
+    if (GLOBALS::INVINCIBLE_CONSTANT)
+    {
+        return;
+    }
+    
     for (const CollisionEvent& collision : collisions)
     {
         BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);

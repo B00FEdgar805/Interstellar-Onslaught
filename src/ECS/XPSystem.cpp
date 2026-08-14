@@ -62,6 +62,12 @@ void XPSystem::XPCollisions(std::vector<CollisionEvent> &collisions, PlayerSyste
         }
         
     }
+    
+    if (free_level)
+    {
+        addXP(LEVEL_UP_XP, player);
+        free_level = false;
+    }
 }
 
 
@@ -108,4 +114,9 @@ void XPSystem::renderXPBar(SDL_Renderer *renderer)
   //  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     SDL_RenderFillRect(renderer, &fgRect);
+}
+
+float XPSystem::getLevelUpXP()
+{
+    return LEVEL_UP_XP;
 }

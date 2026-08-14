@@ -101,35 +101,6 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             otherEntity = collision.a;
             projectile = projectileB;
         }
-        else if (a -> tag == "Astroid" && b -> tag == "enemy")
-        {
-            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
-            enemy_health -> takeDamage(200.0f);
-            if (!enemy_health -> isAlive())
-            {
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
-                deadEntities().push_back(collision.b);
-                XPSystem xp;
-                xp.spawnXPDrop(enemy_position -> position);
-                // spawn xp pick up
-            }
-            continue;
-
-        }
-        else if (a -> tag == "enemy" && b -> tag == "Astroid")
-        {
-            Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.a);
-            enemy_health -> takeDamage(200.0f);
-            if (!enemy_health -> isAlive())
-            {
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
-                deadEntities().push_back(collision.b);
-                XPSystem xp;
-                xp.spawnXPDrop(enemy_position -> position);
-                // spawn xp pick up
-            }
-            continue;
-        }
         else
         {
             continue;

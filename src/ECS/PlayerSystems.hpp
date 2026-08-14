@@ -12,6 +12,7 @@
 #include "Registry.hpp"
 #include "ProjectileSystem.hpp"
 #include "SDL3/SDL.h"
+#include "CollisionSystem.hpp"
 
 class PlayerSystems
 {
@@ -25,6 +26,7 @@ private:
     Uint64 LAST_TIME = 0.0f;
     Uint64 LAST_TIME_SHIELD = 0.0f;
     Uint64 LAST_TIME_GUNNER = 0.0f;
+    Uint64 POWER_UP_START = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
     float DAMAGE = 5.0f;
     float PROJECTILE_SPEED = 250.0f;
@@ -33,6 +35,7 @@ private:
     //inline static int UNIQUE_UPGRADE = 0;
     bool HAS_SHEILD = false;
     bool HAS_ASTROID = false;
+    bool POWER_UP = false;
     float angle = 0.0f;
     int HAS_GUNNER = 0;
     
@@ -47,6 +50,20 @@ private:
     
     WeaponType CURRENT_WEAPON = WEAPON_NORMAL;
 
+    enum PowerUp
+    {
+        POWER_UP_NONE,
+        POWER_UP_INVINCIBLE,
+        POWER_UP_GRAB_XP,
+        POWER_UP_FREE_LEVEL,
+        POWER_UP_DOUBLE_DAMAGE,
+        POWER_UP_DOUBLE_XP,
+        POWER_UP_FREEZE_TIME
+
+    };
+    
+    PowerUp CURRENT_POWER_UP = POWER_UP_NONE;
+    
     //Registry REGISTRY;
 public:
     
@@ -60,6 +77,7 @@ public:
     void upgradeProjectileSpeed(float value);
     void upgradeXPMutiplier(float value);
     void upgradeXPGrabRange(float value);
+    void playerCollisionSystem(std::vector<CollisionEvent>& collisons);
     
     enum UpgradeType
     {
@@ -91,6 +109,8 @@ public:
     UpgradeType randomUpgradeUnique();
     UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
+    void powerUp();
+    
 
 };
 #endif /* PlayerSystems_hpp */

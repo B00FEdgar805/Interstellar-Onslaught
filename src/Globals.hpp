@@ -20,6 +20,7 @@ struct GLOBALS
     static constexpr int SCREEN_WIDTH = 640; //800;
     inline static bool COLLISION_BOXES = false;
     inline static bool INVINCIBLE = false;
+    inline static bool INVINCIBLE_CONSTANT = false;
 
     
     inline static Registry REGISTRY;
