@@ -385,6 +385,7 @@ void Game::update()
     projectiles.projectilesCollisons(collisions);
     projectiles.projectileSystem(DELTA_TIME);
     playerSystem.fireSystem(projectiles, DELTA_TIME);
+    playerSystem.playerCollisionSystem(collisions);
     
    
     
@@ -470,7 +471,10 @@ void Game::render()
             }
         }
         
-        
+        if (ImGui::Button("PowerUp"))
+        {
+            playerSystem.powerUp();
+        }
         
         if (ImGui::Button("close"))
         {

@@ -11,6 +11,7 @@
 #include "Components/Health.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/Item.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
 #include <random>
@@ -273,8 +274,24 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
         Uint64 elampsed_power_up = current_time_power_up - POWER_UP_START;
         if (elampsed_power_up > 15000)
         {
-            POWER_UP = false;
             powerUp();
+            POWER_UP = false;
+        }
+        //std::cout << elampsed_power_up << std::endl;
+        
+        if (CURRENT_POWER_UP == POWER_UP_GRAB_XP)
+        {
+            auto view = GLOBALS::REGISTRY.all<Item>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Entity entity = view.entities[i];
+                Transform* pos = GLOBALS::REGISTRY.get<Transform>(entity);
+                Vector2D player_pos = player_transform -> position;
+                Vector2D pos_player = player_pos - pos -> position;
+                Vector2D dir_player = pos_player.normalize();
+                float speed = 100.0f; // Set your desired speed
+                pos -> position += dir_player.scale(speed * delta);
+            }
         }
     }
 }
@@ -650,12 +667,15 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         
         if (a -> tag == "player" && b -> tag == "sattelite")
         {
-            
-            
+            powerUp();
+            deadEntities().push_back(collision.b);
+            continue;
         }
         else if (a -> tag == "sattelite" && b -> tag == "player")
         {
-           
+            powerUp();
+            deadEntities().push_back(collision.a);
+            continue;
         }
         
         if (!HAS_ASTROID)
@@ -713,10 +733,12 @@ void PlayerSystems::powerUp()
             case POWER_UP_FREE_LEVEL:
                 break;
             case POWER_UP_FREEZE_TIME:
-                // code to unfreeze time
+                GLOBALS::FREEZE = false;
                 break;
             case POWER_UP_DOUBLE_DAMAGE:
+                //SDL_Log("%f", DAMAGE);
                 upgradeDamage(0.5f);
+                //SDL_Log("%f", DAMAGE);
                 break;
          default:
                 break;
@@ -728,7 +750,8 @@ void PlayerSystems::powerUp()
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distr(1, 6);
-        int num = distr(gen);
+        //int num = distr(gen);
+        int num = 6;
         switch (num)
         {
             case 1:
@@ -740,7 +763,7 @@ void PlayerSystems::powerUp()
             case 2:
             {
                 CURRENT_POWER_UP = POWER_UP_GRAB_XP;
-                // code to drag all xp to player
+                
             }
                 break;
             case 3:
@@ -759,13 +782,15 @@ void PlayerSystems::powerUp()
             case 5:
             {
                 CURRENT_POWER_UP = POWER_UP_FREEZE_TIME;
-                // code to stop updating ai movement
+                GLOBALS::FREEZE = true;
             }
                 break;
             case 6:
             {
                 CURRENT_POWER_UP = POWER_UP_DOUBLE_DAMAGE;
+                //SDL_Log("%f", DAMAGE);
                 upgradeDamage(2.0f);
+                //SDL_Log("%f", DAMAGE);
             }
                 break;
             default:
@@ -775,3 +800,4 @@ void PlayerSystems::powerUp()
         POWER_UP = true;
     }
 }
+

@@ -9,6 +9,7 @@
 #include "Components/BoxCollider.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Item.hpp"
 
 void XPSystem::addXP(int xp, PlayerSystems& player)
 {
@@ -86,6 +87,7 @@ void XPSystem::spawnXPDrop(const Vector2D& position)
         false,     // isStatic
         "xp"
     ));
+    GLOBALS::REGISTRY.add(xp, Item());
 }
 
 void XPSystem::renderXPBar(SDL_Renderer *renderer)

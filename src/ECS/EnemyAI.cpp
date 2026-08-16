@@ -37,7 +37,10 @@ void EnemyAi::enemyAISystem()
         enemyDir -> direction = temp - enemyPos -> position;
 
         enemyDir -> value.zero();
-        enemyDir -> value += enemyDir -> direction.normalize();
+        if (!GLOBALS::FREEZE)
+        {
+            enemyDir -> value += enemyDir -> direction.normalize();
+        }
 
     }
 }

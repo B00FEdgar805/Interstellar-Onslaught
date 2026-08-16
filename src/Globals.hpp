@@ -21,7 +21,7 @@ struct GLOBALS
     inline static bool COLLISION_BOXES = false;
     inline static bool INVINCIBLE = false;
     inline static bool INVINCIBLE_CONSTANT = false;
-
+    inline static bool FREEZE = false;
     
     inline static Registry REGISTRY;
     //inline static Entity PLAYER;
