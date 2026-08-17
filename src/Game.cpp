@@ -378,6 +378,8 @@ void Game::update()
     enemies.enemySpawnSystem(DELTA_TIME);
     enemies.enemyAISystem();
     
+    
+    
     std::vector<CollisionEvent> collisions = collisionSystem();
 
     enemies.enemyCollisions(collisions, DELTA_TIME);

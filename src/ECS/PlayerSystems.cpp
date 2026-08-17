@@ -12,6 +12,7 @@
 #include "Components/BoxCollider.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Item.hpp"
+#include "Components/Animation.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
 #include <random>
@@ -293,6 +294,50 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
                 pos -> position += dir_player.scale(speed * delta);
             }
         }
+    }
+    
+    SPAWN_TIME += delta;
+    //SDL_Log("%f", SPAWN_TIME);
+    if (SPAWN_TIME >= 60.0f)
+    {
+        SPAWN_TIME = 0.0f;
+        //SDL_Log("Spawned");
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distr(1, 4);
+        int num = distr(gen);
+        float x = 0.0f;
+        float y = 0.0f;
+        switch (num)
+        {
+            case 1:
+                // keep x and y 0
+                break;
+            case 2:
+                x = GLOBALS::SCREEN_WIDTH;
+                break;
+            case 3:
+                y = GLOBALS::SCREEN_HEIGHT;
+                break;
+            case 4:
+            {
+                x = GLOBALS::SCREEN_WIDTH;
+                y = GLOBALS::SCREEN_HEIGHT;
+            }
+                break;
+            default:
+                break;
+        }
+        //x = 100.0f;
+        //y = 100.0f;
+        
+        Entity sattelite = GLOBALS::REGISTRY.create();
+        GLOBALS::REGISTRY.add(sattelite, Transform(Vector2D(x,y)));
+        GLOBALS::REGISTRY.add(sattelite, Sprite("Sattelite", Vector2D(64.0f, 32.0f)));
+        GLOBALS::REGISTRY.add(sattelite, Animation(delta, 2, 150));
+        GLOBALS::REGISTRY.add(sattelite, BoxCollider(Vector2D(64.0f, 32.0f), Vector2D(0.0f, 0.0f), true, false, "sattelite"));
+        GLOBALS::REGISTRY.add(sattelite, Item());
+
     }
 }
 
@@ -667,14 +712,28 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         
         if (a -> tag == "player" && b -> tag == "sattelite")
         {
-            powerUp();
-            deadEntities().push_back(collision.b);
+            if (POWER_UP)
+            {
+                POWER_UP_START += 15000;
+            }
+            else
+            {
+                powerUp();
+                deadEntities().push_back(collision.b);
+            }
             continue;
         }
         else if (a -> tag == "sattelite" && b -> tag == "player")
         {
-            powerUp();
-            deadEntities().push_back(collision.a);
+            if (POWER_UP)
+            {
+                POWER_UP_START += 15000;
+            }
+            else
+            {
+                powerUp();
+                deadEntities().push_back(collision.a);
+            }
             continue;
         }
         
@@ -750,8 +809,8 @@ void PlayerSystems::powerUp()
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distr(1, 6);
-        //int num = distr(gen);
-        int num = 6;
+        int num = distr(gen);
+        //int num = 5;
         switch (num)
         {
             case 1:
