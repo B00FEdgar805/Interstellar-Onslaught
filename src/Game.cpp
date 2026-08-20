@@ -53,6 +53,9 @@ Game::~Game()
 
 void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
+    //TIMER_DEBUG t;
+    
+    
     int flags = 0;
     //SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
 
@@ -66,15 +69,21 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
-    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1"); // or proper DPI hints depending on your rendering backend
+    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1");
     
     // Initialize SDL (video + events)
-    if (!SDL_Init(SDL_INIT_VIDEO))
+    /*
+    if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
-        SDL_Quit();
+        return; // Early return on failure to avoid using uninitialized SDL objects
     }
-    
+    */
+    if (!SDL_Init(SDL_INIT_VIDEO))
+    {
+            SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
+            SDL_Quit();
+    }
     // Create a window
     WINDOW = SDL_CreateWindow(title, width, height, flags);
     if (!WINDOW)
@@ -250,7 +259,6 @@ int Game::run()
         switch (GLOBALS::CURRENT_STATE)
         {
             case GLOBALS::STATE_MAIN_MENU:
-                UI.buttonSystem(e);
                 UI.renderSystemMain(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
@@ -263,14 +271,11 @@ int Game::run()
                 //SDL_Delay(16);
                 break;
             case GLOBALS::STATE_PAUSED:
-                //DELTA_TIME = 0.0f;
-                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_UPGRADE:
-                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 break;
@@ -289,56 +294,58 @@ int Game::run()
 
 void Game::handleEvents()
 {
-    SDL_PollEvent(&e);
-    ImGui_ImplSDL3_ProcessEvent(&e);
-    switch (e.type)     // Handles ending the program
+    while (SDL_PollEvent(&e))
     {
+        ImGui_ImplSDL3_ProcessEvent(&e);
 
-        case SDL_EVENT_QUIT:
-            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-            //RUNNING = false;
-            break;
-        case SDL_EVENT_KEY_DOWN:
-            switch (e.key.key)
+        // Forward mouse events to menu UI if ImGui isn't capturing the mouse
+        if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+            e.type == SDL_EVENT_MOUSE_BUTTON_UP ||
+            e.type == SDL_EVENT_MOUSE_MOTION)
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            if (!io.WantCaptureMouse)
             {
-                case SDLK_ESCAPE:
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                    break;
-                case SDLK_TAB:
-                    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
-                    {
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-
-                    }
-                    else
-                    {
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
-                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-                    }
-                    break;
-                case SDLK_1:
-                    if (IMGUI)
-                    {
-                        IMGUI = false;
-                    }
-                    else
-                    {
-                        IMGUI = true;
-                    }
-                    break;
-                case SDLK_2:
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-                    break;
-                default:
-                    break;
+                UI.buttonSystem(e);
             }
-            
-        default:
-            break;
-            
+        }
+
+        switch (e.type)
+        {
+            case SDL_EVENT_QUIT:
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                break;
+            case SDL_EVENT_KEY_DOWN:
+                switch (e.key.key)
+                {
+                    case SDLK_ESCAPE:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                        break;
+                    case SDLK_TAB:
+                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                        {
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                        }
+                        else
+                        {
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                        }
+                        break;
+                    case SDLK_1:
+                        IMGUI = !IMGUI;
+                        break;
+                    case SDLK_2:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
-    
+
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
         systems.playerInputSystem();
@@ -347,41 +354,19 @@ void Game::handleEvents()
 
 void Game::update()
 {
+    TIMER_DEBUG t;
    // need to make function for game logic
     // Collisions events
-    /*
-    for (const CollisionEvent& collision : collisions)
-    {
-        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
-        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
-
-        if (a == nullptr || b == nullptr)
-        {
-            continue;
-        }
-
-        if (
-            collision.isTrigger &&
-            (
-                (a->tag == "player" && b->tag == "blackhole") ||
-                (a->tag == "blackhole" && b->tag == "player")
-            )
-        )
-        {
-            SDL_Log("Player touched blackhole!");
-        }
-    }
-    */
     
     
     systems.movementSystem(DELTA_TIME);
     enemies.enemySpawnSystem(DELTA_TIME);
     enemies.enemyAISystem();
     
+    static std::vector<CollisionEvent> collisions;
+    collisions.clear();
+    collisionSystem(collisions, true);
     
-    
-    std::vector<CollisionEvent> collisions = collisionSystem();
-
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
     projectiles.projectilesCollisons(collisions);
@@ -415,6 +400,10 @@ void Game::update()
 
 void Game::render()
 {
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 255))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
     if (!SDL_RenderClear(RENDERER))
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
@@ -426,12 +415,6 @@ void Game::render()
     UI.renderUI(RENDERER);
     xp.renderXPBar(RENDERER);
 
-    
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 255))
-    {
-        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
-    }
-    
     
     //map -> drawMap();
     ImGui_ImplSDLRenderer3_NewFrame();
@@ -445,6 +428,8 @@ void Game::render()
     if (IMGUI)
     {
         ImGui::Begin("Debug Functions");
+        
+        ImGui::Text("FPS: %f" ,UpdateFPSCounter(DELTA_TIME));
         
         if (ImGui::Button("Rate of Fire"))
         {
@@ -509,7 +494,7 @@ bool Game::isRunning()
     return RUNNING;
 }
 
-void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
+float Game::UpdateFPSCounter(float deltaTime)
 {
     static int frames = 0;
     static float accumulator = 0.0f;
@@ -519,11 +504,12 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
 
     if (accumulator >= 1.0f)
     {
-        float fps = frames / accumulator;
-        SDL_Log("FPS: %.1f", fps);
+        FPS = static_cast<float>(frames) / accumulator; // average over actual interval
         frames = 0;
-        accumulator = 0.0f;
+        accumulator -= 1.0f; // carry remainder to avoid time loss
     }
+
+    return FPS;
 }
 
 void Game::initIMGUI()

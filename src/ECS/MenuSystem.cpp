@@ -133,7 +133,7 @@ void Menu::buttonSystem(SDL_Event &e)
                 if (inside)
                 {
                     button.hovering(inside);
-                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         button.onClick();
                     }
@@ -160,15 +160,15 @@ void Menu::buttonSystem(SDL_Event &e)
 
                 if (inside)
                 {
-                    button.hovering(inside);
-                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    button.hovering(true);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         button.onClick();
                     }
                 }
                 else
                 {
-                    button.hovering(inside);
+                    button.hovering(false);
                 }
             }
             break;
@@ -188,15 +188,15 @@ void Menu::buttonSystem(SDL_Event &e)
 
                 if (inside)
                 {
-                    button.hovering(inside);
-                    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    button.hovering(true);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         button.onClick();
                     }
                 }
                 else
                 {
-                    button.hovering(inside);
+                    button.hovering(false);
                 }
             }
             break;

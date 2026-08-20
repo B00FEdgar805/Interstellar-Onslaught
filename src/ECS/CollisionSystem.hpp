@@ -20,8 +20,9 @@ struct CollisionEvent
     bool isTrigger = false;
 };
 
+//std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions = true);
+void collisionSystem(std::vector<CollisionEvent>& outCollisions, bool resolveSolidCollisions = true);
 std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions = true);
-
 inline std::vector<Entity>& deadEntities()
 {
     static std::vector<Entity> deadEntities;

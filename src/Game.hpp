@@ -17,7 +17,7 @@ private:
     int FRAME_TIME;
     SDL_Window *WINDOW;
     float DELTA_TIME;
-    
+    float FPS = 0.0f;
     // Timer
     Uint64 START_TIME = 0;
     Uint64 LAST_TIME = 0;
@@ -37,7 +37,7 @@ public:
     void clean();
     bool isRunning();
     void initIMGUI();
-    static void UpdateFPSCounter(float deltaTime);
+    float UpdateFPSCounter(float deltaTime);
     static inline SDL_Renderer *RENDERER = nullptr;
     
     

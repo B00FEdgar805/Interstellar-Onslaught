@@ -238,13 +238,14 @@ namespace
     }
 }
 
-std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
+void collisionSystem(std::vector<CollisionEvent>& outCollisions, bool resolveSolidCollisions)
 {
-    std::vector<CollisionEvent> collisions;
+    outCollisions.clear();
+
     auto colliders = GLOBALS::REGISTRY.all<BoxCollider>();
     const size_t n = colliders.entities.size();
-    collisions.reserve(n);
-    if (n <= 1) return collisions;
+    outCollisions.reserve(n);
+    if (n <= 1) return;
 
     // --- Spatial Hashing ---
     std::unordered_map<GridCell, std::vector<size_t>> grid; // GridCell indices in colliders array
@@ -255,18 +256,17 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
         Entity entity = colliders.entities[i];
         BoxCollider& collider = colliders.components[i];
         Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
-        
         if (!transform)
         {
             continue;
         }
-        
         rects[i] = makeWorldRect(*transform, collider);
         forEachCell(rects[i], [&](const GridCell& cell)
         {
             grid[cell].push_back(i);
         });
     }
+
     // Used to avoid duplicate checks
     std::unordered_set<uint64_t> checkedPairs;
     checkedPairs.reserve(n * 8);
@@ -287,7 +287,7 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
                 {
                     continue;
                 }
-                
+
                 uint64_t key = packPairKey(i, j);
                 if (!checkedPairs.insert(key).second)
                 {
@@ -314,10 +314,9 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
                 {
                     continue;
                 }
-                                
+
                 CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
-                
-                collisions.push_back(event);
+                outCollisions.push_back(event);
                 collisionIndices.emplace_back(i, j);
             }
         }
@@ -325,16 +324,20 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
 
     if (resolveSolidCollisions)
     {
-        for (size_t k = 0; k < collisions.size(); ++k)
+        for (size_t k = 0; k < outCollisions.size(); ++k)
         {
             const auto [i, j] = collisionIndices[k];
             BoxCollider& colliderA = colliders.components[i];
             BoxCollider& colliderB = colliders.components[j];
-            resolveCollision(collisions[k], colliderA, colliderB);
+            resolveCollision(outCollisions[k], colliderA, colliderB);
         }
     }
-
-    return collisions;
 }
 
+std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
+{
+    std::vector<CollisionEvent> collisions;
+    collisionSystem(collisions, resolveSolidCollisions);
+    return collisions;
+}
 
