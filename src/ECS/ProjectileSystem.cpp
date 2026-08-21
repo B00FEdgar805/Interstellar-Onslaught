@@ -87,6 +87,8 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
         Entity otherEntity = 0; // Any entity thats is not a projectile
         Projectile* projectile = nullptr;
         
+        
+        
         if (projectileA)
         {
             projectileEntity = collision.a;
@@ -120,6 +122,11 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
         }
         
         else if (((a -> tag == "pProjectile" && b -> tag == "pProjectile") || (a -> tag == "pProjectile" && b -> tag == "pProjectile")))  // To stop projectiles from destroying each other
+        {
+            continue;
+        }
+        
+        else if (((a -> tag == "pProjectile" && b -> tag == "Astroid") || (a -> tag == "Astroid" && b -> tag == "pProjectile")))  // To stop projectiles from destroying each other
         {
             continue;
         }
@@ -164,14 +171,15 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             //deadEntities().push_back(projectileEntity);
         }
         
+        
+        
+        
         else
         {
             deadEntities().push_back(projectileEntity);
         }
         
-    
-        // Add check if it destroy on hit
-        
+            
 
     }
 }

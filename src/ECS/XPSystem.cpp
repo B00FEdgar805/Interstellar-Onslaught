@@ -9,10 +9,11 @@
 #include "Components/BoxCollider.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Item.hpp"
 
 void XPSystem::addXP(int xp, PlayerSystems& player)
 {
-    CURRENT_XP += xp;
+    CURRENT_XP += (xp * XP_MULTIPLIER);
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
@@ -22,7 +23,7 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
         player.right = player.randomUpgrade();
 
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-        LEVEL_UP_XP *= 1.10;
+        LEVEL_UP_XP *= 1.20;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
         //std::cout << PlayerSystems::left;
         //std::cout << PlayerSystems::middle;
@@ -52,15 +53,21 @@ void XPSystem::XPCollisions(std::vector<CollisionEvent> &collisions, PlayerSyste
     
         if(collision.isTrigger && a->tag == "player" && b->tag == "xp")
         {
-            addXP(5, player);
+            addXP(10, player);
             deadEntities().push_back(collision.b);
         }
         else if(collision.isTrigger && a->tag == "xp" && b->tag == "player")
         {
-            addXP(5, player);
+            addXP(10, player);
             deadEntities().push_back(collision.a);
         }
         
+    }
+    
+    if (free_level)
+    {
+        addXP(LEVEL_UP_XP, player);
+        free_level = false;
     }
 }
 
@@ -80,5 +87,38 @@ void XPSystem::spawnXPDrop(const Vector2D& position)
         false,     // isStatic
         "xp"
     ));
+    GLOBALS::REGISTRY.add(xp, Item());
 }
 
+void XPSystem::renderXPBar(SDL_Renderer *renderer)
+{
+    float x = 20.0f;
+    float y = 340.0f;
+    float w = 600.0f;
+    //SDL_Log("%f", w);
+    float h = 6.0f;
+    SDL_FRect bgRect = { x, y, w, h };
+    SDL_SetRenderDrawColor(renderer, 179, 185, 209, 100);
+    SDL_RenderFillRect(renderer, &bgRect);
+    
+    
+    float percentage = CURRENT_XP / LEVEL_UP_XP;
+    //std::cout << percentage << std::endl;
+    percentage = std::max(0.0f, std::min(percentage, 1.0f));
+    //std::cout << percentage;
+    float fgWidth = w * percentage;
+
+    SDL_FRect fgRect = { x + 1, y + 1, fgWidth - 2, h - 2};
+    if (fgRect.w < 0) fgRect.w = 0;
+    
+    
+    SDL_SetRenderDrawColor(renderer, 32, 214, 199, 255);
+  //  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    SDL_RenderFillRect(renderer, &fgRect);
+}
+
+float XPSystem::getLevelUpXP()
+{
+    return LEVEL_UP_XP;
+}

@@ -18,6 +18,7 @@
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
 #include "ECS/PlayerSystems.hpp"
+#include "ECS/Components/Enemy.hpp"
 #include "Globals.hpp"
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
@@ -53,6 +54,9 @@ Game::~Game()
 
 void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
+    //TIMER_DEBUG t;
+    
+    
     int flags = 0;
     //SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
 
@@ -66,15 +70,21 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
-    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1"); // or proper DPI hints depending on your rendering backend
+    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1");
     
     // Initialize SDL (video + events)
-    if (!SDL_Init(SDL_INIT_VIDEO))
+    /*
+    if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
-        SDL_Quit();
+        return; // Early return on failure to avoid using uninitialized SDL objects
     }
-    
+    */
+    if (!SDL_Init(SDL_INIT_VIDEO))
+    {
+            SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
+            SDL_Quit();
+    }
     // Create a window
     WINDOW = SDL_CreateWindow(title, width, height, flags);
     if (!WINDOW)
@@ -92,8 +102,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Quit();
     }
     
-    SDL_SetWindowProgressValue(WINDOW, 0.5f);
-    
+    SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
+
     TextManager::init(RENDERER);
     TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
@@ -110,19 +120,25 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
     // Inits player and map
         
-    Entity blackhole = GLOBALS::REGISTRY.create();
+    //Entity blackhole = GLOBALS::REGISTRY.create();
     
     TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
     TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
-    TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
     TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy", "Assets/Enemy1.png");
+    TextureManager::loadTexture("Enemy1", "Assets/Enemy1.png");
+    TextureManager::loadTexture("Enemy2", "Assets/Enemy2.png");
+    TextureManager::loadTexture("Enemy3", "Assets/Enemy3.png");
     TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
     TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
     TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
     TextureManager::loadTexture("XP", "Assets/XPDrop.png");
     TextureManager::loadTexture("Railgun", "Assets/Railgun.png");
+    TextureManager::loadTexture("Astroid", "Assets/Astroid.png");
+    TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
+    TextureManager::loadTexture("Shield", "Assets/Shield.png");
+    TextureManager::loadTexture("Sattelite", "Assets/Sattelite.png");
+    /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
     GLOBALS::REGISTRY.add(blackhole, BoxCollider(
@@ -132,6 +148,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         true,     // isStatic
         "blackhole"
     ));
+     */
     
     GLOBALS::REGISTRY.add(PLAYER, Sprite("player"));
     GLOBALS::REGISTRY.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
@@ -145,16 +162,70 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 
     enemies.createEnemy(Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
     
-    TileMap levelMap = Map::loadFromFile(
-        "Assets/Maps/Level1.txt",
-        "Level1",
-        32,     // tile size in the tileset image
-        2,      // how many columns the tileset has
-        1.0f,   // scale: 32px tiles become 64px on screen
-        0      // empty tile value
-    );
+    
+    
+    
+    
+    // Chose a random map
+    
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1, 3);
+    int num = distr(gen);
+    switch (num)
+    {
+        case 1:
+        {
+            TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+            TileMap levelMap1 = Map::loadFromFile(
+                "Assets/Maps/Level1.txt",
+                "Level1",
+                32,     // tile size in the tileset image
+                3,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap1);
 
-    GLOBALS::REGISTRY.add(level, levelMap);
+        }
+            break;
+            
+        case 2:
+        {
+            TextureManager::loadTexture("Level2","Assets/TileSet2.png");
+            TileMap levelMap2 = Map::loadFromFile(
+                "Assets/Maps/Level2.txt",
+                "Level2",
+                32,     // tile size in the tileset image
+                4,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap2);
+
+        }
+
+            break;
+        
+        case 3:
+        {
+            TextureManager::loadTexture("Level3", "Assets/TileSet3.png");
+            TileMap levelMap3 = Map::loadFromFile(
+                "Assets/Maps/Level3.txt",
+                "Level3",
+                32,     // tile size in the tileset image
+                4,      // how many columns the tileset has
+                1.0f,   // scale: 32px tiles become 64px on screen
+                0      // empty tile value
+            );
+            GLOBALS::REGISTRY.add(level, levelMap3);
+            
+        }
+            break;
+        default:
+            SDL_Log("Error failed to load a map");
+            break;
+    }
     
     
     if (true)
@@ -189,7 +260,6 @@ int Game::run()
         switch (GLOBALS::CURRENT_STATE)
         {
             case GLOBALS::STATE_MAIN_MENU:
-                UI.buttonSystem(e);
                 UI.renderSystemMain(RENDERER);
                 handleEvents(); // Handles user inputes
                 break;
@@ -202,14 +272,11 @@ int Game::run()
                 //SDL_Delay(16);
                 break;
             case GLOBALS::STATE_PAUSED:
-                //DELTA_TIME = 0.0f;
-                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_UPGRADE:
-                UI.buttonSystem(e);
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 break;
@@ -228,56 +295,58 @@ int Game::run()
 
 void Game::handleEvents()
 {
-    SDL_PollEvent(&e);
-    ImGui_ImplSDL3_ProcessEvent(&e);
-    switch (e.type)     // Handles ending the program
+    while (SDL_PollEvent(&e))
     {
+        ImGui_ImplSDL3_ProcessEvent(&e);
 
-        case SDL_EVENT_QUIT:
-            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-            //RUNNING = false;
-            break;
-        case SDL_EVENT_KEY_DOWN:
-            switch (e.key.key)
+        // Forward mouse events to menu UI if ImGui isn't capturing the mouse
+        if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+            e.type == SDL_EVENT_MOUSE_BUTTON_UP ||
+            e.type == SDL_EVENT_MOUSE_MOTION)
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            if (!io.WantCaptureMouse)
             {
-                case SDLK_ESCAPE:
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                    break;
-                case SDLK_TAB:
-                    if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
-                    {
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
-                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-
-                    }
-                    else
-                    {
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
-                        //std::cout << GLOBALS::CURRENT_STATE << std::endl;
-                    }
-                    break;
-                case SDLK_1:
-                    if (IMGUI)
-                    {
-                        IMGUI = false;
-                    }
-                    else
-                    {
-                        IMGUI = true;
-                    }
-                    break;
-                case SDLK_2:
-                    GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-                    break;
-                default:
-                    break;
+                UI.buttonSystem(e);
             }
-            
-        default:
-            break;
-            
+        }
+
+        switch (e.type)
+        {
+            case SDL_EVENT_QUIT:
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                break;
+            case SDL_EVENT_KEY_DOWN:
+                switch (e.key.key)
+                {
+                    case SDLK_ESCAPE:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
+                        break;
+                    case SDLK_TAB:
+                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                        {
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                        }
+                        else
+                        {
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                        }
+                        break;
+                    case SDLK_1:
+                        IMGUI = !IMGUI;
+                        break;
+                    case SDLK_2:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
-    
+
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
         systems.playerInputSystem();
@@ -286,44 +355,25 @@ void Game::handleEvents()
 
 void Game::update()
 {
+    //TIMER_DEBUG t;
    // need to make function for game logic
     // Collisions events
-    /*
-    for (const CollisionEvent& collision : collisions)
-    {
-        BoxCollider* a = GLOBALS::REGISTRY.get<BoxCollider>(collision.a);
-        BoxCollider* b = GLOBALS::REGISTRY.get<BoxCollider>(collision.b);
-
-        if (a == nullptr || b == nullptr)
-        {
-            continue;
-        }
-
-        if (
-            collision.isTrigger &&
-            (
-                (a->tag == "player" && b->tag == "blackhole") ||
-                (a->tag == "blackhole" && b->tag == "player")
-            )
-        )
-        {
-            SDL_Log("Player touched blackhole!");
-        }
-    }
-    */
     
     
     systems.movementSystem(DELTA_TIME);
     enemies.enemySpawnSystem(DELTA_TIME);
     enemies.enemyAISystem();
     
-    std::vector<CollisionEvent> collisions = collisionSystem();
-
+    static std::vector<CollisionEvent> collisions;
+    collisions.clear();
+    collisionSystem(collisions, true);
+    
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
     projectiles.projectilesCollisons(collisions);
     projectiles.projectileSystem(DELTA_TIME);
-    playerSystem.fireSystem(projectiles);
+    playerSystem.fireSystem(projectiles, DELTA_TIME);
+    playerSystem.playerCollisionSystem(collisions);
     
    
     
@@ -351,6 +401,10 @@ void Game::update()
 
 void Game::render()
 {
+    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 255))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
     if (!SDL_RenderClear(RENDERER))
     {
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
@@ -360,12 +414,8 @@ void Game::render()
     systems.renderSystem(RENDERER, camera);
     
     UI.renderUI(RENDERER);
-    
-    if (!SDL_SetRenderDrawColor(RENDERER, 0, 0, 0, 0))
-    {
-        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
-    }
-    
+    xp.renderXPBar(RENDERER);
+
     
     //map -> drawMap();
     ImGui_ImplSDLRenderer3_NewFrame();
@@ -379,6 +429,8 @@ void Game::render()
     if (IMGUI)
     {
         ImGui::Begin("Debug Functions");
+        
+        ImGui::Text("FPS: %f" ,UpdateFPSCounter(DELTA_TIME));
         
         if (ImGui::Button("Rate of Fire"))
         {
@@ -407,7 +459,10 @@ void Game::render()
             }
         }
         
-        
+        if (ImGui::Button("PowerUp"))
+        {
+            playerSystem.powerUp();
+        }
         
         if (ImGui::Button("close"))
         {
@@ -427,7 +482,8 @@ void Game::render()
 
 void Game::clean()
 {
-    // Cleanup
+    //auto view = GLOBALS::REGISTRY.all<Enemy>();
+    //SDL_Log("%i" , view.entities.size());
     TextureManager::clear();
     TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);
@@ -440,7 +496,7 @@ bool Game::isRunning()
     return RUNNING;
 }
 
-void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
+float Game::UpdateFPSCounter(float deltaTime)
 {
     static int frames = 0;
     static float accumulator = 0.0f;
@@ -450,11 +506,12 @@ void Game::UpdateFPSCounter(float deltaTime)   // Quick FPS counter for testing
 
     if (accumulator >= 1.0f)
     {
-        float fps = frames / accumulator;
-        SDL_Log("FPS: %.1f", fps);
+        FPS = static_cast<float>(frames) / accumulator; // average over actual interval
         frames = 0;
-        accumulator = 0.0f;
+        accumulator -= 1.0f; // carry remainder to avoid time loss
     }
+
+    return FPS;
 }
 
 void Game::initIMGUI()

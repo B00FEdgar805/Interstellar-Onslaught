@@ -10,8 +10,10 @@
 #include <iterator>
 
 #include <unordered_map>
-#include <set>
+#include <unordered_set>
 #include <utility>
+#include <cstdint>
+#include <cmath>
 
 namespace
 {
@@ -140,10 +142,13 @@ namespace
 
     void resolveCollision(const CollisionEvent& event, const BoxCollider& colliderA, const BoxCollider& colliderB)
     {
+        /*
         if (colliderA.tag == "enemy" && colliderB.tag == "enemy")
         {
             return;
         }
+        */
+        
         
         
         if (event.isTrigger)
@@ -210,53 +215,65 @@ namespace std
 
 namespace
 {
-    static std::vector<GridCell> getCellsForRect(const SDL_FRect& rect)
+    template <typename F>
+    inline void forEachCell(const SDL_FRect& rect, F&& f)
     {
-        std::vector<GridCell> cells;
-        int x0 = (int)std::floor(rect.x / GRID_CELL_SIZE);
-        int y0 = (int)std::floor(rect.y / GRID_CELL_SIZE);
-        int x1 = (int)std::floor((rect.x + rect.w) / GRID_CELL_SIZE);
-        int y1 = (int)std::floor((rect.y + rect.h) / GRID_CELL_SIZE);
+        const int x0 = (int)std::floor(rect.x / GRID_CELL_SIZE);
+        const int y0 = (int)std::floor(rect.y / GRID_CELL_SIZE);
+        const int x1 = (int)std::floor((rect.x + rect.w) / GRID_CELL_SIZE);
+        const int y1 = (int)std::floor((rect.y + rect.h) / GRID_CELL_SIZE);
         for (int x = x0; x <= x1; ++x)
         {
             for (int y = y0; y <= y1; ++y)
             {
-                cells.push_back({x, y});
+                f(GridCell{x, y});
             }
         }
-        return cells;
+    }
+
+    inline uint64_t packPairKey(size_t a, size_t b)
+    {
+        if (a > b) std::swap(a, b);
+        return (uint64_t(uint32_t(a)) << 32) | uint64_t(uint32_t(b));
     }
 }
 
-std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
+void collisionSystem(std::vector<CollisionEvent>& outCollisions, bool resolveSolidCollisions)
 {
-    std::vector<CollisionEvent> collisions;
+    outCollisions.clear();
+
     auto colliders = GLOBALS::REGISTRY.all<BoxCollider>();
     const size_t n = colliders.entities.size();
-    if (n <= 1) return collisions;
+    outCollisions.reserve(n);
+    if (n <= 1) return;
 
     // --- Spatial Hashing ---
     std::unordered_map<GridCell, std::vector<size_t>> grid; // GridCell indices in colliders array
+    grid.reserve(n * 2);
     std::vector<SDL_FRect> rects(n);
     for (size_t i = 0; i < n; ++i)
     {
         Entity entity = colliders.entities[i];
         BoxCollider& collider = colliders.components[i];
         Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
-        
         if (!transform)
         {
             continue;
         }
-        
         rects[i] = makeWorldRect(*transform, collider);
-        for (const auto& cell : getCellsForRect(rects[i]))
+        forEachCell(rects[i], [&](const GridCell& cell)
         {
             grid[cell].push_back(i);
-        }
+        });
     }
+
     // Used to avoid duplicate checks
-    std::set<std::pair<size_t, size_t>> checkedPairs;
+    std::unordered_set<uint64_t> checkedPairs;
+    checkedPairs.reserve(n * 8);
+
+    // Store indices for resolution pass to avoid re-finding colliders
+    std::vector<std::pair<size_t, size_t>> collisionIndices;
+    collisionIndices.reserve(n);
 
     for (const auto& [cell, indices] : grid)
     {
@@ -270,15 +287,12 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
                 {
                     continue;
                 }
-                
-                size_t minIdx = std::min(i, j), maxIdx = std::max(i, j);
-                auto pair = std::make_pair(minIdx, maxIdx);
-                if (checkedPairs.count(pair))
+
+                uint64_t key = packPairKey(i, j);
+                if (!checkedPairs.insert(key).second)
                 {
                     continue;
                 }
-                
-                checkedPairs.insert(pair);
 
                 Entity entityA = colliders.entities[i];
                 Entity entityB = colliders.entities[j];
@@ -291,23 +305,39 @@ std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
                 {
                     continue;
                 }
+                // Skip static-static pairs unless a trigger is involved
+                if (colliderA.isStatic && colliderB.isStatic && !(colliderA.isTrigger || colliderB.isTrigger))
+                {
+                    continue;
+                }
                 if (!intersects(rectA, rectB))
                 {
                     continue;
                 }
-                                
+
                 CollisionEvent event = createCollisionEvent(entityA, entityB, rectA, rectB, colliderA, colliderB);
-                
-                collisions.push_back(event);
-                
-                if (resolveSolidCollisions)
-                {
-                    resolveCollision(event, colliderA, colliderB);
-                }
+                outCollisions.push_back(event);
+                collisionIndices.emplace_back(i, j);
             }
         }
     }
-    return collisions;
+
+    if (resolveSolidCollisions)
+    {
+        for (size_t k = 0; k < outCollisions.size(); ++k)
+        {
+            const auto [i, j] = collisionIndices[k];
+            BoxCollider& colliderA = colliders.components[i];
+            BoxCollider& colliderB = colliders.components[j];
+            resolveCollision(outCollisions[k], colliderA, colliderB);
+        }
+    }
 }
 
+std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions)
+{
+    std::vector<CollisionEvent> collisions;
+    collisionSystem(collisions, resolveSolidCollisions);
+    return collisions;
+}
 

@@ -181,7 +181,7 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
         //SDL_Log("Working");
         
-        if(GLOBALS::REGISTRY.has<PlayerControl>(entity))
+        if(GLOBALS::REGISTRY.has<PlayerControl>(entity) || sprite.getTextureID() == "Gunner")
         {
             sprite.draw(angle);
         }

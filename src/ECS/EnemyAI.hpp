@@ -9,10 +9,17 @@ class EnemyAi
 {
 private:
     Entity PLAYER;
-    float TIMMER_ACCUMELATOR = 0.0f;
-    float SPAWN_TIME = 5.0f;
+    float TIMMER_ACCUMELATOR = 7.0f;
+    float SPAWN_TIME = 10.0f;
+    int WAVE = 1;
+    int MAX_FAST = 3;
+    int MAX_NORMAL = 1;
+    int MAX_SLOW = 0;
+    int ROW = 1;
+    float SCALER = 1.0f;
     float PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
     float PLAYER_DAMAGE_COOLDOWN = 0.5f;
+    float SPEED = 100.0f;
     
 public:
     EnemyAi(Entity player)
@@ -20,7 +27,7 @@ public:
     {}
     
     void enemyAISystem();
-    void createEnemy(const Vector2D& spawn, float speed, float delta_time);
+    void createEnemy(const Vector2D& spawn, int type, float delta_time);
     void enemyCollisions(std::vector<CollisionEvent>& collisions, float delta);
     void enemySpawnSystem(float delta);
 };
