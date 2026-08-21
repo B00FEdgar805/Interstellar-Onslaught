@@ -87,6 +87,11 @@ public:
         DESTINATION = rect;
     }
     
+    void setRow(int row)
+    {
+        SOURCE.y = (row - 1) * SOURCE.h;
+    }
+    
     void Animate(float delta, int speed, int frames)
     {
         int frame = static_cast<int>(delta / speed) % frames;

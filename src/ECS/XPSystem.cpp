@@ -23,7 +23,7 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
         player.right = player.randomUpgrade();
 
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-        LEVEL_UP_XP *= 1.10;
+        LEVEL_UP_XP *= 1.20;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
         //std::cout << PlayerSystems::left;
         //std::cout << PlayerSystems::middle;
@@ -53,12 +53,12 @@ void XPSystem::XPCollisions(std::vector<CollisionEvent> &collisions, PlayerSyste
     
         if(collision.isTrigger && a->tag == "player" && b->tag == "xp")
         {
-            addXP(5, player);
+            addXP(10, player);
             deadEntities().push_back(collision.b);
         }
         else if(collision.isTrigger && a->tag == "xp" && b->tag == "player")
         {
-            addXP(5, player);
+            addXP(10, player);
             deadEntities().push_back(collision.a);
         }
         

@@ -52,37 +52,43 @@ void EnemyAi::createEnemy(const Vector2D& position, int type, float delta_time)
         case 1: // Quick enemy
         {
             Entity enemy = GLOBALS::REGISTRY.create();
-            GLOBALS::REGISTRY.add(enemy, Enemy(10.0f));
+            GLOBALS::REGISTRY.add(enemy, Enemy(10.0f * SCALER));
             GLOBALS::REGISTRY.add(enemy, Transform(position));
-            GLOBALS::REGISTRY.add(enemy, Velocity(SPEED * 2));
+            GLOBALS::REGISTRY.add(enemy, Velocity(SPEED * 1.5f));
             GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(16.0f, 16.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
             GLOBALS::REGISTRY.add(enemy, Sprite("Enemy1", Vector2D(16.0f, 16.0f)));
             GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
-            GLOBALS::REGISTRY.add(enemy, Health(5.0f));
+            GLOBALS::REGISTRY.add(enemy, Health(5.0f * SCALER));
+            Sprite* s = GLOBALS::REGISTRY.get<Sprite>(enemy);
+            s -> setRow(ROW);
         }
             break;
         case 2: // Balanced
         {
             Entity enemy = GLOBALS::REGISTRY.create();
-            GLOBALS::REGISTRY.add(enemy, Enemy(20.0f));
+            GLOBALS::REGISTRY.add(enemy, Enemy(20.0f * SCALER));
             GLOBALS::REGISTRY.add(enemy, Transform(position));
             GLOBALS::REGISTRY.add(enemy, Velocity(SPEED));
             GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
             GLOBALS::REGISTRY.add(enemy, Sprite("Enemy2", Vector2D(32.0f, 32.0f)));
             GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
-            GLOBALS::REGISTRY.add(enemy, Health(30.0f));
+            GLOBALS::REGISTRY.add(enemy, Health(30.0f * SCALER));
+            Sprite* s = GLOBALS::REGISTRY.get<Sprite>(enemy);
+            s -> setRow(ROW);
         }
             break;
         case 3: // Slow
         {
             Entity enemy = GLOBALS::REGISTRY.create();
-            GLOBALS::REGISTRY.add(enemy, Enemy(40.0f));
+            GLOBALS::REGISTRY.add(enemy, Enemy(40.0f * SCALER));
             GLOBALS::REGISTRY.add(enemy, Transform(position));
             GLOBALS::REGISTRY.add(enemy, Velocity(SPEED * 0.5f));
             GLOBALS::REGISTRY.add(enemy, BoxCollider(Vector2D(32.0f, 32.0f), Vector2D(0.0f, 0.0f), false, false, "enemy"));
             GLOBALS::REGISTRY.add(enemy, Sprite("Enemy3", Vector2D(32.0f, 32.0f)));
             GLOBALS::REGISTRY.add(enemy, Animation(delta_time, 2, 150));
-            GLOBALS::REGISTRY.add(enemy, Health(70.0f));
+            GLOBALS::REGISTRY.add(enemy, Health(100.0f * SCALER));
+            Sprite* s = GLOBALS::REGISTRY.get<Sprite>(enemy);
+            s -> setRow(ROW);
         }
             break;
         default:
@@ -130,6 +136,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
+                player_health -> setHealth(0.0f);
                 //GLOBALS::REGISTRY.destroy(PLAYER);
                 // add damage to box collider instead
             }
@@ -152,6 +159,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             
             if (!player_health -> isAlive())
             {
+                player_health -> setHealth(0.0f);
                // SDL_Log("Dead");
             }
             
@@ -165,6 +173,12 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
 
 void EnemyAi::enemySpawnSystem(float delta)
 {
+    auto view = GLOBALS::REGISTRY.all<Enemy>();
+    if (view.entities.size() > 150)
+    {
+        return;
+    }
+    
     TIMMER_ACCUMELATOR += delta;
     if (TIMMER_ACCUMELATOR >= SPAWN_TIME)
     {
@@ -172,23 +186,23 @@ void EnemyAi::enemySpawnSystem(float delta)
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distr(1, 4);
         int num = distr(gen);
-        float x = 0.0f;
-        float y = 0.0f;
+        float x = -32.0f;
+        float y = -32.0f;
         switch (num)
         {
             case 1:
-                // keep x and y 0
+                // keep x and y -32
                 break;
             case 2:
-                x = GLOBALS::SCREEN_WIDTH;
+                x = GLOBALS::SCREEN_WIDTH + 32.0f;
                 break;
             case 3:
-                y = GLOBALS::SCREEN_HEIGHT;
+                y = GLOBALS::SCREEN_HEIGHT + 32.0f;
                 break;
             case 4:
             {
-                x = GLOBALS::SCREEN_WIDTH;
-                y = GLOBALS::SCREEN_HEIGHT;
+                x = GLOBALS::SCREEN_WIDTH + 32.0f;
+                y = GLOBALS::SCREEN_HEIGHT + 32.0f;
             }
                 break;
             default:
@@ -219,15 +233,16 @@ void EnemyAi::enemySpawnSystem(float delta)
         
         TIMMER_ACCUMELATOR = 0.0f;
         WAVE++;
-        if (WAVE < 30)
+        if (WAVE < 60)
         {
-            if(WAVE >= 10)
+            if(WAVE >= 20 && WAVE % 2 == 0)
             {
+                ROW = 2;
                 MAX_FAST++;
                 MAX_NORMAL++;
                 MAX_SLOW++;
             }
-            if(WAVE >= 20)
+            if(WAVE >= 40 && WAVE % 2 == 0)
             {
                 MAX_NORMAL++;
                 MAX_SLOW++;
@@ -235,7 +250,9 @@ void EnemyAi::enemySpawnSystem(float delta)
         }
         else
         {
+            ROW = 3;
             // Here would be the code for making enemies hardeer
+            SCALER *= 1.1f;
         }
         
         //SDL_Log("%f", SPAWN_TIME);

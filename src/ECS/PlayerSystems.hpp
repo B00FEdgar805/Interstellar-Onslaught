@@ -29,7 +29,7 @@ private:
     Uint64 POWER_UP_START = 0.0f;
     float SPAWN_TIME = 0.0f;
     float RATE_OF_FIRE = 1000.0f;
-    float DAMAGE = 5.0f;
+    float DAMAGE = 10.0f;
     float PROJECTILE_SPEED = 250.0f;
     float SHIELD_TIME = 5000.0f;
     //int MAX = 8;

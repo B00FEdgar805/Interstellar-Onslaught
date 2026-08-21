@@ -14,7 +14,9 @@ private:
     int WAVE = 1;
     int MAX_FAST = 3;
     int MAX_NORMAL = 1;
-    int MAX_SLOW = 1;
+    int MAX_SLOW = 0;
+    int ROW = 1;
+    float SCALER = 1.0f;
     float PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
     float PLAYER_DAMAGE_COOLDOWN = 0.5f;
     float SPEED = 100.0f;

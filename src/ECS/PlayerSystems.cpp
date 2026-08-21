@@ -86,7 +86,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
             if(shoot(current_time - LAST_TIME))
             {
                 Vector2D pos = player_transform -> position;
-                projectiles.createProjectile(PLAYER, pos + Vector2D(0.0f, 0.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 2.0f, DAMAGE * 2.0f, CURRENT_WEAPON);
+                projectiles.createProjectile(PLAYER, pos + Vector2D(0.0f, 0.0f), player_velocity -> direction.normalize() , PROJECTILE_SPEED * 2.0f, DAMAGE * 1.5f, CURRENT_WEAPON);
                 LAST_TIME = current_time;
             }
             break;
@@ -515,32 +515,38 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgradeUnique()
 void PlayerSystems::upgrade(UpgradeType button)
 {
     //SDL_Log("Upgrade");
+    Health* health = GLOBALS::REGISTRY.get<Health>(PLAYER);
+    //SDL_Log("%f" , health -> getHealth());
+    health -> heal(50.0f);
+    //SDL_Log("%f" , health -> getHealth());
+
+    
     switch (button)
     {
         case UPGRADE_ROF:
-            upgradeROF(1.10f);
+            upgradeROF(1.30f);
             //SDL_Log("R");
             break;
         case UPGRADE_SPEED:
-            upgradeSpeed(1.10f);
+            upgradeSpeed(1.30f);
             //SDL_Log("S");
             break;
         case UPGRADE_DAMAGE:
-            upgradeDamage(1.10f);
+            upgradeDamage(1.30f);
             //SDL_Log("D");
             break;
         case UPGRADE_HEALTH:
-            upgradeHealth(1.10f);
+            upgradeHealth(1.30f);
             //SDL_Log("H");
             break;
         case UPGRADE_PROJECTILE_SPEED:
-            upgradeProjectileSpeed(1.10f);
+            upgradeProjectileSpeed(1.30f);
             break;
         case UPGRADE_XP_MUTIPLIER:
-            upgradeXPMutiplier(1.10f);
+            upgradeXPMutiplier(1.30f);
             break;
         case UPGRADE_XP_RANGE:
-            upgradeXPGrabRange(1.20f);
+            upgradeXPGrabRange(1.40f);
             break;
         case UPGRADE_WEAPON_NORMAL:
             CURRENT_WEAPON = WEAPON_NORMAL;
@@ -569,7 +575,7 @@ void PlayerSystems::upgrade(UpgradeType button)
         case UPGRADE_SHEILD:
             if (HAS_SHEILD)
             {
-                SHIELD_TIME /= 1.30f;
+                SHIELD_TIME /= 1.50f;
             }
             else
             {
@@ -583,7 +589,7 @@ void PlayerSystems::upgrade(UpgradeType button)
         case UPGRADE_ASTROIDS:
             if (HAS_ASTROID)
             {
-                upgradeDamage(1.20f);
+                upgradeDamage(1.40f);
             }
             else
             {
@@ -612,7 +618,7 @@ void PlayerSystems::upgrade(UpgradeType button)
             else
             {
                 HAS_GUNNER = 2;
-                upgradeDamage(1.20f);
+                upgradeDamage(1.40f);
             }
             break;
         default:
@@ -744,7 +750,7 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         else if (a -> tag == "Astroid" && b -> tag == "enemy")
         {
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
-            enemy_health -> takeDamage(DAMAGE * 2);
+            enemy_health -> takeDamage(DAMAGE * 1.2);
             if (!enemy_health -> isAlive())
             {
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);

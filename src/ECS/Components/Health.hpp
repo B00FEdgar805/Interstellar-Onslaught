@@ -26,6 +26,11 @@ public:
         return HEALTH > 0.0f;
     }
     
+    void setHealth(float value)
+    {
+        HEALTH = value;
+    }
+    
     float getHealth()
     {
         return HEALTH;

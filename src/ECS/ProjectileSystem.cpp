@@ -125,6 +125,11 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
         {
             continue;
         }
+        
+        else if (((a -> tag == "pProjectile" && b -> tag == "Astroid") || (a -> tag == "Astroid" && b -> tag == "pProjectile")))  // To stop projectiles from destroying each other
+        {
+            continue;
+        }
 
         else if (((a -> tag == "pProjectile" && b -> tag == "enemy") || (a -> tag == "enemy" && b -> tag == "pProjectile")))
         {
@@ -174,9 +179,7 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             deadEntities().push_back(projectileEntity);
         }
         
-    
-        // Add check if it destroy on hit
-        
+            
 
     }
 }

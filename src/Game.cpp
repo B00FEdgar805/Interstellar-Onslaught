@@ -18,6 +18,7 @@
 #include "ECS/Components/Health.hpp"
 #include "ECS/MenuSystem.hpp"
 #include "ECS/PlayerSystems.hpp"
+#include "ECS/Components/Enemy.hpp"
 #include "Globals.hpp"
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
@@ -354,7 +355,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    TIMER_DEBUG t;
+    //TIMER_DEBUG t;
    // need to make function for game logic
     // Collisions events
     
@@ -481,7 +482,8 @@ void Game::render()
 
 void Game::clean()
 {
-    // Cleanup
+    //auto view = GLOBALS::REGISTRY.all<Enemy>();
+    //SDL_Log("%i" , view.entities.size());
     TextureManager::clear();
     TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);
