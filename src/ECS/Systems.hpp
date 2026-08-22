@@ -14,7 +14,7 @@ private:
     //float speed = 220.0f;
     
 public:
-    void playerInputSystem();
+    void playerInputSystem(const Camera2D& camera);
         
     void movementSystem(float delta_time);
     

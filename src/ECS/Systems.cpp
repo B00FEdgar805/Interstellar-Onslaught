@@ -9,8 +9,9 @@
 #include "Components/BoxCollider.hpp"
 #include "Components/Health.hpp"
 #include "../Globals.hpp"
+#include <cmath>
 
-void Systems::playerInputSystem()
+void Systems::playerInputSystem(const Camera2D& camera)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
     
@@ -83,7 +84,56 @@ void Systems::playerInputSystem()
        
         //SDL_Log("X %f", velocity -> value.x);
         //SDL_Log("Y %f", velocity -> value.y);
+        float windowX = 0.0f;
+        float windowY = 0.0f;
 
+        // Get mouse in window coordinates
+        SDL_GetMouseState(&windowX, &windowY);
+
+        // Convert window coordinates to logical render coordinates (account for letterboxing)
+        float logicalX = windowX;
+        float logicalY = windowY;
+
+        SDL_Window* window = SDL_GetRenderWindow(Game::RENDERER);
+        if (window)
+        {
+            int winW = 0;
+            int winH = 0;
+            SDL_GetWindowSize(window, &winW, &winH);
+
+            const float logicalW = static_cast<float>(GLOBALS::SCREEN_WIDTH);
+            const float logicalH = static_cast<float>(GLOBALS::SCREEN_HEIGHT);
+
+            // Compute scale used by SDL_LOGICAL_PRESENTATION_LETTERBOX
+            const float scaleX = (logicalW > 0.0f) ? (static_cast<float>(winW) / logicalW) : 1.0f;
+            const float scaleY = (logicalH > 0.0f) ? (static_cast<float>(winH) / logicalH) : 1.0f;
+            const float scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+            const float offsetX = (static_cast<float>(winW) - logicalW * scale) * 0.5f;
+            const float offsetY = (static_cast<float>(winH) - logicalH * scale) * 0.5f;
+
+            logicalX = (windowX - offsetX) / scale;
+            logicalY = (windowY - offsetY) / scale;
+        }
+        
+
+        // Convert mouse screen → world
+        Vector2D mouseWorld = camera.screenToWorld(Vector2D((float)logicalX, (float)logicalY));
+
+        // Player world position
+        Transform* transform = GLOBALS::REGISTRY.get<Transform>(entity);
+        if (!transform) continue;
+
+        Vector2D toMouse = mouseWorld - transform->position;
+        if (toMouse.x != 0.0f || toMouse.y != 0.0f)
+        {
+            float degrees = std::atan2(toMouse.y, toMouse.x) * 180.0f / 3.14159265f;
+            
+            degrees += 90.0f;
+            angle = degrees;
+
+            velocity -> direction = toMouse.normalize();
+        }
     }
 }
 
@@ -240,4 +290,3 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
     }
 }
-

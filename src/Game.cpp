@@ -349,7 +349,7 @@ void Game::handleEvents()
 
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
-        systems.playerInputSystem();
+        systems.playerInputSystem(camera);
     }
 }
 

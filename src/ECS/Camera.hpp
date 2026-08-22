@@ -36,6 +36,17 @@ public:
         return SDL_FRect{ worldRect.x - POSITION.x, worldRect.y - POSITION.y, worldRect.w, worldRect.h};
     }
 
+    Vector2D screenToWorld(const Vector2D& screenPosition) const
+    {
+        // Inverse of worldToScreen: screen = world - POSITION  ->  world = screen + POSITION
+        return Vector2D(screenPosition.x + POSITION.x, screenPosition.y + POSITION.y);
+    }
+
+    SDL_FRect screenToWorldRect(const SDL_FRect& screenRect) const
+    {
+        return SDL_FRect{ screenRect.x + POSITION.x, screenRect.y + POSITION.y, screenRect.w, screenRect.h };
+    }
+    
     void centerOn(const Vector2D& targetPosition)
     {
         POSITION.x = targetPosition.x - VIEWPORT_WIDTH * 0.5f;
