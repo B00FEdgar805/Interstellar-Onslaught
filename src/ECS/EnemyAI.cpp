@@ -225,10 +225,10 @@ void EnemyAi::enemySpawnSystem(float delta)
             createEnemy(Vector2D(x,y), 3, delta);
         }
 
-        SPAWN_TIME -= 0.25f;
-        if (SPAWN_TIME <= 3.0f)
+        SPAWN_TIME -= 0.15f;
+        if (SPAWN_TIME <= 3.5f)
         {
-            SPAWN_TIME = 3.0f;
+            SPAWN_TIME = 3.5f;
         }
         
         TIMMER_ACCUMELATOR = 0.0f;
