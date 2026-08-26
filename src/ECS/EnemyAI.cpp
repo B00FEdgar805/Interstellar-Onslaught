@@ -7,6 +7,7 @@
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
+#include "../AudioManager.hpp"
 
 //static constexpr float PLAYER_DAMAGE_COOLDOWN = 0.5f;
 
@@ -104,6 +105,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
 
     if (GLOBALS::INVINCIBLE_CONSTANT)
     {
+        //AudioManager::getInstance().playSound("HitBlocked");
         return;
     }
     
@@ -127,15 +129,20 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                AudioManager::getInstance().playSound("Hit", 0.5f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
 
             }
-            
+            else if(GLOBALS::INVINCIBLE)
+            {
+                AudioManager::getInstance().playSound("HitBlocked", 1.5f);
+            }
             
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
+  //              AudioManager::getInstance().playSound("Death");
                 player_health -> setHealth(0.0f);
                 //GLOBALS::REGISTRY.destroy(PLAYER);
                 // add damage to box collider instead
@@ -152,13 +159,18 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                AudioManager::getInstance().playSound("Hit", 0.5f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
             }
-            
+            else if(GLOBALS::INVINCIBLE)
+            {
+                AudioManager::getInstance().playSound("HitBlocked", 1.5f);
+            }
             
             if (!player_health -> isAlive())
             {
+//                AudioManager::getInstance().playSound("Death");
                 player_health -> setHealth(0.0f);
                // SDL_Log("Dead");
             }

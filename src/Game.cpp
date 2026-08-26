@@ -22,6 +22,7 @@
 #include "Globals.hpp"
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
+#include "AudioManager.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -227,7 +228,19 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             break;
     }
     
-    
+    AudioManager::getInstance().init();
+    AudioManager::getInstance().loadMusic("Music", "Assets/Audio/BGmusic.wav");
+    AudioManager::getInstance().loadSound("Button","Assets/Audio/Button.wav");
+    AudioManager::getInstance().loadSound("Death","Assets/Audio/Death.wav");
+    AudioManager::getInstance().loadSound("EnemyDeath","Assets/Audio/EnemyDeath.wav");
+    AudioManager::getInstance().loadSound("EnemyHit","Assets/Audio/EnemyHit.wav");
+    AudioManager::getInstance().loadSound("Hit","Assets/Audio/Hit.wav");
+    AudioManager::getInstance().loadSound("HitBlocked","Assets/Audio/HitBlocked.wav");
+    AudioManager::getInstance().loadSound("LevelUp","Assets/Audio/LevelUp.wav");
+    AudioManager::getInstance().loadSound("PowerUp","Assets/Audio/PowerUp.wav");
+    AudioManager::getInstance().loadSound("Shoot","Assets/Audio/Shoot.wav");
+    AudioManager::getInstance().loadSound("Xp","Assets/Audio/XP.wav");
+
     if (true)
     {
         initIMGUI();
@@ -240,7 +253,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
-
+    AudioManager::getInstance().setMasterVolume(0.2f);
+    AudioManager::getInstance().playMusic("Music", true, 1000);
     
     while (isRunning()) // Main game loop
     {
@@ -338,6 +352,8 @@ void Game::handleEvents()
                     case SDLK_2:
                         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
                         break;
+                    case SDLK_0:
+                        AudioManager::getInstance().playSound("sound");
                     default:
                         break;
                 }
@@ -484,6 +500,7 @@ void Game::clean()
 {
     //auto view = GLOBALS::REGISTRY.all<Enemy>();
     //SDL_Log("%i" , view.entities.size());
+    AudioManager::getInstance().shutdown();
     TextureManager::clear();
     TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);

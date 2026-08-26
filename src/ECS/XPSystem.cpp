@@ -10,13 +10,16 @@
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Item.hpp"
+#include "../AudioManager.hpp"
 
 void XPSystem::addXP(int xp, PlayerSystems& player)
 {
     CURRENT_XP += (xp * XP_MULTIPLIER);
+    AudioManager::getInstance().playSound("Xp");
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
+        AudioManager::getInstance().playSound("LevelUp");
         // level up function
         player.left = player.randomUpgrade();
         player.middle = player.randomUpgrade();

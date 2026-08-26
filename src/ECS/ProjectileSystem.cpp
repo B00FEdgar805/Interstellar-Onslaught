@@ -6,6 +6,7 @@
 #include "Components/Sprite.hpp"
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
+#include "../AudioManager.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
 
@@ -36,6 +37,7 @@ void ProjectileSystem::projectileSystem(float delta_time)
 
 Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type)
 {
+    AudioManager::getInstance().playSound("Shoot", 0.5f);
     Entity projectile = GLOBALS::REGISTRY.create();
     //DIRECTION = direction;
     
@@ -139,8 +141,10 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
+            AudioManager::getInstance().playSound("EnemyHit");
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;
@@ -160,8 +164,10 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
+            AudioManager::getInstance().playSound("EnemyHit");
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;

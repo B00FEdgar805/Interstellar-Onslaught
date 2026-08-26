@@ -19,11 +19,17 @@
 class AudioManager
 {
 public:
-    AudioManager();
-    ~AudioManager();
-
     AudioManager(const AudioManager&) = delete;
     AudioManager& operator=(const AudioManager&) = delete;
+    AudioManager(AudioManager&&) = delete;
+    AudioManager& operator=(AudioManager&&) = delete;
+    static AudioManager& getInstance()
+    {
+        static AudioManager instance;
+        return instance;
+    }
+    
+   
 
     bool init(int sfxTrackCount = 16, const SDL_AudioSpec* requestedSpec = nullptr);
     void shutdown();
@@ -58,6 +64,10 @@ public:
     bool isMusicPaused() const;
 
 private:
+    
+    AudioManager();
+    ~AudioManager();
+    
     using AudioMap = std::unordered_map<std::string, MIX_Audio*>;
     static float cleanGain(float gain);
     bool loadAudioInto(AudioMap& table, const std::string& id, const std::string& path, bool predecode);

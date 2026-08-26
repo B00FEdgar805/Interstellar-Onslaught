@@ -15,6 +15,7 @@
 #include "Components/Animation.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
+#include "../AudioManager.hpp"
 #include <random>
 
 PlayerSystems::PlayerSystems(Entity player)
@@ -718,6 +719,7 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         
         if (a -> tag == "player" && b -> tag == "sattelite")
         {
+            AudioManager::getInstance().playSound("PowerUp");
             if (POWER_UP)
             {
                 POWER_UP_START += 15000;
@@ -731,6 +733,7 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         }
         else if (a -> tag == "sattelite" && b -> tag == "player")
         {
+            AudioManager::getInstance().playSound("PowerUp");
             if (POWER_UP)
             {
                 POWER_UP_START += 15000;
@@ -749,10 +752,12 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         }
         else if (a -> tag == "Astroid" && b -> tag == "enemy")
         {
+            AudioManager::getInstance().playSound("EnemyHit");
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
             enemy_health -> takeDamage(DAMAGE * 1.2);
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath");
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;
@@ -764,10 +769,13 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         }
         else if (a -> tag == "enemy" && b -> tag == "Astroid")
         {
+            AudioManager::getInstance().playSound("EnemyHit");
+
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.a);
             enemy_health -> takeDamage(DAMAGE * 2);
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath");
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;

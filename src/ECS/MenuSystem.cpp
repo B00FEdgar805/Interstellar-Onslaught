@@ -3,6 +3,7 @@
 #include "../Game.hpp"
 #include "../TextManager.hpp"
 #include "XPSystem.hpp"
+#include "../AudioManager.hpp"
 
 Menu::Menu()
 {
@@ -135,6 +136,7 @@ void Menu::buttonSystem(SDL_Event &e)
                     button.hovering(inside);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
+                        AudioManager::getInstance().playSound("Button");
                         button.onClick();
                     }
                 }
@@ -163,6 +165,7 @@ void Menu::buttonSystem(SDL_Event &e)
                     button.hovering(true);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
+                        AudioManager::getInstance().playSound("Button");
                         button.onClick();
                     }
                 }
@@ -190,7 +193,7 @@ void Menu::buttonSystem(SDL_Event &e)
                 {
                     button.hovering(true);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
-                    {
+                    {                        AudioManager::getInstance().playSound("Button");
                         button.onClick();
                     }
                 }
