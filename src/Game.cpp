@@ -139,6 +139,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
     TextureManager::loadTexture("Shield", "Assets/Shield.png");
     TextureManager::loadTexture("Sattelite", "Assets/Sattelite.png");
+    TextureManager::loadTexture("Options", "Assets/OptionButtons.png");
     /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -291,6 +292,10 @@ int Game::run()
                 //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_UPGRADE:
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
+                break;
+            case GLOBALS::STATE_OPTIONS:
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 break;

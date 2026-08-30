@@ -17,6 +17,10 @@ Menu::Menu()
     MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(280, 164), SIZE_MENU));
     Button* options_main = MAIN_MENU.get<Button>(OPTIONS_MAIN);
     options_main -> setButton(2);
+    options_main -> onClick = []()
+    {
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_OPTIONS;
+    };
     
     MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(280, 228), SIZE_MENU));
     Button* quit_main = MAIN_MENU.get<Button>(QUIT_MAIN);
@@ -26,7 +30,40 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
     
+    OPTIONS_MENU.add(ALL_BUTTON, Button("Options", Vector2D(368, 64), SIZE_OPTION));
+    Button* all_button = OPTIONS_MENU.get<Button>(ALL_BUTTON);
+    all_button -> onClick = [this]()
+    {
+        //all_button -> setButton(ALL + 1);
+        ALL = !ALL;
+        AudioManager::getInstance().setMasterVolume(1.0f * ALL);
+    };
     
+    OPTIONS_MENU.add(MUSIC_BUTTON, Button("Options", Vector2D(368, 128), SIZE_OPTION));
+    Button* music_button = OPTIONS_MENU.get<Button>(MUSIC_BUTTON);
+    music_button -> onClick = [this]()
+    {
+        //music_button -> setButton(1 + MUSIC);
+        MUSIC = !MUSIC;
+        AudioManager::getInstance().setMusicVolume(0.2f * MUSIC);
+    };
+    
+    OPTIONS_MENU.add(SFX_BUTTON, Button("Options", Vector2D(368, 192), SIZE_OPTION));
+    Button* sfx_button = OPTIONS_MENU.get<Button>(SFX_BUTTON);
+    sfx_button -> onClick = [this]()
+    {
+        //sfx_button -> setButton(SFX + 1);
+        SFX = !SFX;
+        AudioManager::getInstance().setSoundVolume(1.0f * SFX);
+    };
+    
+    OPTIONS_MENU.add(BACK_BUTTON, Button("Options", Vector2D(368, 256), SIZE_OPTION));
+    Button* back_button = OPTIONS_MENU.get<Button>(BACK_BUTTON);
+    back_button -> onClick = [this]()
+    {
+        //sfx_button -> setButton(SFX + 1);
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+    };
 
 }
 
@@ -176,6 +213,36 @@ void Menu::buttonSystem(SDL_Event &e)
             }
             break;
         }
+        case GLOBALS::STATE_OPTIONS:
+        {
+            auto view = OPTIONS_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside - 1);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        AudioManager::getInstance().playSound("Button");
+                        button.onClick();
+                        button.onOff();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside - 1);
+                }
+            }
+            break;
+        }
         default:
         {
             auto view = MAIN_MENU.all<Button>();
@@ -286,6 +353,27 @@ void Menu::renderSystemUpgrade(SDL_Renderer *renderer)
     TextManager::drawLabel(PlayerSystems::getLabel(PlayerSystems::right), 430, 80);
 }
 
+void Menu::renderSystemOptions(SDL_Renderer *renderer)
+{
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    
+    if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
+    
+    PAUSE_BACKGROUND = {0,0, GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT};
+    SDL_RenderFillRect(renderer, &PAUSE_BACKGROUND);
+    
+    auto view = OPTIONS_MENU.all<Button>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Button& button = view.components[i];
+        button.draw();
+        //SDL_Log("Working");
+    }
+}
+
 void Menu::renderUI(SDL_Renderer *renderer)
 {
     switch (GLOBALS::CURRENT_STATE)
@@ -295,6 +383,9 @@ void Menu::renderUI(SDL_Renderer *renderer)
             break;
         case GLOBALS::STATE_UPGRADE:
             renderSystemUpgrade(renderer);
+            break;
+        case GLOBALS::STATE_OPTIONS:
+            renderSystemOptions(renderer);
             break;
         default:
             break;

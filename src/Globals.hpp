@@ -13,6 +13,7 @@ struct GLOBALS
         STATE_GAMEPLAY,
         STATE_PAUSED,
         STATE_UPGRADE,
+        STATE_OPTIONS,
         STATE_EXIT
     };
     

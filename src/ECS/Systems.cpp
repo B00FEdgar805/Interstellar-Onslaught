@@ -212,7 +212,7 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
         
         
-        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_UPGRADE)
+        if (GLOBALS::CURRENT_STATE != GLOBALS::STATE_GAMEPLAY)
         {
             if (GLOBALS::REGISTRY.has<Animation>(entity))
             {
