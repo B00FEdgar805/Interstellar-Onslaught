@@ -32,8 +32,6 @@ private:
     float DAMAGE = 10.0f;
     float PROJECTILE_SPEED = 250.0f;
     float SHIELD_TIME = 5000.0f;
-    //int MAX = 8;
-    //inline static int UNIQUE_UPGRADE = 0;
     bool HAS_SHEILD = false;
     bool HAS_ASTROID = false;
     bool POWER_UP = false;
@@ -111,6 +109,7 @@ public:
     UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
     void powerUp();
+    void reset();
     
 
 };

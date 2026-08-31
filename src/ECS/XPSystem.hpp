@@ -31,5 +31,6 @@ public:
     inline static float XP_GRAB_RANGE = 1.0f;
     float getLevelUpXP();
     inline static bool free_level = false;
+    void reset();
 };
 #endif /* XPSystem_hpp */

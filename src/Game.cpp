@@ -485,6 +485,11 @@ void Game::render()
             playerSystem.powerUp();
         }
         
+        if (ImGui::Button("Reset"))
+        {
+            restart();
+        }
+        
         if (ImGui::Button("close"))
         {
             IMGUI = false;
@@ -511,6 +516,23 @@ void Game::clean()
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();
+}
+
+void Game::restart()
+{
+    Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+    player_transform -> position = Vector2D(100.0f, 100.0f);
+    Health* h = GLOBALS::REGISTRY.get<Health>(PLAYER);
+    h -> setHealth(100.0f);
+    Velocity* v = GLOBALS::REGISTRY.get<Velocity>(PLAYER);
+    v -> m_speed = 150.0f;
+    enemies.reset();
+    //xp system
+    xp.reset();
+    playerSystem.reset();
+    //player system
+    
+    
 }
 
 bool Game::isRunning()

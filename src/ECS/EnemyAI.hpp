@@ -30,6 +30,7 @@ public:
     void createEnemy(const Vector2D& spawn, int type, float delta_time);
     void enemyCollisions(std::vector<CollisionEvent>& collisions, float delta);
     void enemySpawnSystem(float delta);
+    void reset();
 };
 #endif /* EnemyAI_hpp */
 

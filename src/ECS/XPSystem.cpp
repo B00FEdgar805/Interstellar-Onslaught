@@ -125,3 +125,18 @@ float XPSystem::getLevelUpXP()
 {
     return LEVEL_UP_XP;
 }
+
+void XPSystem::reset()
+{
+    auto view = GLOBALS::REGISTRY.all<Item>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Entity entity = view.entities[i];
+        deadEntities().push_back(entity);
+    }
+    LEVEL = 1;
+    LEVEL_UP_XP = 100;
+    CURRENT_XP = 0;
+    XP_MULTIPLIER = 1.0f;
+    XP_GRAB_RANGE = 1.0f;
+}

@@ -272,3 +272,24 @@ void EnemyAi::enemySpawnSystem(float delta)
     }
 }
 
+void EnemyAi::reset()
+{
+    auto view = GLOBALS::REGISTRY.all<Enemy>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Entity entity = view.entities[i];
+        deadEntities().push_back(entity);
+    }
+    
+    TIMMER_ACCUMELATOR = 7.0f;
+    SPAWN_TIME = 10.0f;
+    WAVE = 1;
+    MAX_FAST = 3;
+    MAX_NORMAL = 1;
+    MAX_SLOW = 0;
+    ROW = 1;
+    SCALER = 1.0f;
+    PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
+    PLAYER_DAMAGE_COOLDOWN = 0.5f;
+    SPEED = 100.0f;
+}

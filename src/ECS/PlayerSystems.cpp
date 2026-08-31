@@ -874,3 +874,22 @@ void PlayerSystems::powerUp()
     }
 }
 
+void PlayerSystems::reset()
+{
+    LAST_TIME = 0.0f;
+    LAST_TIME_SHIELD = 0.0f;
+    LAST_TIME_GUNNER = 0.0f;
+    POWER_UP_START = 0.0f;
+    SPAWN_TIME = 0.0f;
+    RATE_OF_FIRE = 1000.0f;
+    DAMAGE = 10.0f;
+    PROJECTILE_SPEED = 250.0f;
+    SHIELD_TIME = 5000.0f;
+    HAS_SHEILD = false;
+    HAS_ASTROID = false;
+    POWER_UP = false;
+    angle = 0.0f;
+    HAS_GUNNER = 0;
+    CURRENT_WEAPON = WEAPON_NORMAL;
+    CURRENT_POWER_UP = POWER_UP_NONE;
+}
