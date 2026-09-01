@@ -106,7 +106,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
 
     TextManager::init(RENDERER);
-    TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
+    TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
     UI.initText(playerSystem);
     
@@ -123,23 +123,23 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         
     //Entity blackhole = GLOBALS::REGISTRY.create();
     
-    TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
-    TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
-    TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy1", "Assets/Enemy1.png");
-    TextureManager::loadTexture("Enemy2", "Assets/Enemy2.png");
-    TextureManager::loadTexture("Enemy3", "Assets/Enemy3.png");
-    TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
-    TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
-    TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
-    TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
-    TextureManager::loadTexture("XP", "Assets/XPDrop.png");
-    TextureManager::loadTexture("Railgun", "Assets/Railgun.png");
-    TextureManager::loadTexture("Astroid", "Assets/Astroid.png");
-    TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
-    TextureManager::loadTexture("Shield", "Assets/Shield.png");
-    TextureManager::loadTexture("Sattelite", "Assets/Sattelite.png");
-    TextureManager::loadTexture("Options", "Assets/OptionButtons.png");
+    TextureManager::loadTexture("player", "Assets/Sprites/SpaceshipAnimation.png");
+    //TextureManager::loadTexture("Blackhole", "Assets/Sprites/blackhole2.png");
+    TextureManager::loadTexture("Projectile", "Assets/Sprites/Projectile.png");
+    TextureManager::loadTexture("Enemy1", "Assets/Sprites/Enemy1.png");
+    TextureManager::loadTexture("Enemy2", "Assets/Sprites/Enemy2.png");
+    TextureManager::loadTexture("Enemy3", "Assets/Sprites/Enemy3.png");
+    //TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
+    TextureManager::loadTexture("MenuButtons" , "Assets/Sprites/MenuButtons.png");
+    TextureManager::loadTexture("UpgradeButton", "Assets/Sprites/UpgradeButton.png");
+    TextureManager::loadTexture("UpgradeBG", "Assets/Sprites/UpgradeButtonBg.png");
+    TextureManager::loadTexture("XP", "Assets/Sprites/XPDrop.png");
+    TextureManager::loadTexture("Railgun", "Assets/Sprites/Railgun.png");
+    TextureManager::loadTexture("Astroid", "Assets/Sprites/Astroid.png");
+    TextureManager::loadTexture("Gunner", "Assets/Sprites/Gunner.png");
+    TextureManager::loadTexture("Shield", "Assets/Sprites/Shield.png");
+    TextureManager::loadTexture("Sattelite", "Assets/Sprites/Sattelite.png");
+    TextureManager::loadTexture("Options", "Assets/Sprites/OptionButtons.png");
     /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -178,7 +178,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     {
         case 1:
         {
-            TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+            TextureManager::loadTexture("Level1", "Assets/Maps/TileMap1.png");
             TileMap levelMap1 = Map::loadFromFile(
                 "Assets/Maps/Level1.txt",
                 "Level1",
@@ -194,7 +194,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             
         case 2:
         {
-            TextureManager::loadTexture("Level2","Assets/TileSet2.png");
+            TextureManager::loadTexture("Level2","Assets/Maps/TileSet2.png");
             TileMap levelMap2 = Map::loadFromFile(
                 "Assets/Maps/Level2.txt",
                 "Level2",
@@ -211,7 +211,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         
         case 3:
         {
-            TextureManager::loadTexture("Level3", "Assets/TileSet3.png");
+            TextureManager::loadTexture("Level3", "Assets/Maps/TileSet3.png");
             TileMap levelMap3 = Map::loadFromFile(
                 "Assets/Maps/Level3.txt",
                 "Level3",

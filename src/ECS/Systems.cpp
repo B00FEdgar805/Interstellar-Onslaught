@@ -177,6 +177,8 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
     auto view = GLOBALS::REGISTRY.all<Sprite>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
+       // TIMER_DEBUG time;
+        
         Entity entity = view.entities[i];
         Sprite& sprite = view.components[i];
 
@@ -190,6 +192,16 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         {
             continue;
         }
+        /*
+        if (transform -> position.x + sprite.w() < 0 || transform -> position.x > GLOBALS::SCREEN_WIDTH)
+        {
+            if (transform -> position.y + sprite.w() < 0 || transform -> position.y > GLOBALS::SCREEN_HEIGHT)
+            {
+                //SDL_Log("Out");
+                continue;
+            }
+        }
+         */
         
         SDL_FRect worldDestination;
         worldDestination.x = transform -> position.x;
@@ -199,6 +211,24 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
         SDL_FRect screenDestination = camera.worldToScreenRect(worldDestination);
 
+        // Frustum culling: skip rendering if the sprite is fully off-screen
+        SDL_FRect screenBounds;
+        screenBounds.x = 0.0f;
+        screenBounds.y = 0.0f;
+        screenBounds.w = static_cast<float>(GLOBALS::SCREEN_WIDTH);
+        screenBounds.h = static_cast<float>(GLOBALS::SCREEN_HEIGHT);
+
+        const bool outside =
+            (screenDestination.x + screenDestination.w) < screenBounds.x ||
+            (screenDestination.y + screenDestination.h) < screenBounds.y ||
+            screenDestination.x > (screenBounds.x + screenBounds.w) ||
+            screenDestination.y > (screenBounds.y + screenBounds.h);
+
+        if (outside)
+        {
+            continue;
+        }
+        
         //sprite.x(transform -> position.x);
         //sprite.y(transform -> position.y);
         
@@ -290,3 +320,4 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
     }
 }
+
