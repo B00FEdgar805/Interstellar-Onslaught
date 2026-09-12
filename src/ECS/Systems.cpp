@@ -10,6 +10,7 @@
 #include "Components/Health.hpp"
 #include "../Globals.hpp"
 #include <cmath>
+#include "CollisionSystem.hpp"
 
 void Systems::playerInputSystem(const Camera2D& camera)
 {
@@ -239,7 +240,7 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
         
         //SDL_Log("%f", transform -> x);
         //SDL_Log("%f", transform -> y);
-        
+        bool destroy = false;
         
         
         if (GLOBALS::CURRENT_STATE != GLOBALS::STATE_GAMEPLAY)
@@ -255,7 +256,8 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
             if (GLOBALS::REGISTRY.has<Animation>(entity))
             {
                 Animation* animation = GLOBALS::REGISTRY.get<Animation>(entity);
-                sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
+                destroy = !sprite.Animate(SDL_GetTicks(), animation -> speed, animation -> frames);
+               
             }
         }
         
@@ -317,6 +319,12 @@ void Systems::renderSystem(SDL_Renderer* renderer, const Camera2D& camera)  // R
             SDL_RenderRect(renderer, &rect);
         }
         //SDL_Log("Render system working");
+        
+        if (destroy)
+        {
+            //SDL_Log("dead");
+            deadEntities().push_back(entity);
+        }
         
     }
 }

@@ -36,7 +36,6 @@ bool TextManager::init(SDL_Renderer *renderer)
         shutdown();
         return false;
     }
-    
     //SDL_Log("Init");
 
     return true;
@@ -51,6 +50,12 @@ bool TextManager::loadFont(const std::string &fontId, const char *path, float po
     }
 
     TTF_Font* font = TTF_OpenFont(path, pointSize);
+    //TTF_SetFontSDF(font,true);
+    TTF_SetFontHinting(font, TTF_HINTING_MONO);
+    //TTF_SetFontHinting(font, TTF_HINTING_LIGHT);
+
+    //TTF_SetFontHinting(font, TTF_HINTING_LIGHT_SUBPIXEL);
+    TTF_SetFontSDF(font, false);
     if (!font)
     {
         SDL_Log("TTF_OpenFont failed for '%s': %s", path, SDL_GetError());
@@ -141,8 +146,7 @@ bool TextManager::drawLabel(const std::string &labelId, float x, float y)
         SDL_Log("Could not find %s" , labelId.c_str());
         return false;
     }
-
-    return TTF_DrawRendererText(label, x, y);
+    return TTF_DrawRendererText(label, SDL_roundf(x),SDL_roundf(y));
 }
 
 bool TextManager::getLabelSize(const std::string &labelId, int *w, int *h)

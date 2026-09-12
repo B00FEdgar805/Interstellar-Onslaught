@@ -34,7 +34,7 @@ private:
     
     
     SDL_FRect PAUSE_BACKGROUND;
-    const Vector2D SIZE_MENU = {80, 32};
+    const Vector2D SIZE_MENU = {120, 32};
     const Vector2D SIZE_OPTION = {64, 32};
     const Vector2D SIZE_UPGRADE = {200, 200};
     

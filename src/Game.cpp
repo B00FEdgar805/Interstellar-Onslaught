@@ -67,10 +67,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     else
     {
-        flags = SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+        flags = SDL_WINDOW_RESIZABLE;// | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
+//    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // "0" = nearest neighbor, no blur
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1");
     
     // Initialize SDL (video + events)
@@ -104,15 +106,21 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
+    
 
     TextManager::init(RENDERER);
-    TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
+    //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
+    TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    //TextManager::loadFont("Buttons", "Assets/Fonts/Audiowide-Regular.ttf", 18.0f * actualScale);
+
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
     UI.initText(playerSystem);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-
+    
+    
     START_TIME = SDL_GetTicks();
     LAST_TIME = START_TIME;
     
@@ -140,6 +148,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Shield", "Assets/Sprites/Shield.png");
     TextureManager::loadTexture("Sattelite", "Assets/Sprites/Sattelite.png");
     TextureManager::loadTexture("Options", "Assets/Sprites/OptionButtons.png");
+    TextureManager::loadTexture("Explosion", "Assets/Sprites/Explosion.png");
     /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -391,7 +400,7 @@ void Game::update()
     
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
-    projectiles.projectilesCollisons(collisions);
+    projectiles.projectilesCollisons(collisions, DELTA_TIME);
     projectiles.projectileSystem(DELTA_TIME);
     playerSystem.fireSystem(projectiles, DELTA_TIME);
     playerSystem.playerCollisionSystem(collisions);
@@ -483,6 +492,11 @@ void Game::render()
         if (ImGui::Button("PowerUp"))
         {
             playerSystem.powerUp();
+        }
+        
+        if (ImGui::Button("LevelUp"))
+        {
+            GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
         }
         
         if (ImGui::Button("Reset"))

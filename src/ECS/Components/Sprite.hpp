@@ -9,6 +9,7 @@ class Sprite final : public BaseComponent
 private:
     std::string TEXTURE_ID;
     SDL_FRect SOURCE, DESTINATION;
+    bool LOOP = true;
 public:
     Sprite() = default;
 
@@ -76,6 +77,11 @@ public:
         return DESTINATION.h;
     }
     
+    void setLoop(bool l)
+    {
+        LOOP = l;
+    }
+    
     void setPosition(const Vector2D& v)
     {
         DESTINATION.x = v.x;
@@ -92,10 +98,20 @@ public:
         SOURCE.y = (row - 1) * SOURCE.h;
     }
     
-    void Animate(float delta, int speed, int frames)
+    bool Animate(float delta, int speed, int frames)
     {
         int frame = static_cast<int>(delta / speed) % frames;
         SOURCE.x = SOURCE.w * frame;
+        //std::cout << frame << ":" << frames << std::endl;
+        
+        if (LOOP == false && frame == frames - 1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     
     void draw() // Called by Systems to draw sprite

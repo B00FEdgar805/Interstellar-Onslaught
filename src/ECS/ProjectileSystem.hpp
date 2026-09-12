@@ -15,6 +15,6 @@ private:
 public:
     void projectileSystem(float delta_time);
     Entity createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type);
-    void projectilesCollisons(std::vector<CollisionEvent>& collisons);
+    void projectilesCollisons(std::vector<CollisionEvent>& collisons, float delta_time);
 };
 #endif /* ProjectileSystem_hpp */
