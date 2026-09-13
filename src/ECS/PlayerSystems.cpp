@@ -434,11 +434,16 @@ void PlayerSystems::upgradePowerUpTime(float value)
     POWER_UP_TIME *= value;
 }
 
+void PlayerSystems::upgradeHealAmount(float value)
+{
+    HEAL_AMOUNT *= value;
+}
+
 PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 10);
+     std::uniform_int_distribution<> distr(1, 11);
      int num = distr(gen);
     //int num = 9;
      switch (num)
@@ -484,6 +489,9 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
          case 10:
              return UPGRADE_POWER_UP_TIME;
              break;
+         case 11:
+             return UPGRADE_HEAL_AMOUNT;
+             break;
          default:
              return UPGRADE_ROF;
              break;
@@ -526,7 +534,7 @@ void PlayerSystems::upgrade(UpgradeType button)
     //SDL_Log("Upgrade");
     Health* health = GLOBALS::REGISTRY.get<Health>(PLAYER);
     //SDL_Log("%f" , health -> getHealth());
-    health -> heal(50.0f);
+    health -> heal(HEAL_AMOUNT);
     //SDL_Log("%f" , health -> getHealth());
 
     
@@ -559,6 +567,9 @@ void PlayerSystems::upgrade(UpgradeType button)
             break;
         case UPGRADE_POWER_UP_TIME:
             upgradePowerUpTime(1.30f);
+            break;
+        case UPGRADE_HEAL_AMOUNT:
+            upgradeHealAmount(1.30f);
             break;
         case UPGRADE_WEAPON_NORMAL:
             CURRENT_WEAPON = WEAPON_NORMAL;
@@ -667,6 +678,9 @@ std::string PlayerSystems::getLabel(UpgradeType button)
             break;
         case UPGRADE_POWER_UP_TIME:
             return "PowerUpTIme";
+            break;
+        case UPGRADE_HEAL_AMOUNT:
+            return "HealAmount";
             break;
         case UPGRADE_WEAPON_NORMAL:
             return "Normal";
