@@ -32,11 +32,10 @@ private:
     float DAMAGE = 10.0f;
     float PROJECTILE_SPEED = 250.0f;
     float SHIELD_TIME = 5000.0f;
-    //int MAX = 8;
-    //inline static int UNIQUE_UPGRADE = 0;
     bool HAS_SHEILD = false;
     bool HAS_ASTROID = false;
     bool POWER_UP = false;
+    int POWER_UP_TIME = 15000;
     float angle = 0.0f;
     int HAS_GUNNER = 0;
     
@@ -78,6 +77,7 @@ public:
     void upgradeProjectileSpeed(float value);
     void upgradeXPMutiplier(float value);
     void upgradeXPGrabRange(float value);
+    void upgradePowerUpTime(float value);
     void playerCollisionSystem(std::vector<CollisionEvent>& collisons);
     
     enum UpgradeType
@@ -89,6 +89,7 @@ public:
         UPGRADE_PROJECTILE_SPEED,
         UPGRADE_XP_MUTIPLIER,
         UPGRADE_XP_RANGE,
+        UPGRADE_POWER_UP_TIME,
         UPGRADE_WEAPON_NORMAL,
         UPGRADE_WEAPON_SHOTGUN,
         UPGRADE_WEAPON_SMG,
@@ -111,6 +112,7 @@ public:
     UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
     void powerUp();
+    void reset();
     
 
 };

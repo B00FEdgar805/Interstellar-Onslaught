@@ -35,6 +35,7 @@ public:
     void update();
     void render();
     void clean();
+    void restart();
     bool isRunning();
     void initIMGUI();
     float UpdateFPSCounter(float deltaTime);

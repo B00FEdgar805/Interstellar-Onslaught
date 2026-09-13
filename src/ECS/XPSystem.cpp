@@ -10,21 +10,24 @@
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Item.hpp"
+#include "../AudioManager.hpp"
 
 void XPSystem::addXP(int xp, PlayerSystems& player)
 {
     CURRENT_XP += (xp * XP_MULTIPLIER);
+    AudioManager::getInstance().playSound("Xp");
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
+        AudioManager::getInstance().playSound("LevelUp");
         // level up function
         player.left = player.randomUpgrade();
         player.middle = player.randomUpgrade();
         player.right = player.randomUpgrade();
 
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-        LEVEL_UP_XP *= 1.20;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
+        LEVEL_UP_XP *= 1.20;
         //std::cout << PlayerSystems::left;
         //std::cout << PlayerSystems::middle;
         //std::cout << PlayerSystems::right;
@@ -101,12 +104,11 @@ void XPSystem::renderXPBar(SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 179, 185, 209, 100);
     SDL_RenderFillRect(renderer, &bgRect);
     
-    
-    float percentage = CURRENT_XP / LEVEL_UP_XP;
-    //std::cout << percentage << std::endl;
-    percentage = std::max(0.0f, std::min(percentage, 1.0f));
-    //std::cout << percentage;
-    float fgWidth = w * percentage;
+    float targetPercentage = CURRENT_XP / LEVEL_UP_XP;
+    const float lerpSpeed = 0.10f; // Adjust for smoothing
+    this -> visualXPPercentage += (targetPercentage - this -> visualXPPercentage) * lerpSpeed;
+    this -> visualXPPercentage = std::max(0.0f, std::min(this -> visualXPPercentage, 1.0f));
+    float fgWidth = w * this -> visualXPPercentage;
 
     SDL_FRect fgRect = { x + 1, y + 1, fgWidth - 2, h - 2};
     if (fgRect.w < 0) fgRect.w = 0;
@@ -122,3 +124,20 @@ float XPSystem::getLevelUpXP()
 {
     return LEVEL_UP_XP;
 }
+
+void XPSystem::reset()
+{
+    auto view = GLOBALS::REGISTRY.all<Item>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Entity entity = view.entities[i];
+        deadEntities().push_back(entity);
+    }
+    LEVEL = 1;
+    LEVEL_UP_XP = 100;
+    CURRENT_XP = 0;
+    XP_MULTIPLIER = 1.0f;
+    XP_GRAB_RANGE = 1.0f;
+    visualXPPercentage = 0.0f;
+}
+

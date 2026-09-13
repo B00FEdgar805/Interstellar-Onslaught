@@ -22,6 +22,7 @@
 #include "Globals.hpp"
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
+#include "AudioManager.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -66,10 +67,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     else
     {
-        flags = SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+        flags = SDL_WINDOW_RESIZABLE;// | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
+//    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // "0" = nearest neighbor, no blur
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1");
     
     // Initialize SDL (video + events)
@@ -103,15 +106,21 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
+    
 
     TextManager::init(RENDERER);
-    TextManager::loadFont("Default", "Assets/Orbitron-Regular 2.ttf", 14.0f);
+    //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
+    TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    //TextManager::loadFont("Buttons", "Assets/Fonts/Audiowide-Regular.ttf", 18.0f * actualScale);
+
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
     UI.initText(playerSystem);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-
+    
+    
     START_TIME = SDL_GetTicks();
     LAST_TIME = START_TIME;
     
@@ -122,22 +131,24 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         
     //Entity blackhole = GLOBALS::REGISTRY.create();
     
-    TextureManager::loadTexture("player", "Assets/SpaceshipAnimation.png");
-    TextureManager::loadTexture("Blackhole", "Assets/blackhole2.png");
-    TextureManager::loadTexture("Projectile", "Assets/Projectile.png");
-    TextureManager::loadTexture("Enemy1", "Assets/Enemy1.png");
-    TextureManager::loadTexture("Enemy2", "Assets/Enemy2.png");
-    TextureManager::loadTexture("Enemy3", "Assets/Enemy3.png");
-    TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
-    TextureManager::loadTexture("MenuButtons" , "Assets/MenuButtons.png");
-    TextureManager::loadTexture("UpgradeButton", "Assets/UpgradeButton.png");
-    TextureManager::loadTexture("UpgradeBG", "Assets/UpgradeButtonBg.png");
-    TextureManager::loadTexture("XP", "Assets/XPDrop.png");
-    TextureManager::loadTexture("Railgun", "Assets/Railgun.png");
-    TextureManager::loadTexture("Astroid", "Assets/Astroid.png");
-    TextureManager::loadTexture("Gunner", "Assets/Gunner.png");
-    TextureManager::loadTexture("Shield", "Assets/Shield.png");
-    TextureManager::loadTexture("Sattelite", "Assets/Sattelite.png");
+    TextureManager::loadTexture("player", "Assets/Sprites/SpaceshipAnimation.png");
+    //TextureManager::loadTexture("Blackhole", "Assets/Sprites/blackhole2.png");
+    TextureManager::loadTexture("Projectile", "Assets/Sprites/Projectile.png");
+    TextureManager::loadTexture("Enemy1", "Assets/Sprites/Enemy1.png");
+    TextureManager::loadTexture("Enemy2", "Assets/Sprites/Enemy2.png");
+    TextureManager::loadTexture("Enemy3", "Assets/Sprites/Enemy3.png");
+    //TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
+    TextureManager::loadTexture("MenuButtons" , "Assets/Sprites/MenuButtons.png");
+    TextureManager::loadTexture("UpgradeButton", "Assets/Sprites/UpgradeButton.png");
+    TextureManager::loadTexture("UpgradeBG", "Assets/Sprites/UpgradeButtonBg.png");
+    TextureManager::loadTexture("XP", "Assets/Sprites/XPDrop.png");
+    TextureManager::loadTexture("Railgun", "Assets/Sprites/Railgun.png");
+    TextureManager::loadTexture("Astroid", "Assets/Sprites/Astroid.png");
+    TextureManager::loadTexture("Gunner", "Assets/Sprites/Gunner.png");
+    TextureManager::loadTexture("Shield", "Assets/Sprites/Shield.png");
+    TextureManager::loadTexture("Sattelite", "Assets/Sprites/Sattelite.png");
+    TextureManager::loadTexture("Options", "Assets/Sprites/OptionButtons.png");
+    TextureManager::loadTexture("Explosion", "Assets/Sprites/Explosion.png");
     /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
@@ -176,7 +187,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     {
         case 1:
         {
-            TextureManager::loadTexture("Level1", "Assets/TileMap1.png");
+            TextureManager::loadTexture("Level1", "Assets/Maps/TileMap1.png");
             TileMap levelMap1 = Map::loadFromFile(
                 "Assets/Maps/Level1.txt",
                 "Level1",
@@ -192,7 +203,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             
         case 2:
         {
-            TextureManager::loadTexture("Level2","Assets/TileSet2.png");
+            TextureManager::loadTexture("Level2","Assets/Maps/TileSet2.png");
             TileMap levelMap2 = Map::loadFromFile(
                 "Assets/Maps/Level2.txt",
                 "Level2",
@@ -209,7 +220,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         
         case 3:
         {
-            TextureManager::loadTexture("Level3", "Assets/TileSet3.png");
+            TextureManager::loadTexture("Level3", "Assets/Maps/TileSet3.png");
             TileMap levelMap3 = Map::loadFromFile(
                 "Assets/Maps/Level3.txt",
                 "Level3",
@@ -227,7 +238,19 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             break;
     }
     
-    
+    AudioManager::getInstance().init();
+    AudioManager::getInstance().loadMusic("Music", "Assets/Audio/BGmusic.wav");
+    AudioManager::getInstance().loadSound("Button","Assets/Audio/Button.wav");
+    AudioManager::getInstance().loadSound("Death","Assets/Audio/Death.wav");
+    AudioManager::getInstance().loadSound("EnemyDeath","Assets/Audio/EnemyDeath.wav");
+    AudioManager::getInstance().loadSound("EnemyHit","Assets/Audio/EnemyHit.wav");
+    AudioManager::getInstance().loadSound("Hit","Assets/Audio/Hit.wav");
+    AudioManager::getInstance().loadSound("HitBlocked","Assets/Audio/HitBlocked.wav");
+    AudioManager::getInstance().loadSound("LevelUp","Assets/Audio/LevelUp.wav");
+    AudioManager::getInstance().loadSound("PowerUp","Assets/Audio/PowerUp.wav");
+    AudioManager::getInstance().loadSound("Shoot","Assets/Audio/Shoot.wav");
+    AudioManager::getInstance().loadSound("Xp","Assets/Audio/XP.wav");
+
     if (true)
     {
         initIMGUI();
@@ -240,7 +263,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 int Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
-
+    AudioManager::getInstance().setMasterVolume(0.2f);
+    AudioManager::getInstance().playMusic("Music", true, 1000);
     
     while (isRunning()) // Main game loop
     {
@@ -277,6 +301,10 @@ int Game::run()
                 //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_UPGRADE:
+                handleEvents(); // Handles user inputes
+                render();   // Handles any rendering
+                break;
+            case GLOBALS::STATE_OPTIONS:
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 break;
@@ -338,6 +366,8 @@ void Game::handleEvents()
                     case SDLK_2:
                         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
                         break;
+                    case SDLK_0:
+                        AudioManager::getInstance().playSound("sound");
                     default:
                         break;
                 }
@@ -349,7 +379,7 @@ void Game::handleEvents()
 
     if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_GAMEPLAY)
     {
-        systems.playerInputSystem();
+        systems.playerInputSystem(camera);
     }
 }
 
@@ -370,7 +400,7 @@ void Game::update()
     
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
-    projectiles.projectilesCollisons(collisions);
+    projectiles.projectilesCollisons(collisions, DELTA_TIME);
     projectiles.projectileSystem(DELTA_TIME);
     playerSystem.fireSystem(projectiles, DELTA_TIME);
     playerSystem.playerCollisionSystem(collisions);
@@ -464,6 +494,16 @@ void Game::render()
             playerSystem.powerUp();
         }
         
+        if (ImGui::Button("LevelUp"))
+        {
+            GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+        }
+        
+        if (ImGui::Button("Reset"))
+        {
+            restart();
+        }
+        
         if (ImGui::Button("close"))
         {
             IMGUI = false;
@@ -484,11 +524,29 @@ void Game::clean()
 {
     //auto view = GLOBALS::REGISTRY.all<Enemy>();
     //SDL_Log("%i" , view.entities.size());
+    AudioManager::getInstance().shutdown();
     TextureManager::clear();
     TextManager::shutdown();
     SDL_DestroyRenderer(RENDERER);
     SDL_DestroyWindow(WINDOW);
     SDL_Quit();
+}
+
+void Game::restart()
+{
+    Transform* player_transform = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+    player_transform -> position = Vector2D(100.0f, 100.0f);
+    Health* h = GLOBALS::REGISTRY.get<Health>(PLAYER);
+    h -> setHealth(100.0f);
+    Velocity* v = GLOBALS::REGISTRY.get<Velocity>(PLAYER);
+    v -> m_speed = 150.0f;
+    enemies.reset();
+    //xp system
+    xp.reset();
+    playerSystem.reset();
+    //player system
+    
+    
 }
 
 bool Game::isRunning()

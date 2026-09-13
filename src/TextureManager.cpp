@@ -25,7 +25,6 @@ bool TextureManager::loadTexture(const std::string& id, const char* filepath)   
     }
 
     SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
-    
     unloadTexture(id);
 
     TEXTURES[id] = texture;

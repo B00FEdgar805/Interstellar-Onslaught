@@ -11,6 +11,7 @@ private:
     std::string TEXTURE_ID;
     SDL_FRect SOURCE, DESTINATION;
     GLOBALS::GameState BUTTON_STATE;
+    bool ON_OFF = false;
 
 public:
     Button() = default;
@@ -29,9 +30,17 @@ public:
     
     std::function<void()> onClick;
     
+
+    
     void setButton(int row)
     {
         SOURCE.y = SOURCE.h * (row - 1);
+    }
+    
+    void onOff()
+    {
+        ON_OFF = !ON_OFF;
+        setButton(ON_OFF + 1);
     }
     
     void hovering(int hover)

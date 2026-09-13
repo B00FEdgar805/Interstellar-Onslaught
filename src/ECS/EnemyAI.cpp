@@ -7,6 +7,7 @@
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Animation.hpp"
+#include "../AudioManager.hpp"
 
 //static constexpr float PLAYER_DAMAGE_COOLDOWN = 0.5f;
 
@@ -104,6 +105,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
 
     if (GLOBALS::INVINCIBLE_CONSTANT)
     {
+        //AudioManager::getInstance().playSound("HitBlocked");
         return;
     }
     
@@ -127,18 +129,31 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                AudioManager::getInstance().playSound("Hit", 0.7f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
 
             }
-            
+            else if(GLOBALS::INVINCIBLE)
+            {
+                AudioManager::getInstance().playSound("HitBlocked", 1.5f);
+            }
             
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
+                /*
+                AudioManager::getInstance().playSound("Death");
+                Entity e = GLOBALS::REGISTRY.create();
+                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                GLOBALS::REGISTRY.add(e, Transform());
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
+                 */
                 player_health -> setHealth(0.0f);
                 //GLOBALS::REGISTRY.destroy(PLAYER);
-                // add damage to box collider instead
             }
            
             GLOBALS::INVINCIBLE = false;
@@ -152,13 +167,27 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
+                AudioManager::getInstance().playSound("Hit", 0.7f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
             }
-            
+            else if(GLOBALS::INVINCIBLE)
+            {
+                AudioManager::getInstance().playSound("HitBlocked", 1.5f);
+            }
             
             if (!player_health -> isAlive())
             {
+                /*
+                AudioManager::getInstance().playSound("Death");
+                Entity e = GLOBALS::REGISTRY.create();
+                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                GLOBALS::REGISTRY.add(e, Transform());
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
+                 */
                 player_health -> setHealth(0.0f);
                // SDL_Log("Dead");
             }
@@ -225,10 +254,10 @@ void EnemyAi::enemySpawnSystem(float delta)
             createEnemy(Vector2D(x,y), 3, delta);
         }
 
-        SPAWN_TIME -= 0.25f;
-        if (SPAWN_TIME <= 3.0f)
+        SPAWN_TIME -= 0.15f;
+        if (SPAWN_TIME <= 3.5f)
         {
-            SPAWN_TIME = 3.0f;
+            SPAWN_TIME = 3.5f;
         }
         
         TIMMER_ACCUMELATOR = 0.0f;
@@ -260,3 +289,24 @@ void EnemyAi::enemySpawnSystem(float delta)
     }
 }
 
+void EnemyAi::reset()
+{
+    auto view = GLOBALS::REGISTRY.all<Enemy>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Entity entity = view.entities[i];
+        deadEntities().push_back(entity);
+    }
+    
+    TIMMER_ACCUMELATOR = 7.0f;
+    SPAWN_TIME = 10.0f;
+    WAVE = 1;
+    MAX_FAST = 3;
+    MAX_NORMAL = 1;
+    MAX_SLOW = 0;
+    ROW = 1;
+    SCALER = 1.0f;
+    PLAYER_DAMAGE_COOLDOWN_TIMER = 0.0f;
+    PLAYER_DAMAGE_COOLDOWN = 0.5f;
+    SPEED = 100.0f;
+}

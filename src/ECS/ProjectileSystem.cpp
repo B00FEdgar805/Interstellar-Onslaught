@@ -4,8 +4,10 @@
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/Animation.hpp"
 #include "Components/Health.hpp"
 #include "Components/Transform.hpp"
+#include "../AudioManager.hpp"
 #include "XPSystem.hpp"
 #include "../Globals.hpp"
 
@@ -36,6 +38,7 @@ void ProjectileSystem::projectileSystem(float delta_time)
 
 Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type)
 {
+    AudioManager::getInstance().playSound("Shoot", 0.3f);
     Entity projectile = GLOBALS::REGISTRY.create();
     //DIRECTION = direction;
     
@@ -70,7 +73,7 @@ Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position
     return projectile;
 }
 
-void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &collisons)
+void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &collisons, float delta_time)
 {
     
     //std::vector<Entity> destroyQueue;
@@ -139,13 +142,21 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
+            AudioManager::getInstance().playSound("EnemyHit");
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
-                // spawn xp pick up
+                
+                Entity e = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(e, Transform(enemy_position -> position));
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta_time, 10, 170));
             }
             
             deadEntities().push_back(projectileEntity);
@@ -160,13 +171,21 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
+            AudioManager::getInstance().playSound("EnemyHit");
             if (!enemy_health -> isAlive())
             {
+                AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
                 Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
-                // spawn xp pick up
+
+                Entity e = GLOBALS::REGISTRY.create();
+                GLOBALS::REGISTRY.add(e, Transform(enemy_position -> position));
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta_time, 10, 170));
             }
             //deadEntities().push_back(projectileEntity);
         }

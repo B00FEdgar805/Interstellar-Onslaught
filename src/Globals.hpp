@@ -13,10 +13,11 @@ struct GLOBALS
         STATE_GAMEPLAY,
         STATE_PAUSED,
         STATE_UPGRADE,
+        STATE_OPTIONS,
         STATE_EXIT
     };
     
-    inline static GameState CURRENT_STATE = STATE_GAMEPLAY;
+    inline static GameState CURRENT_STATE = STATE_MAIN_MENU;
     // 640 by 360
     static constexpr int SCREEN_HEIGHT = 360; //640;
     static constexpr int SCREEN_WIDTH = 640; //800;
