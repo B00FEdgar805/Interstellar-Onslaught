@@ -38,7 +38,7 @@ void ProjectileSystem::projectileSystem(float delta_time)
 
 Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position, const Vector2D& direction, float speed, float damage, int type)
 {
-    AudioManager::getInstance().playSound("Shoot", 0.5f);
+    AudioManager::getInstance().playSound("Shoot", 0.3f);
     Entity projectile = GLOBALS::REGISTRY.create();
     //DIRECTION = direction;
     

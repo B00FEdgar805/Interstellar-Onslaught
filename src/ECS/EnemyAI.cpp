@@ -129,7 +129,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.b);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
-                AudioManager::getInstance().playSound("Hit", 0.5f);
+                AudioManager::getInstance().playSound("Hit", 0.7f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
 
@@ -142,10 +142,18 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             if (!player_health -> isAlive())
             {
                 //SDL_Log("Dead");
-  //              AudioManager::getInstance().playSound("Death");
+                /*
+                AudioManager::getInstance().playSound("Death");
+                Entity e = GLOBALS::REGISTRY.create();
+                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                GLOBALS::REGISTRY.add(e, Transform());
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
+                 */
                 player_health -> setHealth(0.0f);
                 //GLOBALS::REGISTRY.destroy(PLAYER);
-                // add damage to box collider instead
             }
            
             GLOBALS::INVINCIBLE = false;
@@ -159,7 +167,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 Enemy* enemy = GLOBALS::REGISTRY.get<Enemy>(collision.a);
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
-                AudioManager::getInstance().playSound("Hit", 0.5f);
+                AudioManager::getInstance().playSound("Hit", 0.7f);
                 //SDL_Log("Hit");
                 //SDL_Log("%f", player_health -> getHealth());
             }
@@ -170,7 +178,16 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             
             if (!player_health -> isAlive())
             {
-//                AudioManager::getInstance().playSound("Death");
+                /*
+                AudioManager::getInstance().playSound("Death");
+                Entity e = GLOBALS::REGISTRY.create();
+                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                GLOBALS::REGISTRY.add(e, Transform());
+                GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
+                auto s = GLOBALS::REGISTRY.get<Sprite>(e);
+                s -> setLoop(false);
+                GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
+                 */
                 player_health -> setHealth(0.0f);
                // SDL_Log("Dead");
             }

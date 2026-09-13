@@ -274,7 +274,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
     {
         Uint64 current_time_power_up = SDL_GetTicks();
         Uint64 elampsed_power_up = current_time_power_up - POWER_UP_START;
-        if (elampsed_power_up > 15000)
+        if (elampsed_power_up > POWER_UP_TIME)
         {
             powerUp();
             POWER_UP = false;
@@ -429,11 +429,16 @@ void PlayerSystems::upgradeXPGrabRange(float value)
     XPSystem::XP_GRAB_RANGE *= value;
 }
 
+void PlayerSystems::upgradePowerUpTime(float value)
+{
+    POWER_UP_TIME *= value;
+}
+
 PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 9);
+     std::uniform_int_distribution<> distr(1, 10);
      int num = distr(gen);
     //int num = 9;
      switch (num)
@@ -475,6 +480,9 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
              break;
          case 9:
              return randomUpgradeUnique();
+             break;
+         case 10:
+             return UPGRADE_POWER_UP_TIME;
              break;
          default:
              return UPGRADE_ROF;
@@ -549,6 +557,9 @@ void PlayerSystems::upgrade(UpgradeType button)
         case UPGRADE_XP_RANGE:
             upgradeXPGrabRange(1.40f);
             break;
+        case UPGRADE_POWER_UP_TIME:
+            upgradePowerUpTime(1.30f);
+            break;
         case UPGRADE_WEAPON_NORMAL:
             CURRENT_WEAPON = WEAPON_NORMAL;
             upgradeROF(1.10f);
@@ -622,8 +633,6 @@ void PlayerSystems::upgrade(UpgradeType button)
                 upgradeDamage(1.40f);
             }
             break;
-        default:
-            break;
     }
 }
 
@@ -656,6 +665,9 @@ std::string PlayerSystems::getLabel(UpgradeType button)
         case UPGRADE_XP_RANGE:
             return "XPRange";
             break;
+        case UPGRADE_POWER_UP_TIME:
+            return "PowerUpTIme";
+            break;
         case UPGRADE_WEAPON_NORMAL:
             return "Normal";
             break;
@@ -676,9 +688,6 @@ std::string PlayerSystems::getLabel(UpgradeType button)
             break;
         case UPGRADE_GUNNER:
             return "Gunner";
-            break;
-        default:
-            return "";
             break;
     }
 }

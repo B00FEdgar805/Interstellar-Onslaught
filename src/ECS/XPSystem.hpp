@@ -21,6 +21,7 @@ private:
     inline static float LEVEL_UP_XP = 100;
     inline static float CURRENT_XP = 0;
     Vector2D SIZE = {5.0f, 5.0f};
+    float visualXPPercentage = 0.0f;
 public:
     void addXP(int xp, PlayerSystems& player);
     int getLevel();
@@ -34,3 +35,4 @@ public:
     void reset();
 };
 #endif /* XPSystem_hpp */
+

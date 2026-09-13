@@ -88,7 +88,7 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Astroids", "Default",     "Astroids will orbit \nthe ship", COLORS::WHITE);
     TextManager::createLabel("Shield", "Default",       "Will give you a shield\n with a \ncooldown", COLORS::WHITE);
     TextManager::createLabel("Gunner", "Default",       "Gunner ship will be at\n your side", COLORS::WHITE);
-
+    TextManager::createLabel("PowerUpTIme", "Default",  "Power ups last \n30% longer", COLORS::WHITE);
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
     Button* upgrade_l = UPGRADE_MENU.get<Button>(UPGRADE_L);
