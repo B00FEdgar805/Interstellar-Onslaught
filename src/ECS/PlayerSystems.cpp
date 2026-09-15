@@ -367,7 +367,7 @@ bool PlayerSystems::shoot(float time)
             }
             break;
         case WEAPON_SMG:
-            if(time >= RATE_OF_FIRE * 0.2f)
+            if(time >= RATE_OF_FIRE * 0.4f)
             {
                 return true;
             }
@@ -821,7 +821,6 @@ void PlayerSystems::powerUp()
                 GLOBALS::INVINCIBLE_CONSTANT = false;
                 break;
             case POWER_UP_GRAB_XP:
-                
                 break;
             case POWER_UP_DOUBLE_XP:
                 upgradeXPMutiplier(0.5f);
@@ -836,6 +835,8 @@ void PlayerSystems::powerUp()
                 upgradeDamage(0.5f);
                 //SDL_Log("%f", DAMAGE);
                 break;
+            case POWER_UP_HEAL:
+                break;
          default:
                 break;
         }
@@ -845,7 +846,7 @@ void PlayerSystems::powerUp()
     {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distr(1, 6);
+        std::uniform_int_distribution<> distr(1, 7);
         int num = distr(gen);
         //int num = 5;
         switch (num)
@@ -889,6 +890,15 @@ void PlayerSystems::powerUp()
                 //SDL_Log("%f", DAMAGE);
             }
                 break;
+            case 7:
+            {
+                CURRENT_POWER_UP = POWER_UP_HEAL;
+                Health* h = GLOBALS::REGISTRY.get<Health>(PLAYER);
+                float total = h -> getMaxHealth();
+                float current = h -> getHealth();
+                h -> heal(total = current);
+            }
+                break;
             default:
                 break;
         }
@@ -915,4 +925,36 @@ void PlayerSystems::reset()
     HAS_GUNNER = 0;
     CURRENT_WEAPON = WEAPON_NORMAL;
     CURRENT_POWER_UP = POWER_UP_NONE;
+}
+
+std::string PlayerSystems::getLabelPowerUp()
+{
+    switch (CURRENT_POWER_UP)
+    {
+        case POWER_UP_DOUBLE_DAMAGE:
+            return "DoubleDamage";
+            break;
+        case POWER_UP_FREEZE_TIME:
+            return "FreezeTime";
+            break;
+        case POWER_UP_FREE_LEVEL:
+            return "FreeLevel";
+            break;
+        case POWER_UP_DOUBLE_XP:
+            return "DoubleXp";
+            break;
+        case POWER_UP_INVINCIBLE:
+            return "Invincible";
+            break;
+        case POWER_UP_HEAL:
+            return "Heal";
+            break;
+        case POWER_UP_GRAB_XP:
+            return "GrabXp";
+            break;
+        case POWER_UP_NONE:
+            return "";
+            break;
+       
+    }
 }

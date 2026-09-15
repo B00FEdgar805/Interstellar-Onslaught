@@ -75,21 +75,29 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Quit", "Buttons", "Quit", COLORS::WHITE);
     
     TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 10%", COLORS::WHITE);
-    TextManager::createLabel("Speed", "Default",        "Increase Speed by \n 10%", COLORS::WHITE);
+    TextManager::createLabel("Speed", "Default",        "Increase Speed by \n10%", COLORS::WHITE);
     TextManager::createLabel("Damage", "Default",       "Increase Damage \nby 10%", COLORS::WHITE);
     TextManager::createLabel("Health", "Default",       "Increase Health \nby 10%", COLORS::WHITE);
-    TextManager::createLabel("PSpeed", "Default",       "Increase Projectile\n Speed by 10%", COLORS::WHITE);
-    TextManager::createLabel("XPMutiplier", "Default",  "Increase XP gains \n by 10%", COLORS::WHITE);
-    TextManager::createLabel("XPRange", "Default",      "Increase XP pick\n up range by 20%", COLORS::WHITE);
-    TextManager::createLabel("Normal", "Default",       "Returns weapon back\n to normal. Raises\n weapon stats by 10%", COLORS::WHITE);
-    TextManager::createLabel("Shotgun", "Default",      "Weapon becomes a \nshotgun.\n Raises weapon \nstats by 10%", COLORS::WHITE);
-    TextManager::createLabel("SMG", "Default",          "Weapon becomes a SMG.\n Raises weapon stats \nby 10%", COLORS::WHITE);
-    TextManager::createLabel("Railgun", "Default",      "Weapon becomes a \nRailgun. Raises weapon \nstats by 10%", COLORS::WHITE);
+    TextManager::createLabel("PSpeed", "Default",       "Increase \nProjectile\nSpeed by 10%", COLORS::WHITE);
+    TextManager::createLabel("XPMutiplier", "Default",  "Increase XP gains \nby 10%", COLORS::WHITE);
+    TextManager::createLabel("XPRange", "Default",      "Increase XP pick\nup range by 20%", COLORS::WHITE);
+    TextManager::createLabel("Normal", "Default",       "Returns weapon \nback to normal. \nRaises weapon \nstats by 10%", COLORS::WHITE);
+    TextManager::createLabel("Shotgun", "Default",      "Weapon becomes a \nshotgun.Raises \nweapon \nstats by 10%", COLORS::WHITE);
+    TextManager::createLabel("SMG", "Default",          "Weapon becomes a \nSMG. Raises weapon stats \nby 10%", COLORS::WHITE);
+    TextManager::createLabel("Railgun", "Default",      "Weapon becomes a \nRailgun. Raises \nweapon stats \nby 10%", COLORS::WHITE);
     TextManager::createLabel("Astroids", "Default",     "Astroids will orbit \nthe ship", COLORS::WHITE);
-    TextManager::createLabel("Shield", "Default",       "Will give you a shield\n with a \ncooldown", COLORS::WHITE);
-    TextManager::createLabel("Gunner", "Default",       "Gunner ship will be at\n your side", COLORS::WHITE);
+    TextManager::createLabel("Shield", "Default",       "Will give you a \nshield with a \ncooldown", COLORS::WHITE);
+    TextManager::createLabel("Gunner", "Default",       "Gunner ship will \nbe at your \nside", COLORS::WHITE);
     TextManager::createLabel("PowerUpTIme", "Default",  "Power ups last \n30% longer", COLORS::WHITE);
-    TextManager::createLabel("HealAmount", "Default",   "Heal 30% more \n every level up", COLORS::WHITE);
+    TextManager::createLabel("HealAmount", "Default",   "Heal 30% more \nevery level up", COLORS::WHITE);
+
+    TextManager::createLabel("DoubleDamage", "Default", "Double Damage!", COLORS::YELLOW);
+    TextManager::createLabel("FreezeTime", "Default", "Time Frozen!", COLORS::YELLOW);
+    TextManager::createLabel("FreeLevel", "Default", "Free Level!", COLORS::YELLOW);
+    TextManager::createLabel("DoubleXp", "Default", "Double XP!", COLORS::YELLOW);
+    TextManager::createLabel("Invincible", "Default", "Invincibility!", COLORS::YELLOW);
+    TextManager::createLabel("Heal", "Default", "Full Health!", COLORS::YELLOW);
+    TextManager::createLabel("GrabXp", "Default", "Attract XP!", COLORS::YELLOW);
 
     
     UPGRADE_MENU.add(UPGRADE_L, Button("UpgradeButton", Vector2D(10,80), SIZE_UPGRADE));
@@ -377,6 +385,16 @@ void Menu::renderSystemOptions(SDL_Renderer *renderer)
     }
 }
 
+void Menu::renderSystemGameplay(SDL_Renderer *renderer)
+{
+    // render pause button here
+    if (PlayerSystems::POWER_UP)
+    {
+        TextManager::drawLabel(PlayerSystems::getLabelPowerUp(), 200, 50);
+    }
+}
+
+
 void Menu::renderUI(SDL_Renderer *renderer)
 {
     switch (GLOBALS::CURRENT_STATE)
@@ -389,6 +407,9 @@ void Menu::renderUI(SDL_Renderer *renderer)
             break;
         case GLOBALS::STATE_OPTIONS:
             renderSystemOptions(renderer);
+            break;
+        case GLOBALS::STATE_GAMEPLAY:
+            renderSystemGameplay(renderer);
             break;
         default:
             break;

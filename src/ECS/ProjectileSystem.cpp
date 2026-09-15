@@ -142,7 +142,7 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
-            AudioManager::getInstance().playSound("EnemyHit");
+            AudioManager::getInstance().playSound("EnemyHit", 0.5f);
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
@@ -171,7 +171,7 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(otherEntity);
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
-            AudioManager::getInstance().playSound("EnemyHit");
+            AudioManager::getInstance().playSound("EnemyHit", 0.5f);
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath", 0.5f);

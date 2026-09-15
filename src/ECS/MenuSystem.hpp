@@ -46,6 +46,7 @@ public:
     void renderSystemMain(SDL_Renderer* renderer);
     void renderSystemPause(SDL_Renderer* renderer);
     void renderSystemOptions(SDL_Renderer* renderer);
+    void renderSystemGameplay(SDL_Renderer* renderer);
     void renderUI(SDL_Renderer* renderer);
     void renderSystemUpgrade(SDL_Renderer* renderer);    
 };
