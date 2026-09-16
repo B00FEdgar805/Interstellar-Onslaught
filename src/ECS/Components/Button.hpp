@@ -45,7 +45,7 @@ public:
     
     void hovering(int hover)
     {
-        SOURCE.x = SOURCE.w * (hover + 1);
+        SOURCE.x = SOURCE.w * hover;
     }
     
     int x()

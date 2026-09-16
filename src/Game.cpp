@@ -149,6 +149,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Sattelite", "Assets/Sprites/Sattelite.png");
     TextureManager::loadTexture("Options", "Assets/Sprites/OptionButtons.png");
     TextureManager::loadTexture("Explosion", "Assets/Sprites/Explosion.png");
+    TextureManager::loadTexture("BackButton", "Assets/Sprites/BackButton.png");
+    TextureManager::loadTexture("PauseButton", "Assets/Sprites/PauseButton.png");
+
     /*
     GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
     GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));

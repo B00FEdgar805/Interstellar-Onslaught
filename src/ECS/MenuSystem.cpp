@@ -1,5 +1,4 @@
 #include "MenuSystem.hpp"
-#include "../Globals.hpp"
 #include "../Game.hpp"
 #include "../TextManager.hpp"
 #include "XPSystem.hpp"
@@ -57,7 +56,7 @@ Menu::Menu()
         AudioManager::getInstance().setSoundVolume(1.0f * SFX);
     };
     
-    OPTIONS_MENU.add(BACK_BUTTON, Button("Options", Vector2D(368, 256), SIZE_OPTION));
+    OPTIONS_MENU.add(BACK_BUTTON, Button("BackButton", Vector2D(368, 256), SIZE_OPTION));
     Button* back_button = OPTIONS_MENU.get<Button>(BACK_BUTTON);
     back_button -> onClick = [this]()
     {
@@ -65,6 +64,12 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
     };
 
+    GLOBALS::REGISTRY.add(PAUSE_BUTTON, Button("PauseButton", Vector2D(312, 5), Vector2D(16, 16)));
+    Button* pause_button = GLOBALS::REGISTRY.get<Button>(PAUSE_BUTTON);
+    pause_button -> onClick = [this]()
+    {
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+    };
 }
 
 void Menu::initText(PlayerSystems& player)
@@ -180,7 +185,7 @@ void Menu::buttonSystem(SDL_Event &e)
 
                 if (inside)
                 {
-                    button.hovering(inside);
+                    button.hovering(inside + 1);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         AudioManager::getInstance().playSound("Button");
@@ -189,7 +194,7 @@ void Menu::buttonSystem(SDL_Event &e)
                 }
                 else
                 {
-                    button.hovering(inside);
+                    button.hovering(inside + 1);
                 }
             }
             break;
@@ -209,7 +214,7 @@ void Menu::buttonSystem(SDL_Event &e)
 
                 if (inside)
                 {
-                    button.hovering(true);
+                    button.hovering(inside);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         AudioManager::getInstance().playSound("Button");
@@ -218,7 +223,7 @@ void Menu::buttonSystem(SDL_Event &e)
                 }
                 else
                 {
-                    button.hovering(false);
+                    button.hovering(inside);
                 }
             }
             break;
@@ -238,7 +243,7 @@ void Menu::buttonSystem(SDL_Event &e)
 
                 if (inside)
                 {
-                    button.hovering(inside - 1);
+                    button.hovering(inside);
                     if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
                     {
                         AudioManager::getInstance().playSound("Button");
@@ -248,7 +253,36 @@ void Menu::buttonSystem(SDL_Event &e)
                 }
                 else
                 {
-                    button.hovering(inside - 1);
+                    button.hovering(inside);
+                }
+            }
+            break;
+        }
+        case GLOBALS::STATE_GAMEPLAY:
+        {
+            auto view = GLOBALS::REGISTRY.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        AudioManager::getInstance().playSound("Button");
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside);
                 }
             }
             break;
@@ -387,7 +421,14 @@ void Menu::renderSystemOptions(SDL_Renderer *renderer)
 
 void Menu::renderSystemGameplay(SDL_Renderer *renderer)
 {
-    // render pause button here
+    auto view = GLOBALS::REGISTRY.all<Button>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Button& button = view.components[i];
+        button.draw();
+        //SDL_Log("Working");
+    }
+    
     if (PlayerSystems::POWER_UP)
     {
         TextManager::drawLabel(PlayerSystems::getLabelPowerUp(), 200, 50);

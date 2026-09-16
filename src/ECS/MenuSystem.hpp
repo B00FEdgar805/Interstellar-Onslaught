@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "PlayerSystems.hpp"
+#include "../Globals.hpp"
 
 class Menu
 {
@@ -31,6 +32,7 @@ private:
     bool MUSIC = true;
     bool SFX = true;
 
+    Entity PAUSE_BUTTON = GLOBALS::REGISTRY.create();
     
     
     SDL_FRect PAUSE_BACKGROUND;
