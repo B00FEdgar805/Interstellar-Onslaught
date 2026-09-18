@@ -33,8 +33,6 @@ public:
     static bool getLabelSize(const std::string& labelId, int* w, int* h);
     static void destroyLabel(const std::string& labelId);
     static void shutdown();
-    
-private:
     static TTF_Font* getFont(const std::string& fontId)
     {
         auto it = FONTS.find(fontId);
@@ -45,6 +43,8 @@ private:
 
         return it -> second;
     }
+private:
+    
 
     static TTF_Text* getLabel(const std::string& labelId)
     {

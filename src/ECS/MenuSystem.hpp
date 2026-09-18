@@ -14,10 +14,16 @@ private:
     Registry MAIN_MENU;
     Registry UPGRADE_MENU;
     Registry OPTIONS_MENU;
+    Registry PAUSE_MENU;
     
     Entity START_MAIN = MAIN_MENU.create();
     Entity OPTIONS_MAIN = MAIN_MENU.create();
     Entity QUIT_MAIN = MAIN_MENU.create();
+    
+    Entity CONTINUE_PAUSE = PAUSE_MENU.create();
+    Entity RESTAR_PAUSET = PAUSE_MENU.create();
+    Entity OPTIONS_PAUSE = PAUSE_MENU.create();
+    Entity QUIT_PAUSE = PAUSE_MENU.create();
     
     Entity UPGRADE_L = UPGRADE_MENU.create();
     Entity UPGRADE_M = UPGRADE_MENU.create();

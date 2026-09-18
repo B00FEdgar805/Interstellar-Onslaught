@@ -112,6 +112,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    //TTF_SetFontOutline(TextManager::getFont("Buttons"), 1);
     //TextManager::loadFont("Buttons", "Assets/Fonts/Audiowide-Regular.ttf", 18.0f * actualScale);
 
     TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
@@ -175,7 +176,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     GLOBALS::REGISTRY.add(level, Transform(0.0f, 0.0f));
 
     enemies.createEnemy(Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
-    
     
     
     

@@ -29,6 +29,40 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
     };
     
+    PAUSE_MENU.add(CONTINUE_PAUSE, Button("MenuButtons", Vector2D(260, 68), SIZE_MENU));
+    Button* continue_pause  = PAUSE_MENU.get<Button>(CONTINUE_PAUSE);
+    continue_pause -> onClick = []()
+    {
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    PAUSE_MENU.add(RESTAR_PAUSET, Button("MenuButtons", Vector2D(260, 132), SIZE_MENU));
+    Button* restart_pause = PAUSE_MENU.get<Button>(RESTAR_PAUSET);
+    restart_pause -> setButton(4);
+    restart_pause -> onClick = []()
+    {
+        Game::restart();
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    PAUSE_MENU.add(OPTIONS_PAUSE, Button("MenuButtons", Vector2D(260, 196), SIZE_MENU));
+    Button* options_pause = PAUSE_MENU.get<Button>(OPTIONS_PAUSE);
+    options_pause -> setButton(2);
+    options_pause -> onClick = []()
+    {
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_OPTIONS;
+    };
+    
+    PAUSE_MENU.add(QUIT_PAUSE, Button("MenuButtons", Vector2D(260, 260), SIZE_MENU));
+    Button* quit_pause = PAUSE_MENU.get<Button>(QUIT_PAUSE);
+    quit_pause -> setButton(3);
+    quit_pause -> onClick = []()
+    {
+        Game::restart();
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_MAIN_MENU;
+    };
+    
+    
     OPTIONS_MENU.add(ALL_BUTTON, Button("Options", Vector2D(368, 64), SIZE_OPTION));
     Button* all_button = OPTIONS_MENU.get<Button>(ALL_BUTTON);
     all_button -> onClick = [this]()
@@ -78,6 +112,7 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Continue", "Buttons", "Continue", COLORS::WHITE);
     TextManager::createLabel("Options", "Buttons", "Options", COLORS::WHITE);
     TextManager::createLabel("Quit", "Buttons", "Quit", COLORS::WHITE);
+    TextManager::createLabel("Restart", "Buttons", "Restart", COLORS::WHITE);
     
     TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 10%", COLORS::WHITE);
     TextManager::createLabel("Speed", "Default",        "Increase Speed by \n10%", COLORS::WHITE);
@@ -170,9 +205,37 @@ void Menu::buttonSystem(SDL_Event &e)
     switch (GLOBALS::CURRENT_STATE)
     {
         case GLOBALS::STATE_MAIN_MENU:
-        case GLOBALS::STATE_PAUSED:
         {
             auto view = MAIN_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside + 1);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        AudioManager::getInstance().playSound("Button");
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside + 1);
+                }
+            }
+            break;
+        }
+        case GLOBALS::STATE_PAUSED:
+        {
+            auto view = PAUSE_MENU.all<Button>();
             for (size_t i = 0; i < view.entities.size(); ++i)
             {
                 Button& button = view.components[i];
@@ -359,7 +422,7 @@ void Menu::renderSystemPause(SDL_Renderer *renderer)
     PAUSE_BACKGROUND = {0,0, GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT};
     SDL_RenderFillRect(renderer, &PAUSE_BACKGROUND);
     
-    auto view = MAIN_MENU.all<Button>();
+    auto view = PAUSE_MENU.all<Button>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
         Button& button = view.components[i];
@@ -368,9 +431,10 @@ void Menu::renderSystemPause(SDL_Renderer *renderer)
     }
    
     
-    TextManager::drawLabel("Continue", 265, 100);
-    TextManager::drawLabel("Options", 265, 164);
-    TextManager::drawLabel("Quit", 265, 228);
+    TextManager::drawLabel("Continue", 265, 68);
+    TextManager::drawLabel("Restart", 265, 132);
+    TextManager::drawLabel("Options", 265, 196);
+    TextManager::drawLabel("Quit", 265, 260);
 }
 
 void Menu::renderSystemUpgrade(SDL_Renderer *renderer)
