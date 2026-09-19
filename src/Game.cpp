@@ -112,11 +112,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    TextManager::loadFont("Testing", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+
     //TTF_SetFontOutline(TextManager::getFont("Buttons"), 1);
     //TextManager::loadFont("Buttons", "Assets/Fonts/Audiowide-Regular.ttf", 18.0f * actualScale);
 
-    TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Testing", "Testing", "Hello Testing", SDL_Color(255,255,255,255));
     UI.initText(playerSystem);
+    TextManager::createLabel("Clock", "Default", "", COLORS::WHITE);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
@@ -274,7 +277,7 @@ int Game::run()
         auto currentTime = std::chrono::steady_clock::now();
 
         DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
-
+        std::cout << DELTA_TIME;
         lastTime = currentTime;
 
         if (DELTA_TIME > 0.05f)
@@ -291,7 +294,6 @@ int Game::run()
                 handleEvents(); // Handles user inputes
                 break;
             case GLOBALS::STATE_GAMEPLAY:
-                //SDL_Log("Gameplay");
                 handleEvents(); // Handles user inputes
                 update();   // Handlers movemnts systems
                 render();   // Handles any rendering
@@ -369,8 +371,6 @@ void Game::handleEvents()
                     case SDLK_2:
                         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
                         break;
-                    case SDLK_0:
-                        AudioManager::getInstance().playSound("sound");
                     default:
                         break;
                 }
@@ -391,7 +391,10 @@ void Game::update()
     //TIMER_DEBUG t;
    // need to make function for game logic
     // Collisions events
-    
+    std::stringstream stream;
+    elampsed_time += DELTA_TIME;
+    stream << "" << std::fixed << std::setprecision(2) << elampsed_time/100;
+    TextManager::setLabelText("Clock", stream.str());
     
     systems.movementSystem(DELTA_TIME);
     enemies.enemySpawnSystem(DELTA_TIME);
@@ -448,7 +451,9 @@ void Game::render()
     
     UI.renderUI(RENDERER);
     xp.renderXPBar(RENDERER);
-
+    
+    //TextManager::drawLabel("Testing", 100, 100);
+    TextManager::drawLabel("Clock", 260, 2);
     
     //map -> drawMap();
     ImGui_ImplSDLRenderer3_NewFrame();
@@ -547,9 +552,7 @@ void Game::restart()
     //xp system
     xp.reset();
     playerSystem.reset();
-    //player system
-    
-    
+    elampsed_time = 0;
 }
 
 bool Game::isRunning()
