@@ -13,6 +13,8 @@
 #include "ProjectileSystem.hpp"
 #include "SDL3/SDL.h"
 #include "CollisionSystem.hpp"
+#include "DamageNumberSystem.hpp"
+
 
 class PlayerSystems
 {
@@ -81,7 +83,7 @@ public:
     void upgradeXPGrabRange(float value);
     void upgradePowerUpTime(float value);
     void upgradeHealAmount(float value);
-    void playerCollisionSystem(std::vector<CollisionEvent>& collisons);
+    void playerCollisionSystem(std::vector<CollisionEvent>& collisons, DamageNumberSystem damage_num);
     
     enum UpgradeType
     {

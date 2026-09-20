@@ -43,6 +43,12 @@ public:
 
         return it -> second;
     }
+    
+    static TTF_TextEngine* getEngine()
+    {
+        return TEXT_ENGINE;
+    }
+
 private:
     
 

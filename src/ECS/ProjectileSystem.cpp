@@ -73,9 +73,8 @@ Entity ProjectileSystem::createProjectile(Entity owner, const Vector2D& position
     return projectile;
 }
 
-void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &collisons, float delta_time)
+void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &collisons, DamageNumberSystem damage_num, float delta_time)
 {
-    
     //std::vector<Entity> destroyQueue;
     
     for(const CollisionEvent& collision : collisons)
@@ -143,10 +142,12 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
             AudioManager::getInstance().playSound("EnemyHit", 0.5f);
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
+            damage_num.spawn(projectile -> getDamage(), enemy_position -> position);
+            
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
@@ -172,10 +173,13 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
             //Projectile* p = GLOBALS::REGISTRY.get<Projectile>(projectileEntity);
             enemy_health -> takeDamage(projectile -> getDamage());
             AudioManager::getInstance().playSound("EnemyHit", 0.5f);
+
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
+            damage_num.spawn(projectile -> getDamage(), enemy_position -> position);
+
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath", 0.5f);
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(otherEntity);
                 deadEntities().push_back(otherEntity);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);

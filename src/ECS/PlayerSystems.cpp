@@ -732,7 +732,7 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgradeWeapon()
     }
 }
 
-void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons)
+void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons, DamageNumberSystem damage_num)
 {
     
     for(const CollisionEvent& collision : collisons)
@@ -777,11 +777,13 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         {
             AudioManager::getInstance().playSound("EnemyHit");
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
-            enemy_health -> takeDamage(DAMAGE * 1.2);
+            enemy_health -> takeDamage(DAMAGE * 1.5);
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
+            damage_num.spawn(DAMAGE * 1.5, enemy_position -> position);
+            
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath");
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
@@ -795,11 +797,13 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
             AudioManager::getInstance().playSound("EnemyHit");
 
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.a);
-            enemy_health -> takeDamage(DAMAGE * 2);
+            enemy_health -> takeDamage(DAMAGE * 1.5);
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
+            damage_num.spawn(DAMAGE * 1.5, enemy_position -> position);
+            
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath");
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);

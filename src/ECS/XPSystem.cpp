@@ -27,7 +27,7 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
 
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
-        LEVEL_UP_XP *= 1.20;
+        LEVEL_UP_XP *= 1.15;
         //std::cout << PlayerSystems::left;
         //std::cout << PlayerSystems::middle;
         //std::cout << PlayerSystems::right;

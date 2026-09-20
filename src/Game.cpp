@@ -23,6 +23,7 @@
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
 #include "AudioManager.hpp"
+#include "ECS/DamageNumberSystem.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -38,6 +39,8 @@ EnemyAi enemies(PLAYER);
 PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
 XPSystem xp;
+DamageNumberSystem damage_num;
+
 
 //TextManager text;
 Menu UI;
@@ -112,6 +115,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
+    TextManager::loadFont("Damage", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+
     TextManager::loadFont("Testing", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
 
     //TTF_SetFontOutline(TextManager::getFont("Buttons"), 1);
@@ -128,7 +133,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     START_TIME = SDL_GetTicks();
     LAST_TIME = START_TIME;
     
-    
+    damage_num.init(TextManager::getEngine(), TextManager::getFont("Damage"));
     
     
     // Inits player and map
@@ -277,7 +282,6 @@ int Game::run()
         auto currentTime = std::chrono::steady_clock::now();
 
         DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
-        std::cout << DELTA_TIME;
         lastTime = currentTime;
 
         if (DELTA_TIME > 0.05f)
@@ -406,11 +410,11 @@ void Game::update()
     
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
-    projectiles.projectilesCollisons(collisions, DELTA_TIME);
+    projectiles.projectilesCollisons(collisions, damage_num, DELTA_TIME);
     projectiles.projectileSystem(DELTA_TIME);
     playerSystem.fireSystem(projectiles, DELTA_TIME);
-    playerSystem.playerCollisionSystem(collisions);
-    
+    playerSystem.playerCollisionSystem(collisions, damage_num);
+    damage_num.update(DELTA_TIME);
    
     
     // camera systems
@@ -448,6 +452,7 @@ void Game::render()
     
     RenderTileMap(GLOBALS::REGISTRY, camera);
     systems.renderSystem(RENDERER, camera);
+    damage_num.draw(camera);
     
     UI.renderUI(RENDERER);
     xp.renderXPBar(RENDERER);

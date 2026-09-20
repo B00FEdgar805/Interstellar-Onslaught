@@ -254,7 +254,7 @@ void EnemyAi::enemySpawnSystem(float delta)
             createEnemy(Vector2D(x,y), 3, delta);
         }
 
-        SPAWN_TIME -= 0.15f;
+        SPAWN_TIME -= 0.10f;
         if (SPAWN_TIME <= 3.5f)
         {
             SPAWN_TIME = 3.5f;
@@ -271,7 +271,7 @@ void EnemyAi::enemySpawnSystem(float delta)
                 MAX_NORMAL++;
                 MAX_SLOW++;
             }
-            if(WAVE >= 40 && WAVE % 2 == 0)
+            if(WAVE >= 40 && WAVE % 4 == 0)
             {
                 MAX_NORMAL++;
                 MAX_SLOW++;
