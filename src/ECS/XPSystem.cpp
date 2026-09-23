@@ -19,6 +19,8 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
+        std::string l = "Level: %i", LEVEL;
+        TextManager::setLabelText("Level", l);
         AudioManager::getInstance().playSound("LevelUp");
         // level up function
         player.left = player.randomUpgrade();
@@ -118,6 +120,7 @@ void XPSystem::renderXPBar(SDL_Renderer *renderer)
   //  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     SDL_RenderFillRect(renderer, &fgRect);
+    TextManager::drawLabel("Level", x, y - 24);
 }
 
 float XPSystem::getLevelUpXP()

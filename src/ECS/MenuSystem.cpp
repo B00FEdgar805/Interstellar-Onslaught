@@ -114,13 +114,13 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Quit", "Buttons", "Quit", COLORS::WHITE);
     TextManager::createLabel("Restart", "Buttons", "Restart", COLORS::WHITE);
     
-    TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 10%", COLORS::WHITE);
-    TextManager::createLabel("Speed", "Default",        "Increase Speed by \n10%", COLORS::WHITE);
-    TextManager::createLabel("Damage", "Default",       "Increase Damage \nby 10%", COLORS::WHITE);
-    TextManager::createLabel("Health", "Default",       "Increase Health \nby 10%", COLORS::WHITE);
-    TextManager::createLabel("PSpeed", "Default",       "Increase \nProjectile\nSpeed by 10%", COLORS::WHITE);
-    TextManager::createLabel("XPMutiplier", "Default",  "Increase XP gains \nby 10%", COLORS::WHITE);
-    TextManager::createLabel("XPRange", "Default",      "Increase XP pick\nup range by 20%", COLORS::WHITE);
+    TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 30%", COLORS::WHITE);
+    TextManager::createLabel("Speed", "Default",        "Increase Speed by \n30%", COLORS::WHITE);
+    TextManager::createLabel("Damage", "Default",       "Increase Damage \nby 30%", COLORS::WHITE);
+    TextManager::createLabel("Health", "Default",       "Increase Health \nby 30%", COLORS::WHITE);
+    TextManager::createLabel("PSpeed", "Default",       "Increase \nProjectile\nSpeed by 30%", COLORS::WHITE);
+    TextManager::createLabel("XPMutiplier", "Default",  "Increase XP gains \nby 30%", COLORS::WHITE);
+    TextManager::createLabel("XPRange", "Default",      "Increase XP pick\nup range by 40%", COLORS::WHITE);
     TextManager::createLabel("Normal", "Default",       "Returns weapon \nback to normal. \nRaises weapon \nstats by 10%", COLORS::WHITE);
     TextManager::createLabel("Shotgun", "Default",      "Weapon becomes a \nshotgun.Raises \nweapon \nstats by 10%", COLORS::WHITE);
     TextManager::createLabel("SMG", "Default",          "Weapon becomes a \nSMG. Raises weapon stats \nby 10%", COLORS::WHITE);

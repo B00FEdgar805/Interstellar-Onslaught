@@ -249,6 +249,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             break;
     }
     
+    TextManager::createLabel("Level", "Default", "Level: 1", COLORS::WHITE);
+
+    
     AudioManager::getInstance().init();
     AudioManager::getInstance().loadMusic("Music", "Assets/Audio/BGmusic.wav");
     AudioManager::getInstance().loadSound("Button","Assets/Audio/Button.wav");

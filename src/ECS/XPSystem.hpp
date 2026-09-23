@@ -12,6 +12,8 @@
 #include "Registry.hpp"
 #include "CollisionSystem.hpp"
 #include "PlayerSystems.hpp"
+#include "../TextManager.hpp"
+
 
 
 class XPSystem
@@ -22,6 +24,7 @@ private:
     inline static float CURRENT_XP = 0;
     Vector2D SIZE = {5.0f, 5.0f};
     float visualXPPercentage = 0.0f;
+    
 public:
     void addXP(int xp, PlayerSystems& player);
     int getLevel();
