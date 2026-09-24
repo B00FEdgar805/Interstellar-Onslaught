@@ -31,7 +31,7 @@ void DamageNumberSystem::spawn(int damage, const Vector2D& pos)
         return;
     }
     
-    TTF_SetTextColor(text, 255, 80, 80, 255);
+    TTF_SetTextColor(text, 255, 255, 255, 255);
     
     Entity e = GLOBALS::REGISTRY.create();
     GLOBALS::REGISTRY.add(e, DamageNumber(text, pos));
@@ -53,7 +53,7 @@ void DamageNumberSystem::update(float deltaTime)
 
         Uint8 alpha = static_cast<Uint8>(255.0f * remaining);
 
-        TTF_SetTextColor(damage_num.text, 223, 62, 35, alpha);
+        TTF_SetTextColor(damage_num.text, 223, 255, 255, alpha);
         
         if (damage_num.age >= damage_num.lifetime)
         {
