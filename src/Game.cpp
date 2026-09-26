@@ -360,23 +360,20 @@ void Game::handleEvents()
                 switch (e.key.key)
                 {
                     case SDLK_ESCAPE:
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                        break;
-                    case SDLK_TAB:
-                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_MAIN_MENU)
                         {
-                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
                         }
                         else
                         {
                             GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
                         }
                         break;
-                    case SDLK_1:
-                        IMGUI = !IMGUI;
+                    case SDLK_PAUSE:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
                         break;
-                    case SDLK_2:
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
+                    case SDLK_TAB:
+                        IMGUI = !IMGUI;
                         break;
                     default:
                         break;

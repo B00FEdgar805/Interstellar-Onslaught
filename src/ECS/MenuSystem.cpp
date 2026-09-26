@@ -69,7 +69,10 @@ Menu::Menu()
     {
         //all_button -> setButton(ALL + 1);
         ALL = !ALL;
-        AudioManager::getInstance().setMasterVolume(1.0f * ALL);
+        //AudioManager::getInstance().setMasterVolume(1.0f * ALL);
+        AudioManager::getInstance().setSoundVolume(1.0f * ALL);
+        AudioManager::getInstance().setMusicVolume(1.0f * ALL);
+
     };
     
     OPTIONS_MENU.add(MUSIC_BUTTON, Button("Options", Vector2D(368, 128), SIZE_OPTION));
@@ -78,7 +81,7 @@ Menu::Menu()
     {
         //music_button -> setButton(1 + MUSIC);
         MUSIC = !MUSIC;
-        AudioManager::getInstance().setMusicVolume(0.2f * MUSIC);
+        AudioManager::getInstance().setMusicVolume(1.0f * MUSIC);
     };
     
     OPTIONS_MENU.add(SFX_BUTTON, Button("Options", Vector2D(368, 192), SIZE_OPTION));
@@ -88,6 +91,7 @@ Menu::Menu()
         //sfx_button -> setButton(SFX + 1);
         SFX = !SFX;
         AudioManager::getInstance().setSoundVolume(1.0f * SFX);
+        //AudioManager::getInstance().pauseAllSounds();
     };
     
     OPTIONS_MENU.add(BACK_BUTTON, Button("BackButton", Vector2D(368, 256), SIZE_OPTION));
@@ -113,7 +117,11 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("Options", "Buttons", "Options", COLORS::WHITE);
     TextManager::createLabel("Quit", "Buttons", "Quit", COLORS::WHITE);
     TextManager::createLabel("Restart", "Buttons", "Restart", COLORS::WHITE);
-    
+    TextManager::createLabel("All", "Buttons", "All", COLORS::WHITE);
+    TextManager::createLabel("Music", "Buttons", "Music", COLORS::WHITE);
+    TextManager::createLabel("SFX", "Buttons", "SFX", COLORS::WHITE);
+
+
     TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 30%", COLORS::WHITE);
     TextManager::createLabel("Speed", "Default",        "Increase Speed by \n30%", COLORS::WHITE);
     TextManager::createLabel("Damage", "Default",       "Increase Damage \nby 30%", COLORS::WHITE);
@@ -481,6 +489,11 @@ void Menu::renderSystemOptions(SDL_Renderer *renderer)
         button.draw();
         //SDL_Log("Working");
     }
+    
+    TextManager::drawLabel("All", 200, 64);
+    TextManager::drawLabel("Music", 200, 128);
+    TextManager::drawLabel("SFX", 200, 192);
+
 }
 
 void Menu::renderSystemGameplay(SDL_Renderer *renderer)
