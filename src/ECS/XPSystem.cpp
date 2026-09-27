@@ -30,11 +30,7 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
         LEVEL_UP_XP *= 1.15;
-        //std::cout << PlayerSystems::left;
-        //std::cout << PlayerSystems::middle;
-        //std::cout << PlayerSystems::right;
-
-        //SDL_Log("%i", LEVEL);
+        
         
     }
 }

@@ -1,10 +1,3 @@
-//
-//  TextManager.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/12/26.
-//
-
 #ifndef TextManager_hpp
 #define TextManager_hpp
 

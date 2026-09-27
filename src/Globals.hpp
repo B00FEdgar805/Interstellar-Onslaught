@@ -14,6 +14,7 @@ struct GLOBALS
         STATE_PAUSED,
         STATE_UPGRADE,
         STATE_OPTIONS,
+        STATE_DEATH,
         STATE_EXIT
     };
     

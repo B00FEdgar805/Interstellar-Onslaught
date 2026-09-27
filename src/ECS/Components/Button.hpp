@@ -2,7 +2,7 @@
 #define Button_hpp
 
 #include "Component.hpp"
-#include "../../GLOBALS.hpp"
+#include "../../Globals.hpp"
 #include "../../TextureManager.hpp"
 
 class Button final : public BaseComponent

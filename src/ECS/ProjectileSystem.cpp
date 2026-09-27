@@ -27,7 +27,6 @@ void ProjectileSystem::projectileSystem(float delta_time)
         Velocity* velocity = GLOBALS::REGISTRY.get<Velocity>(entity);    //Makes sure to keep direction of projectile each update
         velocity -> value.zero();
         velocity -> value += velocity -> direction.normalize();
-        //SDL_Log("%f", velocity -> directionToDegrees());
         if (projectile.hasExpired())
         {
             //SDL_Log("Projectile Dead");
@@ -90,7 +89,7 @@ void ProjectileSystem::projectilesCollisons(std::vector<CollisionEvent> &colliso
         Projectile* projectile = nullptr;
         
         
-        
+        // Firgure out which entity is the projectile
         if (projectileA)
         {
             projectileEntity = collision.a;

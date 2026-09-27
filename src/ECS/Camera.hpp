@@ -53,7 +53,7 @@ public:
         POSITION.y = targetPosition.y - VIEWPORT_HEIGHT * 0.5f;
     }
 
-    void follow(const Vector2D& targetPosition, float smoothing, float deltaTime)
+    void follow(const Vector2D& targetPosition, float smoothing, float deltaTime)   // Tells the camera what to follow
     {
         Vector2D desiredPosition( targetPosition.x - VIEWPORT_WIDTH * 0.5f, targetPosition.y - VIEWPORT_HEIGHT * 0.5f);
 

@@ -1,17 +1,10 @@
-//
-//  Item.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 8/14/26.
-//
-
 #ifndef Item_hpp
 #define Item_hpp
 
 //#include "Component.hpp"
 #include "Component.hpp"
 
-class Item final : public BaseComponent
+class Item final : public BaseComponent // Class is just used to easily grab all collectable items. Has no acutal use
 {
 public:
     Item() = default;

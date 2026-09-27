@@ -15,6 +15,8 @@ private:
     Registry UPGRADE_MENU;
     Registry OPTIONS_MENU;
     Registry PAUSE_MENU;
+    Registry DEATH_MENU;
+
     
     Entity START_MAIN = MAIN_MENU.create();
     Entity OPTIONS_MAIN = MAIN_MENU.create();
@@ -40,6 +42,8 @@ private:
 
     Entity PAUSE_BUTTON = GLOBALS::REGISTRY.create();
     
+    Entity RESTART_DEATH = DEATH_MENU.create();
+    Entity QUIT_DEATH = DEATH_MENU.create();
     
     SDL_FRect PAUSE_BACKGROUND;
     const Vector2D SIZE_MENU = {120, 32};
@@ -56,6 +60,8 @@ public:
     void renderSystemOptions(SDL_Renderer* renderer);
     void renderSystemGameplay(SDL_Renderer* renderer);
     void renderUI(SDL_Renderer* renderer);
-    void renderSystemUpgrade(SDL_Renderer* renderer);    
+    void renderSystemUpgrade(SDL_Renderer* renderer);
+    void renderSystemDeath(SDL_Renderer* renderer);
+
 };
 #endif /* MenuSystem_hpp */

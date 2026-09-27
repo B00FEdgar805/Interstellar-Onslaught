@@ -1,10 +1,3 @@
-//
-//  XPSystem.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/18/26.
-//
-
 #ifndef XPSystem_hpp
 #define XPSystem_hpp
 

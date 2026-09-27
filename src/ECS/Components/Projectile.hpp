@@ -26,7 +26,6 @@ public:
     void addDistance(float delta_time)
     {
         DISTANCE += (delta_time * SPEED);
-        //std::cout << DISTANCE << std::endl;
     }
     
     bool hasExpired()

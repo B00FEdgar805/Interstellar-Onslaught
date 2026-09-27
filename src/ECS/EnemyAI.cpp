@@ -9,10 +9,6 @@
 #include "Components/Animation.hpp"
 #include "../AudioManager.hpp"
 
-//static constexpr float PLAYER_DAMAGE_COOLDOWN = 0.5f;
-
-//float EnemyAi::playerDamageCooldownTimer = 0.0f;
-
 void EnemyAi::enemyAISystem()
 {
     Transform* playerPos = GLOBALS::REGISTRY.get<Transform>(PLAYER);
@@ -35,7 +31,7 @@ void EnemyAi::enemyAISystem()
             continue;
         }
         auto temp = playerPos -> position;
-        enemyDir -> direction = temp - enemyPos -> position;
+        enemyDir -> direction = temp - enemyPos -> position;    // Used to foolow the player
 
         enemyDir -> value.zero();
         if (!GLOBALS::FREEZE)
@@ -130,9 +126,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
                 player_health -> takeDamage(enemy -> getDamage());
                 PLAYER_DAMAGE_COOLDOWN_TIMER = PLAYER_DAMAGE_COOLDOWN;
                 AudioManager::getInstance().playSound("Hit", 0.7f);
-                //SDL_Log("Hit");
-                //SDL_Log("%f", player_health -> getHealth());
-
+               
             }
             else if(GLOBALS::INVINCIBLE)
             {
@@ -141,19 +135,19 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             
             if (!player_health -> isAlive())
             {
-                //SDL_Log("Dead");
-                /*
+               
                 AudioManager::getInstance().playSound("Death");
                 Entity e = GLOBALS::REGISTRY.create();
-                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                //auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
                 GLOBALS::REGISTRY.add(e, Transform());
                 GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
                 auto s = GLOBALS::REGISTRY.get<Sprite>(e);
                 s -> setLoop(false);
                 GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
-                 */
+                 
                 player_health -> setHealth(0.0f);
-                //GLOBALS::REGISTRY.destroy(PLAYER);
+                AudioManager::getInstance().pauseMusic();
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_DEATH;
             }
            
             GLOBALS::INVINCIBLE = false;
@@ -178,18 +172,20 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
             
             if (!player_health -> isAlive())
             {
-                /*
+                
                 AudioManager::getInstance().playSound("Death");
                 Entity e = GLOBALS::REGISTRY.create();
-                auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
+                //auto t = GLOBALS::REGISTRY.get<Transform>(PLAYER);
                 GLOBALS::REGISTRY.add(e, Transform());
                 GLOBALS::REGISTRY.add(e, Sprite("Explosion"));
                 auto s = GLOBALS::REGISTRY.get<Sprite>(e);
                 s -> setLoop(false);
                 GLOBALS::REGISTRY.add(e, Animation(delta, 10, 170));
-                 */
+                 
                 player_health -> setHealth(0.0f);
-               // SDL_Log("Dead");
+                AudioManager::getInstance().pauseMusic();
+                GLOBALS::CURRENT_STATE = GLOBALS::STATE_DEATH;
+              
             }
             
             GLOBALS::INVINCIBLE = false;
@@ -203,7 +199,7 @@ void EnemyAi::enemyCollisions(std::vector<CollisionEvent>& collisions, float del
 void EnemyAi::enemySpawnSystem(float delta)
 {
     auto view = GLOBALS::REGISTRY.all<Enemy>();
-    if (view.entities.size() > 150)
+    if (view.entities.size() > 150) // Used to cap enemies alive
     {
         return;
     }
@@ -271,7 +267,7 @@ void EnemyAi::enemySpawnSystem(float delta)
                 MAX_NORMAL++;
                 MAX_SLOW++;
             }
-            if(WAVE >= 40 && WAVE % 4 == 0)
+            if(WAVE >= 40 && WAVE % 3 == 0)
             {
                 MAX_NORMAL++;
                 MAX_SLOW++;
@@ -280,12 +276,9 @@ void EnemyAi::enemySpawnSystem(float delta)
         else
         {
             ROW = 3;
-            // Here would be the code for making enemies hardeer
             SCALER *= 1.1f;
         }
-        
-        //SDL_Log("%f", SPAWN_TIME);
-        
+                
     }
 }
 

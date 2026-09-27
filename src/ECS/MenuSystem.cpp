@@ -108,6 +108,23 @@ Menu::Menu()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
     };
+    
+    DEATH_MENU.add(RESTART_DEATH, Button("MenuButtons", Vector2D(260, 132), SIZE_MENU));
+    Button* restart_death = DEATH_MENU.get<Button>(RESTART_DEATH);
+    restart_death -> setButton(4);
+    restart_death -> onClick = [this]()
+    {
+        Game::restart();
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+    };
+    
+    DEATH_MENU.add(QUIT_DEATH, Button("MenuButtons", Vector2D(260, 196), SIZE_MENU));
+    Button* quit_death = DEATH_MENU.get<Button>(QUIT_DEATH);
+    quit_death -> setButton(3);
+    quit_death -> onClick = [this]()
+    {
+        GLOBALS::CURRENT_STATE = GLOBALS::STATE_MAIN_MENU;
+    };
 }
 
 void Menu::initText(PlayerSystems& player)
@@ -176,7 +193,7 @@ void Menu::initText(PlayerSystems& player)
     };
 }
 
-void Menu::buttonSystem(SDL_Event &e)
+void Menu::buttonSystem(SDL_Event &e)   // Used to handle button inputs
 {
     float windowX = 0.0f;
     float windowY = 0.0f;
@@ -358,6 +375,35 @@ void Menu::buttonSystem(SDL_Event &e)
             }
             break;
         }
+        case GLOBALS::STATE_DEATH:
+        {
+            auto view = DEATH_MENU.all<Button>();
+            for (size_t i = 0; i < view.entities.size(); ++i)
+            {
+                Button& button = view.components[i];
+                const float bx = button.x();
+                const float by = button.y();
+                const float bw = button.w();
+                const float bh = button.h();
+
+                const bool inside = (logicalX >= bx) && (logicalX <= bx + bw) && (logicalY >= by) && (logicalY <= by + bh);
+
+                if (inside)
+                {
+                    button.hovering(inside);
+                    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        AudioManager::getInstance().playSound("Button");
+                        button.onClick();
+                    }
+                }
+                else
+                {
+                    button.hovering(inside);
+                }
+            }
+            break;
+        }
         default:
         {
             auto view = MAIN_MENU.all<Button>();
@@ -512,6 +558,28 @@ void Menu::renderSystemGameplay(SDL_Renderer *renderer)
     }
 }
 
+void Menu::renderSystemDeath(SDL_Renderer *renderer)
+{
+    if (!SDL_SetRenderDrawColor(renderer, 180, 32, 42, 150))
+    {
+        SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
+    }
+    
+    PAUSE_BACKGROUND = {0,0, GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT};
+    SDL_RenderFillRect(renderer, &PAUSE_BACKGROUND);
+    
+    auto view = DEATH_MENU.all<Button>();
+    for (size_t i = 0; i < view.entities.size(); ++i)
+    {
+        Button& button = view.components[i];
+        button.draw();
+        //SDL_Log("Working");
+    }
+   
+    
+    TextManager::drawLabel("Restart", 265, 132);
+    TextManager::drawLabel("Quit", 265, 196);
+}
 
 void Menu::renderUI(SDL_Renderer *renderer)
 {
@@ -528,6 +596,9 @@ void Menu::renderUI(SDL_Renderer *renderer)
             break;
         case GLOBALS::STATE_GAMEPLAY:
             renderSystemGameplay(renderer);
+            break;
+        case GLOBALS::STATE_DEATH:
+            renderSystemDeath(renderer);
             break;
         default:
             break;

@@ -1,10 +1,3 @@
-//
-//  PlayerSystems.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/8/26.
-//
-
 #include "PlayerSystems.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
@@ -173,16 +166,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
                 SDL_Log("pos is null");
                 break;
             }
-            /*
-            Vector2D mainDir = player_velocity -> direction.normalize();
-            Vector2D player_pos = player_transform -> position;
-            player_pos += Vector2D(16.0f, 16.0f);
-            float leftOffset = 16.0f; // distance to the left of the player
-            Vector2D leftDir(-mainDir.y, mainDir.x);
-            leftDir.normalize();
-            player_pos += leftDir.scale(leftOffset);
-            pos -> position = player_pos;
-             */
             
             float totalAngleDegrees = player_velocity -> directionToDegrees() + 180.0f;
             float angleRadians = totalAngleDegrees * (M_PI / 180.0f);
@@ -217,27 +200,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
                 break;
             }
             
-            /*
-            Vector2D mainDir = player_velocity -> direction;
-            mainDir.normalize();
-            Vector2D player_pos = player_transform -> position;
-            player_pos += Vector2D(16.0f, 16.0f);
-            float leftOffset = 16.0f; // distance to the left of the player
-            float rightOffset = 16.0f; // distance to the right of the player
-            Vector2D leftDir(-mainDir.y, mainDir.x);
-            Vector2D rightDir(mainDir.y, -mainDir.x);
-            leftDir.normalize();
-            rightDir.normalize();
-            //player_pos += leftDir.scale(leftOffset);
-            Vector2D newPosL = player_pos;
-            newPosL.add(leftDir.scale(leftOffset));
-            
-            Vector2D newPosR = player_pos;
-            newPosR.add(rightDir.scale(rightOffset));
-            
-            posL -> position = newPosL;
-            posR -> position = newPosR;
-             */
             float totalAngleDegreesL = player_velocity -> directionToDegrees() + 180.0f;
             float angleRadiansL = totalAngleDegreesL * (M_PI / 180.0f);
             Vector2D player_pos = player_transform -> position;
@@ -248,8 +210,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
             
             float totalAngleDegreesR = player_velocity -> directionToDegrees();
             float angleRadiansR = totalAngleDegreesR * (M_PI / 180.0f);
-            //Vector2D player_pos = player_transform -> position;
-            //player_pos += Vector2D(16.0f, 16.0f);
             
             float orbitCenterXR = player_pos.x + (16.0f * cosf(angleRadiansR));
             float orbitCenterYR = player_pos.y + (16.0f * sinf(angleRadiansR));
@@ -298,7 +258,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
     }
     
     SPAWN_TIME += delta;
-    //SDL_Log("%f", SPAWN_TIME);
     if (SPAWN_TIME >= 60.0f)
     {
         SPAWN_TIME = 0.0f;
@@ -329,8 +288,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
             default:
                 break;
         }
-        //x = 100.0f;
-        //y = 100.0f;
+    
         
         Entity sattelite = GLOBALS::REGISTRY.create();
         GLOBALS::REGISTRY.add(sattelite, Transform(Vector2D(x,y)));

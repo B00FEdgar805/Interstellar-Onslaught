@@ -1,10 +1,3 @@
-//
-//  PlayerSystems.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/8/26.
-//
-
 #ifndef PlayerSystems_hpp
 #define PlayerSystems_hpp
 

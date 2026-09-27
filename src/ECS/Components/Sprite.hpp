@@ -77,7 +77,7 @@ public:
         return DESTINATION.h;
     }
     
-    void setLoop(bool l)
+    void setLoop(bool l)    // Used to set if animation loops. True by default
     {
         LOOP = l;
     }
@@ -88,7 +88,7 @@ public:
         DESTINATION.y = v.y;
     }
     
-    void setRect(SDL_FRect rect)
+    void setRect(SDL_FRect rect)    // Used to set screen location from camera
     {
         DESTINATION = rect;
     }
@@ -102,7 +102,6 @@ public:
     {
         int frame = static_cast<int>(delta / speed) % frames;
         SOURCE.x = SOURCE.w * frame;
-        //std::cout << frame << ":" << frames << std::endl;
         
         if (LOOP == false && frame == frames - 1)
         {
@@ -121,9 +120,7 @@ public:
     
     void draw(float angle) // Called by Systems to draw sprite
     {
-        //TextureManager::draw(TEXTURE_ID, SOURCE, DESTINATION);
         TextureManager::drawRotated(TEXTURE_ID, SOURCE, DESTINATION, angle);
-       // SDL_Log("Sprite drawing");
     }
     
     std::string getTextureID()
