@@ -22,8 +22,7 @@ struct GLOBALS
     // 640 by 360
     static constexpr int SCREEN_HEIGHT = 360; //640;
     static constexpr int SCREEN_WIDTH = 640; //800;
-    // World size 1600 x 1280
-    //
+   
     inline static bool COLLISION_BOXES = false;
     inline static bool INVINCIBLE = false;
     inline static bool INVINCIBLE_CONSTANT = false;

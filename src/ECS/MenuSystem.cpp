@@ -4,16 +4,72 @@
 #include "XPSystem.hpp"
 #include "../AudioManager.hpp"
 
+
+
+// This is the star partilce system for mian menu
+constexpr int MAX_PARTICLES = 500;
+typedef struct
+{
+    SDL_FPoint pos;
+    SDL_FPoint vel;
+    bool active;
+} Particle;
+
+Particle particle_pool[MAX_PARTICLES];
+SDL_FPoint draw_buffer[MAX_PARTICLES];
+
+void respawn_particle(Particle* p)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(0, GLOBALS::SCREEN_WIDTH);
+    int num = distr(gen);
+    p -> pos.x = num;
+    p -> pos.y = 0;
+    
+    p -> vel.y = ((float)rand() / RAND_MAX) * 4.0f - 1.0f; // Shoot upwards
+    p -> active = true;
+}
+
+void update_and_draw_particles(SDL_Renderer* renderer)
+{
+    int draw_count = 0;
+
+    for (int i = 0; i < MAX_PARTICLES; i++)
+    {
+        Particle* p = &particle_pool[i];
+
+           
+        p -> pos.x += p -> vel.x;
+        p -> pos.y += p -> vel.y;
+
+        if (p -> pos.x < 0 || p -> pos.x > GLOBALS::SCREEN_WIDTH || p -> pos.y < 0 || p -> pos.y > GLOBALS::SCREEN_HEIGHT)
+        {
+            respawn_particle(p);
+        }
+
+            
+        if (p -> active)
+        {
+            draw_buffer[draw_count] = p->pos;
+            draw_count++;
+        }
+    }
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderPoints(renderer, draw_buffer, draw_count);
+}
+
 Menu::Menu()
 {
-    MAIN_MENU.add(START_MAIN, Button("MenuButtons", Vector2D(260, 100), SIZE_MENU));
+    MAIN_MENU.add(START_MAIN, Button("MenuButtons", Vector2D(260, 172), SIZE_MENU));
     Button* start_main = MAIN_MENU.get<Button>(START_MAIN);
     start_main -> onClick = []()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
-    MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(260, 164), SIZE_MENU));
+    MAIN_MENU.add(OPTIONS_MAIN, Button("MenuButtons", Vector2D(260, 236), SIZE_MENU));
     Button* options_main = MAIN_MENU.get<Button>(OPTIONS_MAIN);
     options_main -> setButton(2);
     options_main -> onClick = []()
@@ -21,7 +77,7 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_OPTIONS;
     };
     
-    MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(260, 228), SIZE_MENU));
+    MAIN_MENU.add(QUIT_MAIN, Button("MenuButtons", Vector2D(260, 300), SIZE_MENU));
     Button* quit_main = MAIN_MENU.get<Button>(QUIT_MAIN);
     quit_main -> setButton(3);
     quit_main -> onClick = []()
@@ -125,6 +181,11 @@ Menu::Menu()
     {
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_MAIN_MENU;
     };
+    
+    for (int i = 0; i < MAX_PARTICLES; i++)
+    {
+            respawn_particle(&particle_pool[i]);
+    }
 }
 
 void Menu::initText(PlayerSystems& player)
@@ -442,6 +503,8 @@ void Menu::renderSystemMain(SDL_Renderer *renderer)
         SDL_Log("SDL_RenderClear failed: %s\n", SDL_GetError());
     }
     
+    update_and_draw_particles(renderer);
+    
     auto view = MAIN_MENU.all<Button>();
     for (size_t i = 0; i < view.entities.size(); ++i)
     {
@@ -457,9 +520,9 @@ void Menu::renderSystemMain(SDL_Renderer *renderer)
         SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
     }
     
-    TextManager::drawLabel("Start", 270, 100);
-    TextManager::drawLabel("Options", 270, 164);
-    TextManager::drawLabel("Quit", 270, 228);
+    TextManager::drawLabel("Start", 270, 172);
+    TextManager::drawLabel("Options", 270, 236);
+    TextManager::drawLabel("Quit", 270, 300);
     
     SDL_RenderPresent(renderer);
 
