@@ -1,9 +1,3 @@
-//
-//  XPSystem.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/18/26.
-//
 #include "../Globals.hpp"
 #include "XPSystem.hpp"
 #include "Components/BoxCollider.hpp"
@@ -19,7 +13,7 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
-        std::string l = "Level: %i", LEVEL;
+        std::string l = "Level: " + std::to_string(LEVEL);
         TextManager::setLabelText("Level", l);
         AudioManager::getInstance().playSound("LevelUp");
         // level up function

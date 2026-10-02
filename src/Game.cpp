@@ -101,11 +101,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Damage", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+    TextManager::loadFont("Title", "Assets/Fonts/Silkscreen-Regular.ttf", 40.0f);
 
-    TextManager::loadFont("Testing", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+    //TextManager::loadFont("Testing", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
 
     
-    TextManager::createLabel("Testing", "Testing", "Hello Testing", SDL_Color(255,255,255,255));
+    //TextManager::createLabel("Testing", "Testing", "Hello Testing", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Title", "Title", "Interstellar Onslaught", SDL_Color(255,255,255,255));
+
     UI.initText(playerSystem);
     TextManager::createLabel("Clock", "Default", "", COLORS::WHITE);
     

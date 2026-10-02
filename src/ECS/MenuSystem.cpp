@@ -165,7 +165,7 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
     };
     
-    DEATH_MENU.add(RESTART_DEATH, Button("MenuButtons", Vector2D(260, 132), SIZE_MENU));
+    DEATH_MENU.add(RESTART_DEATH, Button("MenuButtons", Vector2D(260, 196), SIZE_MENU));
     Button* restart_death = DEATH_MENU.get<Button>(RESTART_DEATH);
     restart_death -> setButton(4);
     restart_death -> onClick = [this]()
@@ -174,7 +174,7 @@ Menu::Menu()
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
     };
     
-    DEATH_MENU.add(QUIT_DEATH, Button("MenuButtons", Vector2D(260, 196), SIZE_MENU));
+    DEATH_MENU.add(QUIT_DEATH, Button("MenuButtons", Vector2D(260, 260), SIZE_MENU));
     Button* quit_death = DEATH_MENU.get<Button>(QUIT_DEATH);
     quit_death -> setButton(3);
     quit_death -> onClick = [this]()
@@ -198,7 +198,8 @@ void Menu::initText(PlayerSystems& player)
     TextManager::createLabel("All", "Buttons", "All", COLORS::WHITE);
     TextManager::createLabel("Music", "Buttons", "Music", COLORS::WHITE);
     TextManager::createLabel("SFX", "Buttons", "SFX", COLORS::WHITE);
-
+    TextManager::createLabel("Death", "Title", "Game Over", COLORS::WHITE);
+    
 
     TextManager::createLabel("ROF", "Default",          "Increase Rate of \nFire by 30%", COLORS::WHITE);
     TextManager::createLabel("Speed", "Default",        "Increase Speed by \n30%", COLORS::WHITE);
@@ -519,6 +520,7 @@ void Menu::renderSystemMain(SDL_Renderer *renderer)
     {
         SDL_Log("SDL_SetRenderDrawColor failed: %s\n", SDL_GetError());
     }
+    TextManager::drawLabel("Title", 20, 40);
     
     TextManager::drawLabel("Start", 270, 172);
     TextManager::drawLabel("Options", 270, 236);
@@ -639,9 +641,9 @@ void Menu::renderSystemDeath(SDL_Renderer *renderer)
         //SDL_Log("Working");
     }
    
-    
-    TextManager::drawLabel("Restart", 265, 132);
-    TextManager::drawLabel("Quit", 265, 196);
+    TextManager::drawLabel("Death", 180, 60);
+    TextManager::drawLabel("Restart", 265, 196);
+    TextManager::drawLabel("Quit", 265, 260);
 }
 
 void Menu::renderUI(SDL_Renderer *renderer)
