@@ -35,13 +35,14 @@ public:
     void update();
     void render();
     void clean();
-    void restart();
+    static void restart();
     bool isRunning();
     void initIMGUI();
     float UpdateFPSCounter(float deltaTime);
     static inline SDL_Renderer *RENDERER = nullptr;
     
-    
+    inline static double elampsed_time = 0;
+
 };
 
 #endif /* Game_hpp */

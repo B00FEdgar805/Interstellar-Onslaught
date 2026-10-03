@@ -1,10 +1,3 @@
-//
-//  PlayerSystems.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/8/26.
-//
-
 #include "PlayerSystems.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Velocity.hpp"
@@ -173,16 +166,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
                 SDL_Log("pos is null");
                 break;
             }
-            /*
-            Vector2D mainDir = player_velocity -> direction.normalize();
-            Vector2D player_pos = player_transform -> position;
-            player_pos += Vector2D(16.0f, 16.0f);
-            float leftOffset = 16.0f; // distance to the left of the player
-            Vector2D leftDir(-mainDir.y, mainDir.x);
-            leftDir.normalize();
-            player_pos += leftDir.scale(leftOffset);
-            pos -> position = player_pos;
-             */
             
             float totalAngleDegrees = player_velocity -> directionToDegrees() + 180.0f;
             float angleRadians = totalAngleDegrees * (M_PI / 180.0f);
@@ -217,27 +200,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
                 break;
             }
             
-            /*
-            Vector2D mainDir = player_velocity -> direction;
-            mainDir.normalize();
-            Vector2D player_pos = player_transform -> position;
-            player_pos += Vector2D(16.0f, 16.0f);
-            float leftOffset = 16.0f; // distance to the left of the player
-            float rightOffset = 16.0f; // distance to the right of the player
-            Vector2D leftDir(-mainDir.y, mainDir.x);
-            Vector2D rightDir(mainDir.y, -mainDir.x);
-            leftDir.normalize();
-            rightDir.normalize();
-            //player_pos += leftDir.scale(leftOffset);
-            Vector2D newPosL = player_pos;
-            newPosL.add(leftDir.scale(leftOffset));
-            
-            Vector2D newPosR = player_pos;
-            newPosR.add(rightDir.scale(rightOffset));
-            
-            posL -> position = newPosL;
-            posR -> position = newPosR;
-             */
             float totalAngleDegreesL = player_velocity -> directionToDegrees() + 180.0f;
             float angleRadiansL = totalAngleDegreesL * (M_PI / 180.0f);
             Vector2D player_pos = player_transform -> position;
@@ -248,8 +210,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
             
             float totalAngleDegreesR = player_velocity -> directionToDegrees();
             float angleRadiansR = totalAngleDegreesR * (M_PI / 180.0f);
-            //Vector2D player_pos = player_transform -> position;
-            //player_pos += Vector2D(16.0f, 16.0f);
             
             float orbitCenterXR = player_pos.x + (16.0f * cosf(angleRadiansR));
             float orbitCenterYR = player_pos.y + (16.0f * sinf(angleRadiansR));
@@ -298,7 +258,6 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
     }
     
     SPAWN_TIME += delta;
-    //SDL_Log("%f", SPAWN_TIME);
     if (SPAWN_TIME >= 60.0f)
     {
         SPAWN_TIME = 0.0f;
@@ -329,8 +288,7 @@ void PlayerSystems::fireSystem(ProjectileSystem projectiles, float delta)
             default:
                 break;
         }
-        //x = 100.0f;
-        //y = 100.0f;
+    
         
         Entity sattelite = GLOBALS::REGISTRY.create();
         GLOBALS::REGISTRY.add(sattelite, Transform(Vector2D(x,y)));
@@ -367,7 +325,7 @@ bool PlayerSystems::shoot(float time)
             }
             break;
         case WEAPON_SMG:
-            if(time >= RATE_OF_FIRE * 0.2f)
+            if(time >= RATE_OF_FIRE * 0.4f)
             {
                 return true;
             }
@@ -434,11 +392,16 @@ void PlayerSystems::upgradePowerUpTime(float value)
     POWER_UP_TIME *= value;
 }
 
+void PlayerSystems::upgradeHealAmount(float value)
+{
+    HEAL_AMOUNT *= value;
+}
+
 PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
  {
      std::random_device rd;
      std::mt19937 gen(rd());
-     std::uniform_int_distribution<> distr(1, 10);
+     std::uniform_int_distribution<> distr(1, 11);
      int num = distr(gen);
     //int num = 9;
      switch (num)
@@ -484,6 +447,9 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgrade()
          case 10:
              return UPGRADE_POWER_UP_TIME;
              break;
+         case 11:
+             return UPGRADE_HEAL_AMOUNT;
+             break;
          default:
              return UPGRADE_ROF;
              break;
@@ -526,7 +492,7 @@ void PlayerSystems::upgrade(UpgradeType button)
     //SDL_Log("Upgrade");
     Health* health = GLOBALS::REGISTRY.get<Health>(PLAYER);
     //SDL_Log("%f" , health -> getHealth());
-    health -> heal(50.0f);
+    health -> heal(HEAL_AMOUNT);
     //SDL_Log("%f" , health -> getHealth());
 
     
@@ -559,6 +525,9 @@ void PlayerSystems::upgrade(UpgradeType button)
             break;
         case UPGRADE_POWER_UP_TIME:
             upgradePowerUpTime(1.30f);
+            break;
+        case UPGRADE_HEAL_AMOUNT:
+            upgradeHealAmount(1.30f);
             break;
         case UPGRADE_WEAPON_NORMAL:
             CURRENT_WEAPON = WEAPON_NORMAL;
@@ -668,6 +637,9 @@ std::string PlayerSystems::getLabel(UpgradeType button)
         case UPGRADE_POWER_UP_TIME:
             return "PowerUpTIme";
             break;
+        case UPGRADE_HEAL_AMOUNT:
+            return "HealAmount";
+            break;
         case UPGRADE_WEAPON_NORMAL:
             return "Normal";
             break;
@@ -718,7 +690,7 @@ PlayerSystems::UpgradeType PlayerSystems::randomUpgradeWeapon()
     }
 }
 
-void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons)
+void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons, DamageNumberSystem damage_num)
 {
     
     for(const CollisionEvent& collision : collisons)
@@ -763,11 +735,13 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
         {
             AudioManager::getInstance().playSound("EnemyHit");
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.b);
-            enemy_health -> takeDamage(DAMAGE * 1.2);
+            enemy_health -> takeDamage(DAMAGE * 1.5);
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
+            damage_num.spawn(DAMAGE * 1.5, enemy_position -> position);
+            
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath");
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.b);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
@@ -781,11 +755,13 @@ void PlayerSystems::playerCollisionSystem(std::vector<CollisionEvent> &collisons
             AudioManager::getInstance().playSound("EnemyHit");
 
             Health* enemy_health = GLOBALS::REGISTRY.get<Health>(collision.a);
-            enemy_health -> takeDamage(DAMAGE * 2);
+            enemy_health -> takeDamage(DAMAGE * 1.5);
+            Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
+            damage_num.spawn(DAMAGE * 1.5, enemy_position -> position);
+            
             if (!enemy_health -> isAlive())
             {
                 AudioManager::getInstance().playSound("EnemyDeath");
-                Transform* enemy_position = GLOBALS::REGISTRY.get<Transform>(collision.a);
                 deadEntities().push_back(collision.b);
                 XPSystem xp;
                 xp.spawnXPDrop(enemy_position -> position);
@@ -807,7 +783,6 @@ void PlayerSystems::powerUp()
                 GLOBALS::INVINCIBLE_CONSTANT = false;
                 break;
             case POWER_UP_GRAB_XP:
-                
                 break;
             case POWER_UP_DOUBLE_XP:
                 upgradeXPMutiplier(0.5f);
@@ -822,6 +797,8 @@ void PlayerSystems::powerUp()
                 upgradeDamage(0.5f);
                 //SDL_Log("%f", DAMAGE);
                 break;
+            case POWER_UP_HEAL:
+                break;
          default:
                 break;
         }
@@ -831,7 +808,7 @@ void PlayerSystems::powerUp()
     {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distr(1, 6);
+        std::uniform_int_distribution<> distr(1, 7);
         int num = distr(gen);
         //int num = 5;
         switch (num)
@@ -875,6 +852,15 @@ void PlayerSystems::powerUp()
                 //SDL_Log("%f", DAMAGE);
             }
                 break;
+            case 7:
+            {
+                CURRENT_POWER_UP = POWER_UP_HEAL;
+                Health* h = GLOBALS::REGISTRY.get<Health>(PLAYER);
+                float total = h -> getMaxHealth();
+                float current = h -> getHealth();
+                h -> heal(total = current);
+            }
+                break;
             default:
                 break;
         }
@@ -901,4 +887,36 @@ void PlayerSystems::reset()
     HAS_GUNNER = 0;
     CURRENT_WEAPON = WEAPON_NORMAL;
     CURRENT_POWER_UP = POWER_UP_NONE;
+}
+
+std::string PlayerSystems::getLabelPowerUp()
+{
+    switch (CURRENT_POWER_UP)
+    {
+        case POWER_UP_DOUBLE_DAMAGE:
+            return "DoubleDamage";
+            break;
+        case POWER_UP_FREEZE_TIME:
+            return "FreezeTime";
+            break;
+        case POWER_UP_FREE_LEVEL:
+            return "FreeLevel";
+            break;
+        case POWER_UP_DOUBLE_XP:
+            return "DoubleXp";
+            break;
+        case POWER_UP_INVINCIBLE:
+            return "Invincible";
+            break;
+        case POWER_UP_HEAL:
+            return "Heal";
+            break;
+        case POWER_UP_GRAB_XP:
+            return "GrabXp";
+            break;
+        case POWER_UP_NONE:
+            return "";
+            break;
+       
+    }
 }

@@ -20,10 +20,9 @@ struct CollisionEvent
     bool isTrigger = false;
 };
 
-//std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions = true);
 void collisionSystem(std::vector<CollisionEvent>& outCollisions, bool resolveSolidCollisions = true);
 std::vector<CollisionEvent> collisionSystem(bool resolveSolidCollisions = true);
-inline std::vector<Entity>& deadEntities()
+inline std::vector<Entity>& deadEntities()  // Used to keep track of all dead entites in the game
 {
     static std::vector<Entity> deadEntities;
     return deadEntities;

@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "PlayerSystems.hpp"
+#include "../Globals.hpp"
 
 class Menu
 {
@@ -13,10 +14,18 @@ private:
     Registry MAIN_MENU;
     Registry UPGRADE_MENU;
     Registry OPTIONS_MENU;
+    Registry PAUSE_MENU;
+    Registry DEATH_MENU;
+
     
     Entity START_MAIN = MAIN_MENU.create();
     Entity OPTIONS_MAIN = MAIN_MENU.create();
     Entity QUIT_MAIN = MAIN_MENU.create();
+    
+    Entity CONTINUE_PAUSE = PAUSE_MENU.create();
+    Entity RESTAR_PAUSET = PAUSE_MENU.create();
+    Entity OPTIONS_PAUSE = PAUSE_MENU.create();
+    Entity QUIT_PAUSE = PAUSE_MENU.create();
     
     Entity UPGRADE_L = UPGRADE_MENU.create();
     Entity UPGRADE_M = UPGRADE_MENU.create();
@@ -31,7 +40,10 @@ private:
     bool MUSIC = true;
     bool SFX = true;
 
+    Entity PAUSE_BUTTON = GLOBALS::REGISTRY.create();
     
+    Entity RESTART_DEATH = DEATH_MENU.create();
+    Entity QUIT_DEATH = DEATH_MENU.create();
     
     SDL_FRect PAUSE_BACKGROUND;
     const Vector2D SIZE_MENU = {120, 32};
@@ -46,7 +58,10 @@ public:
     void renderSystemMain(SDL_Renderer* renderer);
     void renderSystemPause(SDL_Renderer* renderer);
     void renderSystemOptions(SDL_Renderer* renderer);
+    void renderSystemGameplay(SDL_Renderer* renderer);
     void renderUI(SDL_Renderer* renderer);
-    void renderSystemUpgrade(SDL_Renderer* renderer);    
+    void renderSystemUpgrade(SDL_Renderer* renderer);
+    void renderSystemDeath(SDL_Renderer* renderer);
+
 };
 #endif /* MenuSystem_hpp */

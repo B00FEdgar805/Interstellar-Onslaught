@@ -1,10 +1,3 @@
-//
-//  TextManager.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/12/26.
-//
-
 #ifndef TextManager_hpp
 #define TextManager_hpp
 
@@ -33,8 +26,6 @@ public:
     static bool getLabelSize(const std::string& labelId, int* w, int* h);
     static void destroyLabel(const std::string& labelId);
     static void shutdown();
-    
-private:
     static TTF_Font* getFont(const std::string& fontId)
     {
         auto it = FONTS.find(fontId);
@@ -45,6 +36,14 @@ private:
 
         return it -> second;
     }
+    
+    static TTF_TextEngine* getEngine()
+    {
+        return TEXT_ENGINE;
+    }
+
+private:
+    
 
     static TTF_Text* getLabel(const std::string& labelId)
     {
@@ -63,6 +62,8 @@ struct COLORS
 {
     static constexpr SDL_Color WHITE = SDL_Color(255,255,255,255);
     static constexpr SDL_Color BLACK = SDL_Color(0,0,0,255);
+    static constexpr SDL_Color YELLOW = SDL_Color(255,252,64,255);
+
 
 };
 

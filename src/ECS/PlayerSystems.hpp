@@ -1,10 +1,3 @@
-//
-//  PlayerSystems.hpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/8/26.
-//
-
 #ifndef PlayerSystems_hpp
 #define PlayerSystems_hpp
 
@@ -13,6 +6,8 @@
 #include "ProjectileSystem.hpp"
 #include "SDL3/SDL.h"
 #include "CollisionSystem.hpp"
+#include "DamageNumberSystem.hpp"
+
 
 class PlayerSystems
 {
@@ -34,8 +29,8 @@ private:
     float SHIELD_TIME = 5000.0f;
     bool HAS_SHEILD = false;
     bool HAS_ASTROID = false;
-    bool POWER_UP = false;
     int POWER_UP_TIME = 15000;
+    float HEAL_AMOUNT = 50.0f;
     float angle = 0.0f;
     int HAS_GUNNER = 0;
     
@@ -58,15 +53,17 @@ private:
         POWER_UP_FREE_LEVEL,
         POWER_UP_DOUBLE_DAMAGE,
         POWER_UP_DOUBLE_XP,
-        POWER_UP_FREEZE_TIME
+        POWER_UP_FREEZE_TIME,
+        POWER_UP_HEAL
 
     };
     
-    PowerUp CURRENT_POWER_UP = POWER_UP_NONE;
+    static inline PowerUp CURRENT_POWER_UP = POWER_UP_NONE;
     
     //Registry REGISTRY;
 public:
-    
+    static inline bool POWER_UP = false;
+
     PlayerSystems(Entity player);
     void fireSystem(ProjectileSystem projectiles, float delta);
     bool shoot(float time);
@@ -78,7 +75,8 @@ public:
     void upgradeXPMutiplier(float value);
     void upgradeXPGrabRange(float value);
     void upgradePowerUpTime(float value);
-    void playerCollisionSystem(std::vector<CollisionEvent>& collisons);
+    void upgradeHealAmount(float value);
+    void playerCollisionSystem(std::vector<CollisionEvent>& collisons, DamageNumberSystem damage_num);
     
     enum UpgradeType
     {
@@ -90,6 +88,7 @@ public:
         UPGRADE_XP_MUTIPLIER,
         UPGRADE_XP_RANGE,
         UPGRADE_POWER_UP_TIME,
+        UPGRADE_HEAL_AMOUNT,
         UPGRADE_WEAPON_NORMAL,
         UPGRADE_WEAPON_SHOTGUN,
         UPGRADE_WEAPON_SMG,
@@ -111,6 +110,8 @@ public:
     UpgradeType randomUpgradeUnique();
     UpgradeType randomUpgradeWeapon();
     static std::string getLabel(UpgradeType button);
+    static std::string getLabelPowerUp();
+    //bool powerUpActive();
     void powerUp();
     void reset();
     

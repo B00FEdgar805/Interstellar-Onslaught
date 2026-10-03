@@ -96,7 +96,12 @@ public:
 
     void destroy(Entity entity) // Destroys entities and all of its components
     {
-        ALIVE_ENTITES.erase(std::remove(ALIVE_ENTITES.begin(), ALIVE_ENTITES.end(), entity), ALIVE_ENTITES.end());
+        auto it = std::find(ALIVE_ENTITES.begin(), ALIVE_ENTITES.end(), entity);
+        if (it != ALIVE_ENTITES.end())
+        {
+            *it = ALIVE_ENTITES.back();
+            ALIVE_ENTITES.pop_back();
+        }
 
         for (auto& [type, storage] : COMPONENT_STORAGES)
         {
@@ -213,4 +218,3 @@ private:
 };
 
 #endif /* Registry_hpp */
-

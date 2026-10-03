@@ -23,6 +23,7 @@
 #include "TextManager.hpp"
 #include "ECS/XPSystem.hpp"
 #include "AudioManager.hpp"
+#include "ECS/DamageNumberSystem.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -38,6 +39,8 @@ EnemyAi enemies(PLAYER);
 PlayerSystems playerSystem(PLAYER);
 Camera2D camera(GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT);
 XPSystem xp;
+DamageNumberSystem damage_num;
+
 
 //TextManager text;
 Menu UI;
@@ -55,11 +58,8 @@ Game::~Game()
 
 void Game::init(const char* title, int width, int height, bool fullscreen)  // Init screen and creates enitites
 {
-    //TIMER_DEBUG t;
-    
-    
+        
     int flags = 0;
-    //SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
 
     if(fullscreen)
     {
@@ -71,18 +71,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     }
     
     SDL_SetHint(SDL_HINT_VIDEO_DOUBLE_BUFFER, "1");
-//    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // "0" = nearest neighbor, no blur
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    //SDL_SetHint(SDL_WINDOW_HIGH_PIXEL_DENSITY, "1");
-    
-    // Initialize SDL (video + events)
-    /*
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
-        return; // Early return on failure to avoid using uninitialized SDL objects
-    }
-    */
+
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
             SDL_Log("SDL_Init failed: %s\n", SDL_GetError());
@@ -109,13 +98,19 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     
 
     TextManager::init(RENDERER);
-    //TextManager::loadFont("Default", "Assets/Fonts/Orbitron-Regular 2.ttf", 14.0f);
     TextManager::loadFont("Default", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
     TextManager::loadFont("Buttons", "Assets/Fonts/Silkscreen-Regular.ttf", 16.0f);
-    //TextManager::loadFont("Buttons", "Assets/Fonts/Audiowide-Regular.ttf", 18.0f * actualScale);
+    TextManager::loadFont("Damage", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+    TextManager::loadFont("Title", "Assets/Fonts/Silkscreen-Regular.ttf", 40.0f);
 
-    TextManager::createLabel("Testing", "Default", "Hello Testing", SDL_Color(255,255,255,255));
+    //TextManager::loadFont("Testing", "Assets/Fonts/Silkscreen-Regular.ttf", 8.0f);
+
+    
+    //TextManager::createLabel("Testing", "Testing", "Hello Testing", SDL_Color(255,255,255,255));
+    TextManager::createLabel("Title", "Title", "Interstellar Onslaught", SDL_Color(255,255,255,255));
+
     UI.initText(playerSystem);
+    TextManager::createLabel("Clock", "Default", "", COLORS::WHITE);
     
     SDL_SetRenderVSync(RENDERER, 1);
     SDL_SetRenderLogicalPresentation(RENDERER, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
@@ -124,20 +119,15 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     START_TIME = SDL_GetTicks();
     LAST_TIME = START_TIME;
     
+    damage_num.init(TextManager::getEngine(), TextManager::getFont("Damage"));
     
     
-    
-    // Inits player and map
-        
-    //Entity blackhole = GLOBALS::REGISTRY.create();
     
     TextureManager::loadTexture("player", "Assets/Sprites/SpaceshipAnimation.png");
-    //TextureManager::loadTexture("Blackhole", "Assets/Sprites/blackhole2.png");
     TextureManager::loadTexture("Projectile", "Assets/Sprites/Projectile.png");
     TextureManager::loadTexture("Enemy1", "Assets/Sprites/Enemy1.png");
     TextureManager::loadTexture("Enemy2", "Assets/Sprites/Enemy2.png");
     TextureManager::loadTexture("Enemy3", "Assets/Sprites/Enemy3.png");
-    //TextureManager::loadTexture("Buttons", "Assets/Buttons.png");
     TextureManager::loadTexture("MenuButtons" , "Assets/Sprites/MenuButtons.png");
     TextureManager::loadTexture("UpgradeButton", "Assets/Sprites/UpgradeButton.png");
     TextureManager::loadTexture("UpgradeBG", "Assets/Sprites/UpgradeButtonBg.png");
@@ -149,18 +139,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     TextureManager::loadTexture("Sattelite", "Assets/Sprites/Sattelite.png");
     TextureManager::loadTexture("Options", "Assets/Sprites/OptionButtons.png");
     TextureManager::loadTexture("Explosion", "Assets/Sprites/Explosion.png");
-    /*
-    GLOBALS::REGISTRY.add(blackhole, Transform(camera.worldToScreen(Vector2D(600.0f, 600.0f))));
-    GLOBALS::REGISTRY.add(blackhole, Sprite("Blackhole", Vector2D(320.0f, 180.0f).scale(2)));
-    GLOBALS::REGISTRY.add(blackhole, BoxCollider(
-        Vector2D(320.0f, 180.0f).scale(1),
-        Vector2D(0.0f, 0.0f),
-        false,     // isTrigger
-        true,     // isStatic
-        "blackhole"
-    ));
-     */
-    
+    TextureManager::loadTexture("BackButton", "Assets/Sprites/BackButton.png");
+    TextureManager::loadTexture("PauseButton", "Assets/Sprites/PauseButton.png");
+
+    // Create player
     GLOBALS::REGISTRY.add(PLAYER, Sprite("player"));
     GLOBALS::REGISTRY.add(PLAYER, Transform(Vector2D(100.0f, 100.0f)));
     GLOBALS::REGISTRY.add(PLAYER, Velocity(150.0f));
@@ -172,7 +154,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
     GLOBALS::REGISTRY.add(level, Transform(0.0f, 0.0f));
 
     enemies.createEnemy(Vector2D(10.0f, 10.0f), 100.0f, DELTA_TIME);
-    
     
     
     
@@ -238,6 +219,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
             break;
     }
     
+    TextManager::createLabel("Level", "Default", "Level: 1", COLORS::WHITE);
+
+    
     AudioManager::getInstance().init();
     AudioManager::getInstance().loadMusic("Music", "Assets/Audio/BGmusic.wav");
     AudioManager::getInstance().loadSound("Button","Assets/Audio/Button.wav");
@@ -271,7 +255,6 @@ int Game::run()
         auto currentTime = std::chrono::steady_clock::now();
 
         DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
-
         lastTime = currentTime;
 
         if (DELTA_TIME > 0.05f)
@@ -288,17 +271,13 @@ int Game::run()
                 handleEvents(); // Handles user inputes
                 break;
             case GLOBALS::STATE_GAMEPLAY:
-                //SDL_Log("Gameplay");
                 handleEvents(); // Handles user inputes
                 update();   // Handlers movemnts systems
                 render();   // Handles any rendering
-                //UpdateFPSCounter(DELTA_TIME);
-                //SDL_Delay(16);
                 break;
             case GLOBALS::STATE_PAUSED:
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
-                //handlePauseMenuInput(event);
                 break;
             case GLOBALS::STATE_UPGRADE:
                 handleEvents(); // Handles user inputes
@@ -308,8 +287,11 @@ int Game::run()
                 handleEvents(); // Handles user inputes
                 render();   // Handles any rendering
                 break;
+            case GLOBALS::STATE_DEATH:
+                handleEvents();
+                render();
+                break;
             case GLOBALS::STATE_EXIT:
-                //SDL_Log("Exited");
                 RUNNING = false;
                 break;
         }
@@ -348,26 +330,21 @@ void Game::handleEvents()
                 switch (e.key.key)
                 {
                     case SDLK_ESCAPE:
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
-                        break;
-                    case SDLK_TAB:
-                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED)
+                        if (GLOBALS::CURRENT_STATE == GLOBALS::STATE_PAUSED || GLOBALS::CURRENT_STATE == GLOBALS::STATE_MAIN_MENU)
                         {
-                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_GAMEPLAY;
+                            GLOBALS::CURRENT_STATE = GLOBALS::STATE_EXIT;
                         }
                         else
                         {
                             GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
                         }
                         break;
-                    case SDLK_1:
+                    case SDLK_PAUSE:
+                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_PAUSED;
+                        break;
+                    case SDLK_TAB:
                         IMGUI = !IMGUI;
                         break;
-                    case SDLK_2:
-                        GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
-                        break;
-                    case SDLK_0:
-                        AudioManager::getInstance().playSound("sound");
                     default:
                         break;
                 }
@@ -386,9 +363,11 @@ void Game::handleEvents()
 void Game::update()
 {
     //TIMER_DEBUG t;
-   // need to make function for game logic
-    // Collisions events
-    
+ 
+    std::stringstream stream;
+    elampsed_time += DELTA_TIME;
+    stream << "" << std::fixed << std::setprecision(2) << elampsed_time/100;
+    TextManager::setLabelText("Clock", stream.str());
     
     systems.movementSystem(DELTA_TIME);
     enemies.enemySpawnSystem(DELTA_TIME);
@@ -400,11 +379,11 @@ void Game::update()
     
     enemies.enemyCollisions(collisions, DELTA_TIME);
     xp.XPCollisions(collisions, playerSystem);
-    projectiles.projectilesCollisons(collisions, DELTA_TIME);
+    projectiles.projectilesCollisons(collisions, damage_num, DELTA_TIME);
     projectiles.projectileSystem(DELTA_TIME);
     playerSystem.fireSystem(projectiles, DELTA_TIME);
-    playerSystem.playerCollisionSystem(collisions);
-    
+    playerSystem.playerCollisionSystem(collisions, damage_num);
+    damage_num.update(DELTA_TIME);
    
     
     // camera systems
@@ -442,19 +421,18 @@ void Game::render()
     
     RenderTileMap(GLOBALS::REGISTRY, camera);
     systems.renderSystem(RENDERER, camera);
+    damage_num.draw(camera);
     
     UI.renderUI(RENDERER);
     xp.renderXPBar(RENDERER);
-
     
-    //map -> drawMap();
+    TextManager::drawLabel("Clock", 260, 2);
+    
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
-    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-    //TextManager::drawLabel("Testing", 100, 100);
-//    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport() -> ID);
+    
    //ImGui::ShowDemoWindow();
     if (IMGUI)
     {
@@ -522,8 +500,7 @@ void Game::render()
 
 void Game::clean()
 {
-    //auto view = GLOBALS::REGISTRY.all<Enemy>();
-    //SDL_Log("%i" , view.entities.size());
+   
     AudioManager::getInstance().shutdown();
     TextureManager::clear();
     TextManager::shutdown();
@@ -544,9 +521,8 @@ void Game::restart()
     //xp system
     xp.reset();
     playerSystem.reset();
-    //player system
-    
-    
+    elampsed_time = 0;
+    AudioManager::getInstance().resumeMusic();
 }
 
 bool Game::isRunning()

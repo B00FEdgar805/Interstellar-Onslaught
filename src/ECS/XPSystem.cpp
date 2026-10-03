@@ -1,9 +1,3 @@
-//
-//  XPSystem.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/18/26.
-//
 #include "../Globals.hpp"
 #include "XPSystem.hpp"
 #include "Components/BoxCollider.hpp"
@@ -19,6 +13,8 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
     if (CURRENT_XP >= LEVEL_UP_XP)
     {
         LEVEL++;
+        std::string l = "Level: " + std::to_string(LEVEL);
+        TextManager::setLabelText("Level", l);
         AudioManager::getInstance().playSound("LevelUp");
         // level up function
         player.left = player.randomUpgrade();
@@ -27,12 +23,8 @@ void XPSystem::addXP(int xp, PlayerSystems& player)
 
         GLOBALS::CURRENT_STATE = GLOBALS::STATE_UPGRADE;
         CURRENT_XP = CURRENT_XP - LEVEL_UP_XP;
-        LEVEL_UP_XP *= 1.20;
-        //std::cout << PlayerSystems::left;
-        //std::cout << PlayerSystems::middle;
-        //std::cout << PlayerSystems::right;
-
-        //SDL_Log("%i", LEVEL);
+        LEVEL_UP_XP *= 1.15;
+        
         
     }
 }
@@ -118,6 +110,7 @@ void XPSystem::renderXPBar(SDL_Renderer *renderer)
   //  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     SDL_RenderFillRect(renderer, &fgRect);
+    TextManager::drawLabel("Level", x, y - 24);
 }
 
 float XPSystem::getLevelUpXP()

@@ -1,10 +1,3 @@
-//
-//  TextManager.cpp
-//  GameTestSDL3
-//
-//  Created by Edgar Alamillo on 7/12/26.
-//
-
 #include "TextManager.hpp"
 
 TTF_TextEngine* TextManager::TEXT_ENGINE;

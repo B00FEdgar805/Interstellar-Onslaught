@@ -2,7 +2,7 @@
 #define Button_hpp
 
 #include "Component.hpp"
-#include "../../GLOBALS.hpp"
+#include "../../Globals.hpp"
 #include "../../TextureManager.hpp"
 
 class Button final : public BaseComponent
@@ -45,7 +45,7 @@ public:
     
     void hovering(int hover)
     {
-        SOURCE.x = SOURCE.w * (hover + 1);
+        SOURCE.x = SOURCE.w * hover;
     }
     
     int x()
