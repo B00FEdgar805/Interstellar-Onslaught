@@ -48,7 +48,7 @@ Menu UI;
 
 Game::Game()
 {
-    init("SDL Game", GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT, false);
+    init("Interstellar Onslaught", GLOBALS::SCREEN_WIDTH, GLOBALS::SCREEN_HEIGHT, false);
 }
 
 Game::~Game()
@@ -92,6 +92,13 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
         SDL_Log("SDL_CreateRenderer failed: %s\n", SDL_GetError());
         SDL_DestroyWindow(WINDOW);
         SDL_Quit();
+    }
+    
+    SDL_Surface *icon = IMG_Load("Assets/Sprites/Spaceship.png");
+    if (icon)
+    {
+        SDL_SetWindowIcon(WINDOW, icon);
+        SDL_DestroySurface(icon);
     }
     
     SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
