@@ -19,9 +19,21 @@ This is a 2d roguelite game I made in sdl3 and c++. It also uses SDL3_ttf and SD
 https://github.com/user-attachments/assets/d15b1b73-e64c-409c-8aa8-76e054b04d1b
 
 ## Requirements
+- C++ 20
+- CMake 3.20
+- SDL3.0
 
 ## How to Run
-
+MacOS
 ```
-
+rm -rf build
+cmake -S . -B build
+cmake --build build --config Release
+./build/GameTestSDL3.app/Contents/MacOS/GameTestSDL3
+```
+Windows
+```
+cmake -S . -B build
+cmake --build build --config Release
+build/Release/GameTestSDL3.exe
 ```
