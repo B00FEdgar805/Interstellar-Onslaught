@@ -1,0 +1,1 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emcc  -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Waggregate-return -Wcast-align -Wnested-externs -Wshadow -Wundef -Wmissing-declarations -Winline -O3 -DNDEBUG -O3 -funroll-loops @CMakeFiles/benchmark_residual.dir/objects1.rsp -o benchmark_residual.js @CMakeFiles/benchmark_residual.dir/linkLibs.rsp

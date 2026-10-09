@@ -1,0 +1,33 @@
+external/SDL_ttf/external/plutovg-build/CMakeFiles/plutovg.dir/source/plutovg-path.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-path.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-private.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/include/plutovg.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdbool.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdbool.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-utils.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/float.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/float.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_float.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_infinity_nan.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/assert.h

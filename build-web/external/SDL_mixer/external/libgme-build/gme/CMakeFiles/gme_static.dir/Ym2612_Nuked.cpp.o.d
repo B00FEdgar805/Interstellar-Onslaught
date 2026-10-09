@@ -1,0 +1,20 @@
+external/SDL_mixer/external/libgme-build/gme/CMakeFiles/gme_static.dir/Ym2612_Nuked.cpp.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/libgme/gme/Ym2612_Nuked.cpp \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/libgme/gme/Ym2612_Nuked.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/abi.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/compiler.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/platform.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/availability.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/language.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/experimental.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/hardening.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h

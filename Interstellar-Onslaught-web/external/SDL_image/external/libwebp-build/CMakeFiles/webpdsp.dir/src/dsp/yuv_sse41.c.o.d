@@ -1,0 +1,29 @@
+external/SDL_image/external/libwebp-build/CMakeFiles/webpdsp.dir/src/dsp/yuv_sse41.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/dsp/yuv_sse41.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/dsp/yuv.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/dsp/dsp.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_image/external/libwebp-build/src/webp/config.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/dsp/cpu.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_max_align_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/webp/types.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/pthread.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/sched.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/time.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/time.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/dec/vp8_dec.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/webp/decode.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libwebp/src/webp/./types.h

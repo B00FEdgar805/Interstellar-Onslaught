@@ -21,12 +21,26 @@ if(APPLE)
 endif()
 
 # Find the SDL3 libraries installed on the system.
-# If CMake cannot find them, configure with:
-#   -DCMAKE_PREFIX_PATH="/path/to/your/sdl/libraries"
-find_package(SDL3 CONFIG REQUIRED)
-find_package(SDL3_ttf CONFIG REQUIRED)
-find_package(SDL3_image CONFIG REQUIRED)
-find_package(SDL3_mixer CONFIG REQUIRED)
+if(EMSCRIPTEN)
+    set(SDLTTF_VENDORED ON CACHE BOOL "" FORCE)
+    set(SDLIMAGE_VENDORED ON CACHE BOOL "" FORCE)
+    set(SDLMIXER_VENDORED ON CACHE BOOL "" FORCE)
+
+    # Disable optional MIDI/FluidSynth support for WebAssembly.
+    set(SDLMIXER_MIDI OFF CACHE BOOL "" FORCE)
+    set(SDLMIXER_MIDI_FLUIDSYNTH OFF CACHE BOOL "" FORCE)
+
+    add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
+    add_subdirectory(external/SDL_ttf EXCLUDE_FROM_ALL)
+    add_subdirectory(external/SDL_image EXCLUDE_FROM_ALL)
+    add_subdirectory(external/SDL_mixer EXCLUDE_FROM_ALL)
+else()
+    find_package(SDL3 CONFIG REQUIRED)
+    find_package(SDL3_ttf CONFIG REQUIRED)
+    find_package(SDL3_image CONFIG REQUIRED)
+    find_package(SDL3_mixer CONFIG REQUIRED)
+endif()
+
 
 # Collect all .cpp files under src/, including src/ECS and src/imgui.
 file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
@@ -34,6 +48,12 @@ file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
 )
 
 add_executable(GameTestSDL3 ${GAME_SOURCES})
+
+if(EMSCRIPTEN)
+    set_target_properties(GameTestSDL3 PROPERTIES
+        SUFFIX ".html"
+    )
+endif()
 
 target_include_directories(GameTestSDL3 PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -47,6 +67,13 @@ target_link_libraries(GameTestSDL3 PRIVATE
     SDL3_image::SDL3_image
     SDL3_mixer::SDL3_mixer
 )
+
+if(EMSCRIPTEN)
+    target_link_options(GameTestSDL3 PRIVATE
+        "--preload-file=${CMAKE_CURRENT_SOURCE_DIR}/Assets@/Assets"
+        "-sALLOW_MEMORY_GROWTH=1"
+    )
+endif()
 
 # Keep runtime assets beside the executable in the build directory.
 add_custom_command(TARGET GameTestSDL3 POST_BUILD

@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libopusfile.a CMakeFiles/opusfile.dir/src/info.c.o CMakeFiles/opusfile.dir/src/internal.c.o CMakeFiles/opusfile.dir/src/opusfile.c.o CMakeFiles/opusfile.dir/src/stream.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libopusfile.a

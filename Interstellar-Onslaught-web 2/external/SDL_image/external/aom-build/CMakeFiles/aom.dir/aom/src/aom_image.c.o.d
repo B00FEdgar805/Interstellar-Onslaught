@@ -1,0 +1,31 @@
+external/SDL_image/external/aom-build/CMakeFiles/aom.dir/aom/src/aom_image.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/src/aom_image.c \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_image.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_integer.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_max_align_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/internal/aom_image_internal.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_mem/aom_mem.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_image/external/aom-build/config/aom_config.h

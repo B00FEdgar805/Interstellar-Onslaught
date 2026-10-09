@@ -1,0 +1,12 @@
+prefix=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot
+exec_prefix=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot
+libdir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/lib
+includedir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include
+
+Name: libmpg123
+Description: An optimised MPEG Audio decoder
+Requires: 
+Version: 1.33.7
+Libs: -L${libdir} -lmpg123 
+Libs.private:  -lm
+Cflags: -I${includedir} 

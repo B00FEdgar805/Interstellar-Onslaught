@@ -1,0 +1,19 @@
+external/SDL_image/external/libtiff-build/libtiff/CMakeFiles/tiff.dir/tif_fax3sm.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libtiff/libtiff/tif_fax3sm.c \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libtiff/libtiff/tiff.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_image/external/libtiff-build/libtiff/tiffconf.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libtiff/libtiff/tif_fax3.h

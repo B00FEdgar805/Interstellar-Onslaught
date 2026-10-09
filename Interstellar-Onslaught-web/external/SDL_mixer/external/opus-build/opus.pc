@@ -1,0 +1,16 @@
+# Opus codec reference implementation pkg-config file
+
+prefix=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot
+exec_prefix=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot
+libdir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/lib
+includedir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include
+
+Name: Opus
+Description: Opus IETF audio codec ( build)
+URL: https://opus-codec.org/
+Version: 1.4-15-gac9f053e
+Requires:
+Conflicts:
+Libs: -L/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/lib -lopus
+Libs.private: -lm
+Cflags: -I/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/opus

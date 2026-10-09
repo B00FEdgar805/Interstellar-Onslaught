@@ -1,0 +1,33 @@
+external/SDL_mixer/external/opus-build/CMakeFiles/opus.dir/silk/pitch_est_tables.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/pitch_est_tables.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_mixer/external/opus-build/config.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/typedef.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/include/opus_types.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/include/opus_defines.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/float.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/float.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_float.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__float_infinity_nan.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/pitch_est_defines.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/SigProc_FIX.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/resampler_structs.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/macros.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/celt/arch.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/celt/ecintrin.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/celt/cpu_support.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/Inlines.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/MacroCount.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_mixer/external/opus/silk/MacroDebug.h

@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libaom_version.a CMakeFiles/aom_version.dir/gen_src/aom_version_dummy.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libaom_version.a

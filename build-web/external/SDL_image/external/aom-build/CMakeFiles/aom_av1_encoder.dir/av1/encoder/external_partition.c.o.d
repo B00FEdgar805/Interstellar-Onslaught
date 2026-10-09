@@ -1,0 +1,35 @@
+external/SDL_image/external/aom-build/CMakeFiles/aom_av1_encoder.dir/av1/encoder/external_partition.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/av1/encoder/external_partition.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/av1/common/common.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/assert.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_dsp/aom_dsp_common.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_image/external/aom-build/config/aom_config.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_integer.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_max_align_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/inttypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_ports/mem.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_mem/aom_mem.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_ports/bitops.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom_ports/msvc.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/av1/encoder/external_partition.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdbool.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdbool.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_codec.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_image.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/aom/aom/aom_external_partition.h

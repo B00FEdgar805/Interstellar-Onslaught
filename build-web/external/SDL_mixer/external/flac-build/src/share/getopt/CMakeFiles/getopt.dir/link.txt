@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libgetopt.a CMakeFiles/getopt.dir/getopt.c.o CMakeFiles/getopt.dir/getopt1.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libgetopt.a

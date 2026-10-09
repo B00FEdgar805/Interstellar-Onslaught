@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libvorbisfile.a CMakeFiles/vorbisfile.dir/vorbisfile.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libvorbisfile.a

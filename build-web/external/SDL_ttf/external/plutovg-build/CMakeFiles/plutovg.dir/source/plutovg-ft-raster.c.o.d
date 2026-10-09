@@ -1,0 +1,23 @@
+external/SDL_ttf/external/plutovg-build/CMakeFiles/plutovg.dir/source/plutovg-ft-raster.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-ft-raster.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-ft-raster.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-ft-types.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_ttf/external/plutovg/source/plutovg-ft-math.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/setjmp.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/setjmp.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/limits.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h

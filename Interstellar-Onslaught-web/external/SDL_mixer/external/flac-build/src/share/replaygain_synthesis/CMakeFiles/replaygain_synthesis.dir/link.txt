@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libreplaygain_synthesis.a CMakeFiles/replaygain_synthesis.dir/replaygain_synthesis.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libreplaygain_synthesis.a

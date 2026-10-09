@@ -1,0 +1,1 @@
+ ../src/libFLAC/libFLAC.a -lrt -lm "../../ogg-build/libogg.a" 

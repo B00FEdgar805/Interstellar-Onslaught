@@ -1,0 +1,3 @@
+/Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build/CMakeFiles/GameTestSDL3.dir
+/Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build/CMakeFiles/edit_cache.dir
+/Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build/CMakeFiles/rebuild_cache.dir

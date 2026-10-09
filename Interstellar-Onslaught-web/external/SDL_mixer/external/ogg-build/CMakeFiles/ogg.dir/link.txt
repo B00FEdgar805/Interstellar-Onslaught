@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libogg.a CMakeFiles/ogg.dir/src/bitwise.c.o CMakeFiles/ogg.dir/src/framing.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libogg.a

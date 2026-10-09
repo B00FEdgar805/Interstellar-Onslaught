@@ -29,6 +29,10 @@
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 // Init ECS system
 
 Entity PLAYER = GLOBALS::REGISTRY.create();
@@ -253,46 +257,50 @@ void Game::init(const char* title, int width, int height, bool fullscreen)  // I
 
 int Game::run()
 {
-    auto lastTime = std::chrono::steady_clock::now();
     AudioManager::getInstance().setMasterVolume(0.2f);
     AudioManager::getInstance().playMusic("Music", true, 1000);
-    
-    while (isRunning()) // Main game loop
+#ifdef __EMSCRIPTEN__
+    // Register the main loop for Emscripten
+    emscripten_set_main_loop_arg(
+        [](void* arg) { static_cast<Game*>(arg)->mainLoopTick(); },
+        this,
+        0, // Use the browser's refresh rate
+        1  // Infinite loop
+    );
+    return 0; // main loop never returns under Emscripten
+#else
+    auto lastTime = std::chrono::steady_clock::now();
+    while (isRunning())
     {
         auto currentTime = std::chrono::steady_clock::now();
-
         DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
         lastTime = currentTime;
-
         if (DELTA_TIME > 0.05f)
         {
             DELTA_TIME = 0.05f;
         }
-        
-        
-        
         switch (GLOBALS::CURRENT_STATE)
         {
             case GLOBALS::STATE_MAIN_MENU:
                 UI.renderSystemMain(RENDERER);
-                handleEvents(); // Handles user inputes
+                handleEvents();
                 break;
             case GLOBALS::STATE_GAMEPLAY:
-                handleEvents(); // Handles user inputes
-                update();   // Handlers movemnts systems
-                render();   // Handles any rendering
+                handleEvents();
+                update();
+                render();
                 break;
             case GLOBALS::STATE_PAUSED:
-                handleEvents(); // Handles user inputes
-                render();   // Handles any rendering
+                handleEvents();
+                render();
                 break;
             case GLOBALS::STATE_UPGRADE:
-                handleEvents(); // Handles user inputes
-                render();   // Handles any rendering
+                handleEvents();
+                render();
                 break;
             case GLOBALS::STATE_OPTIONS:
-                handleEvents(); // Handles user inputes
-                render();   // Handles any rendering
+                handleEvents();
+                render();
                 break;
             case GLOBALS::STATE_DEATH:
                 handleEvents();
@@ -302,13 +310,59 @@ int Game::run()
                 RUNNING = false;
                 break;
         }
-    
     }
-    
-    clean();    // Called when program ends to close safley
+    clean();
     return 0;
+#endif
 }
 
+void Game::mainLoopTick() {
+    static auto lastTime = std::chrono::steady_clock::now();
+    auto currentTime = std::chrono::steady_clock::now();
+    DELTA_TIME = std::chrono::duration<float>(currentTime - lastTime).count();
+    lastTime = currentTime;
+    if (DELTA_TIME > 0.05f) {
+        DELTA_TIME = 0.05f;
+    }
+
+    switch (GLOBALS::CURRENT_STATE) {
+        case GLOBALS::STATE_MAIN_MENU:
+            UI.renderSystemMain(RENDERER);
+            handleEvents();
+            break;
+        case GLOBALS::STATE_GAMEPLAY:
+            handleEvents();
+            update();
+            render();
+            break;
+        case GLOBALS::STATE_PAUSED:
+            handleEvents();
+            render();
+            break;
+        case GLOBALS::STATE_UPGRADE:
+            handleEvents();
+            render();
+            break;
+        case GLOBALS::STATE_OPTIONS:
+            handleEvents();
+            render();
+            break;
+        case GLOBALS::STATE_DEATH:
+            handleEvents();
+            render();
+            break;
+        case GLOBALS::STATE_EXIT:
+            RUNNING = false;
+            break;
+    }
+
+    if (!isRunning()) {
+#ifdef __EMSCRIPTEN__
+        emscripten_cancel_main_loop();
+#endif
+        clean();
+    }
+}
 
 void Game::handleEvents()
 {
@@ -595,4 +649,3 @@ void Game::initIMGUI()
     ImGui_ImplSDL3_InitForSDLRenderer(WINDOW, RENDERER);
     ImGui_ImplSDLRenderer3_Init(RENDERER);
 }
-

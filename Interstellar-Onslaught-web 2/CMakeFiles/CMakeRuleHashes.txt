@@ -1,0 +1,25 @@
+# Hashes of file build rules.
+5c99e6503ddbf28fcccc2bb21a1657f6 external/SDL_image/external/aom-build/CMakeFiles/aom_version_check
+29ffc17a46a1875cc2f514b45781c531 external/SDL_image/external/aom-build/CMakeFiles/dist
+932f4569873cdda4816c48d553b8f7f0 external/SDL_image/external/aom-build/aom.pc
+932368fb65b6933f31604161218b7518 external/SDL_image/external/aom-build/config/aom_dsp_rtcd.h
+161c295aef4a1f50da99eb4716d0cc0d external/SDL_image/external/aom-build/config/aom_scale_rtcd.h
+5c99e6503ddbf28fcccc2bb21a1657f6 external/SDL_image/external/aom-build/config/aom_version.h
+2deaa74a1916136f30d10aa2a8df344c external/SDL_image/external/aom-build/config/av1_rtcd.h
+7747682f62a5fe0415ed9ac56fcf3495 external/SDL_image/external/libavif-build/avif_static_depends.c
+968d296c0bbfde189cc8630e7d8a5491 external/SDL_image/external/libpng-build/CMakeFiles/png_genfiles
+caed4e59fea8460495b4992bb7c3e923 external/SDL_image/external/libpng-build/CMakeFiles/png_genprebuilt
+d6786ffe7a12e7940371a8a64cbdbfcb external/SDL_image/external/libpng-build/libpng.sym
+8aa32ed85de42ed6829352431da00803 external/SDL_image/external/libpng-build/libpng.vers
+64c60a38f2b51b57fea1316a3a3ef908 external/SDL_image/external/libpng-build/pnglibconf.c
+7ed7aa56bad432fe1c65586de091a0d8 external/SDL_image/external/libpng-build/pnglibconf.h
+3e6539943df0b0522b27d0767248e25d external/SDL_image/external/libpng-build/pnglibconf.out
+6f7eddd5bac84a35c7b3d07a5ab407e9 external/SDL_image/external/libpng-build/pngprefix.h
+b6fd96868cb489e1932741bfa92a6afa external/SDL_image/external/libpng-build/scripts/intprefix.out
+827b7fc121ec6ac6fa08c56edaf89764 external/SDL_image/external/libpng-build/scripts/pnglibconf.c
+52e8894081fe859cca46ad68d6f11ae7 external/SDL_image/external/libpng-build/scripts/prefix.out
+e0d4f804abde3fe5e7b59d7c26148b92 external/SDL_image/external/libpng-build/scripts/sym.out
+92c871e582cffef306b0763441481873 external/SDL_image/external/libpng-build/scripts/symbols.chk
+c85be2072e7492a86151cf5ccf031641 external/SDL_image/external/libpng-build/scripts/symbols.out
+1ed8219f5c7d663aa632d828492b28a1 external/SDL_image/external/libpng-build/scripts/vers.out
+e863a0b705aec26a9d61fbfd976bb702 external/SDL_image/external/libtiff-build/CMakeFiles/tiff_release

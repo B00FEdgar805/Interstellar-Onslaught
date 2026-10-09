@@ -35,6 +35,7 @@ public:
     void update();
     void render();
     void clean();
+    void mainLoopTick();
     static void restart();
     bool isRunning();
     void initIMGUI();

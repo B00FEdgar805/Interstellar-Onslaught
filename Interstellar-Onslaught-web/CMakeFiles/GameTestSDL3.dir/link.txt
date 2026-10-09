@@ -1,0 +1,1 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/em++ -O3 -DNDEBUG --preload-file=/Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/Assets@/Assets -sALLOW_MEMORY_GROWTH=1 @CMakeFiles/GameTestSDL3.dir/objects1.rsp -o GameTestSDL3.html @CMakeFiles/GameTestSDL3.dir/linkLibs.rsp

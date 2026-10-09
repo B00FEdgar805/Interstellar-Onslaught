@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libreplaygain_analysis.a CMakeFiles/replaygain_analysis.dir/replaygain_analysis.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libreplaygain_analysis.a

@@ -1,0 +1,13 @@
+prefix=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot
+exec_prefix=${prefix}
+libdir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/lib
+includedir=/Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include
+
+Name: libxmp
+Description: Xmp module player library
+Version: 4.7.3
+
+Requires:
+Libs: -L${libdir} -lxmp
+Cflags: -I${includedir}
+Libs.private: 

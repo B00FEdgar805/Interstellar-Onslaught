@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libwebpmux.a CMakeFiles/libwebpmux.dir/src/mux/anim_encode.c.o CMakeFiles/libwebpmux.dir/src/mux/muxedit.c.o CMakeFiles/libwebpmux.dir/src/mux/muxinternal.c.o CMakeFiles/libwebpmux.dir/src/mux/muxread.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libwebpmux.a

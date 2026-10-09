@@ -1,0 +1,37 @@
+external/SDL_image/external/libavif-build/CMakeFiles/avif_obj.dir/src/codec_dav1d.c.o: \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libavif/src/codec_dav1d.c \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libavif/include/avif/internal.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/libavif/include/avif/avif.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_ptrdiff_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_size_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_wchar_t.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_null.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stddef_offsetof.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/dav1d/include/dav1d/dav1d.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/errno.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/bits/errno.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/wasi/api.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdarg.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/stdarg.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/stdarg.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg_header_macro.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg___gnuc_va_list.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg_va_list.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg_va_arg.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg___va_copy.h \
+  /Users/edgaralamillo/emsdk/upstream/lib/clang/24/include/__stdarg_va_copy.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/dav1d/include/dav1d/common.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/dav1d/include/dav1d/picture.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/dav1d/include/dav1d/headers.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/external/SDL_image/external/dav1d/include/dav1d/data.h \
+  /Users/edgaralamillo/Downloads/Prorgams/Personal/Interstellar-Onslaught/build-web/external/SDL_image/external/dav1d-build/include/dav1d/version.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/edgaralamillo/emsdk/upstream/emscripten/cache/sysroot/include/strings.h

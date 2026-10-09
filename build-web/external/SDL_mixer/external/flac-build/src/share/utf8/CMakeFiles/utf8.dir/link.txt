@@ -1,0 +1,2 @@
+/Users/edgaralamillo/emsdk/upstream/emscripten/emar qc libutf8.a CMakeFiles/utf8.dir/charset.c.o CMakeFiles/utf8.dir/iconvert.c.o CMakeFiles/utf8.dir/utf8.c.o
+/Users/edgaralamillo/emsdk/upstream/emscripten/emranlib libutf8.a
