@@ -24,6 +24,9 @@ https://github.com/user-attachments/assets/d15b1b73-e64c-409c-8aa8-76e054b04d1b
 - SDL3.0
 
 ## How to Run
+Available to play on online [here](https://b00fedgar805.itch.io/interstellar-onslaught) (itch.io page)
+
+
 MacOS
 ```
 rm -rf build
